@@ -21,6 +21,45 @@ CATEGORY --> {ASSIST, BLOCK, DEF REBOUND, DISQUALIFYING FOUL, DSS FREE THROWS,
               TIME OUT, TIP OFF, TURNOVER, TV TIME OUT, TWO POINTER,
               UNSPORTSMANLIKE FOUL}
 COMMENT
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Action Exemple --> 42    44    5    05:28    6    11    Barcelona    6    VESELY, J.    Two Pointer    0    0    0
+Correction Exemple --> Insert 3P A13
+
+Scoresheet Errors --> Jump Ball, Team Timeouts, IRS, Coach Challenge, Points (2P, 3P, FT), Fouls (Foul, Offensive Foul, Unsportsmanlike Foul, Technical Foul, Throw-in Foul),
+                      Substitutions
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Abbreviations: 
+2P: two-pointer
+3P: three-pointer
+AS: assist
+BLK: block
+CC: coachs challenge
+DR: defensive rebound
+DQ FOUL: disqualifying foul
+FB: fast break
+FD: foul drawn
+FOUL: foul
+FTM: free throw made
+IRS: Instant Replay System
+JB: jump ball
+MFT: missed free throw
+M3P: missed three-pointer
+M2P: missed two-pointer
+OF FOUL: offensive foul
+OR: offensive rebound
+PF: personal foul
+REB: rebound
+SR: shot rejected
+ST: steal
+SUBS: substitution
+TECH: technical foul
+TOUT:time-out
+TO: turnover
+UF: unsportsmanlike foul
 """
 
 def main():
@@ -39,6 +78,16 @@ def main():
     home_team = input("Nom equip local: ").strip()
     away_team = input("Nom equip visitant: ").strip()
 
+    points = ['2P', 'Two Pointer', '3P', 'Three Pointer', 'FTM', 'Free Thrown In'] 
+    fouls = ['OF FOUL', 'Offensive Foul', 'FOUL', 'Foul', 'UF', 'Unsportsmanlike Foul', 'TECH', 'Technical Foul', 'DQ Foul', 'Disqualifying Foul', ]
+    jump_ball = ['Jump Ball']
+    team_timeouts = ['TOUT', 'Time Out']
+    irs = ['IRS', 'Instant Replay'] 
+    coach_challenge = ['CC', 'Coach Challenge']
+    substitutions = ['In', 'Out']
+
+    scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions
+
     while True:
         print("Enganxa la línia de l'acció (o escriu 'sortir' per acabar):")
         action_line = input().strip()
@@ -55,17 +104,25 @@ def main():
             continue
 
         action_number = parts[0]
+        minute = int(parts[2])
         time = parts[3]
         home_points = parts[4]
         away_points = parts[5]
         team_name = parts[6]
         category = parts[9]
 
+        if (0 <= minute <= 10): quarter = "1"
+        elif (11 <= minute <= 20): quarter = "2"
+        elif (21 <= minute <= 30): quarter = "3"
+        elif (31 <= minute <= 30): quarter = "4"
+        elif (minute > 40): quarter = "ET"
+        else: quarter = ""
+
         # Determinar Home o Away
         if team_name.lower() == home_team.lower():
-            team = "Home"
+            team = "HOME TEAM"
         elif team_name.lower() == away_team.lower():
-            team = "Away"
+            team = "AWAY TEAM"
         else:
             team = ""
 
@@ -85,33 +142,36 @@ def main():
         }
         type = type_map.get(correction_type, "")
 
-        stats_map = {
-            "AST": "ASSIST",
-            "BLK": "BLOCK",
-            "Def REB": "DEF REBOUND",
-            "FT In": "FREE THROW IN",
-            "IRS": "INSTANT REPLAY",
-            "Missed FT": "MISSED FREE THROW",
-            "Missed 3P": "MISSED THREE POINTER",
-            "Missed 2P": "MISSED TWO POINTER",
-            "Off Foul": "OFENSIVE FOUL",
-            "Off REB": "OFF REBOUND",
-            "STL": "STEAL",
-            "3P": "THREE POINTER",
-            "TOV": "TURNOVER",
-            "2P": "TWO POINTER",
-        }
+        if correction_type == "insert" : category = stats_type
 
-        if correction_type == "insert" : category = stats_map.get(stats_type, "")
+        if correction_type in ("insert", "delete") and category in scoresheet_lists:
+            boxscore_scoresheet = "SCORESHEET"
+            if category in points:
+                type = "POINTS"
+            elif category in fouls: 
+                type = "FOULS"
+            elif category in substitutions:
+                type = "SUBSTITUTIONS"
+            elif category in jump_ball:
+                type = "JUMP BALL"
+            elif category in team_timeouts:
+                type = "TIME OUT"
+            elif category in irs:
+                type = "INSTANT REPLAY"
+            elif category in coach_challenge:
+                type = "COACH CHALLENGE"
+        else: 
+            boxscore_scoresheet = "BOXSCORE"
+
 
         # Crear nova fila
         new_row = {
             "Crono": time,
-            "Quarter": "",
+            "Quarter": quarter,
             "Points H": home_points,
             "Points V": away_points,
             "Action nmb": action_number,
-            "BOXSC / SCORESH": "BOXSCORE",
+            "BOXSC / SCORESH": boxscore_scoresheet,
             "TEAM": team,
             "TYPE": type,
             "CATEGORY": category,
