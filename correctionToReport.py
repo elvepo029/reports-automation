@@ -85,8 +85,10 @@ def main():
     irs = ['IRS', 'Instant Replay'] 
     coach_challenge = ['CC', 'Coach Challenge']
     substitutions = ['In', 'Out']
+    missed_shots = ['M2P', 'Missed Two Pointer', 'M3P', 'Missed Three Pointer', 'MFT', 'Missed Free Throw']
+    shots = missed_shots + points
 
-    scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions
+    scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions + shots
 
     while True:
         print("Enganxa la línia de l'acció (o escriu 'sortir' per acabar):")
@@ -131,20 +133,24 @@ def main():
         if len(correction_parts) > 0:
             correction_type = correction_parts[0].lower()  # Insert / Delete / Change
             stats_type = correction_parts[1]
+            modification = correction_parts[2]
         else:
             correction_type = ""
             stats_type = ""
+            modification = ""
 
         type_map = {
             "insert": "MISSING",
             "delete": "NOT HAPPENED",
             "change": "MISSIDENTITY"
-        }
+        } 
         type = type_map.get(correction_type, "")
 
         if correction_type == "insert" : category = stats_type
 
-        if correction_type in ("insert", "delete") and category in scoresheet_lists:
+        "Falta tractar el cas d'una correcció que demana editar un tir de 2 ficat a un de 3 o a l'inrevés -->"
+
+        if correction_type in ("insert", "delete") and category in scoresheet_lists: 
             boxscore_scoresheet = "SCORESHEET"
             if category in points:
                 type = "POINTS"
@@ -161,8 +167,11 @@ def main():
             elif category in coach_challenge:
                 type = "COACH CHALLENGE"
         else: 
-            boxscore_scoresheet = "BOXSCORE"
+            boxscore_scoresheet = "BOXSCORE"     
 
+        if (category in missed_shots and modification in points) or (category in points and modification in missed_shots): 
+            boxscore_scoresheet = "SCORESHEET"
+            type = "POINTS"      
 
         # Crear nova fila
         new_row = {
