@@ -7,16 +7,27 @@ headers = {"Authorization": f"Bot {TOKEN}"}
 
 threadsList = getDateThreads()
 
+threadMessages = {}
 for thread in threadsList:
     threadId = thread['id']
     threadName = thread['name']
 
+    if threadName not in threadMessages:
+        threadMessages[threadName] = []
+
     url = f"https://discord.com/api/v10/channels/{threadId}/messages?limit=100"
     threadContent = requests.get(url, headers=headers).json()
     
-    for msg in threadContent:
-        message = msg.get("content", "")
-        print(message)
+    for msgs in threadContent:
+        message = msgs.get("content", "")
+        if message != "": 
+            threadMessages[threadName].append(message)
+
+    threadMessages[threadName].reverse()
+
+filename = "threadMessages.json"
+with open(filename, "w", encoding="utf-8") as f:
+    json.dump(threadMessages, f, indent=4, ensure_ascii=False)
 
 
 
