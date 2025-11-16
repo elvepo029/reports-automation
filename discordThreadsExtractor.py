@@ -2,8 +2,8 @@ import requests
 from datetime import datetime
 
 TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.G6uaFm.ayKgV1iEhLGKbNI5yJUMhAcep3tmi8HzKdO2_0"
-CHANNEL_ID = "885149945475248149"
-TARGET_DATE = datetime(2025, 11, 4).date()
+CHANNEL_ID = "884932698475462686"
+TARGET_DATE = datetime(2025, 11, 14).date()
 
 headers = {"Authorization": f"Bot {TOKEN}"}
 
@@ -36,7 +36,6 @@ def getDateThreads():
                 filtered_threads.append(detail)
 
     return filtered_threads
-
 
 
 

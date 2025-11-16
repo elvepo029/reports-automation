@@ -2,6 +2,15 @@ from discordThreadsExtractor import getDateThreads
 import requests
 import json
 
+#Users ids order --> Pablo, Oriol, Mario, Marc, Hector, Xavi, Eloi, Oscar
+
+liveGameManagersIds = [
+    "885505850821718037", "893148312843210833", 
+    "893141967033229344", "851947426192556062", 
+    "900034318833967154", "1204776291140636764", 
+    "1344308238752944208", "697495204168728586"
+]
+
 TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.G6uaFm.ayKgV1iEhLGKbNI5yJUMhAcep3tmi8HzKdO2_0"
 headers = {"Authorization": f"Bot {TOKEN}"}
 
@@ -20,14 +29,32 @@ for thread in threadsList:
     
     for msgs in threadContent:
         message = msgs.get("content", "")
-        if message != "": 
-            threadMessages[threadName].append(message)
+        authorId = msgs.get("author", "").get("id", "")
+
+        # DETECCIÓ: és ACTION si conté 3 espais seguits en mínim 9 vegades
+        if message.count("   ") >= 12:   
+            entry = {"Action": message}
+        else:
+            entry = {"Correction": message}
+        
+        if message != "" and authorId in liveGameManagersIds: 
+            threadMessages[threadName].append(entry)
 
     threadMessages[threadName].reverse()
 
+# FILTRAR: només threads amb Action + Correction
+filteredThreads = {}
+
+for threadName, msgs in threadMessages.items():
+    hasAction = any("Action" in m for m in msgs)
+    hasCorrection = any("Correction" in m for m in msgs)
+
+    if hasAction and hasCorrection:
+        filteredThreads[threadName] = msgs
+
 filename = "threadMessages.json"
 with open(filename, "w", encoding="utf-8") as f:
-    json.dump(threadMessages, f, indent=4, ensure_ascii=False)
+    json.dump(filteredThreads, f, indent=4, ensure_ascii=False)
 
 
 
