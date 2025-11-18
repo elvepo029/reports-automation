@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from messagesFromThreads import getThreadsActionsAndCorrections
 
 """
 Estructura de cada línia del report:
@@ -90,16 +91,19 @@ def main():
 
     scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions + shots
 
-    while True:
-        print("Enganxa la línia de l'acció (o escriu 'sortir' per acabar):")
-        action_line = input().strip()
-        if action_line.lower() == "sortir":
-            break
+    category_list = ["3P", "2P", "AS", "BLK", "CC", "DR", "DQ FOUL", 
+                     "FB", "FD", "FOUL", "FTM", "IRS", "JB", "MFT",
+                     "M3P", "M2P", "OF FOUL", "OR", "PF", "REB", "SR",
+                     "ST", "SUBS", "TECH", "TOUT", "TO", "UF"]
 
-        print("Enganxa la línia de la correcció:")
-        correction_line = input().strip()
+    threadsInfo = getThreadsActionsAndCorrections()
 
-        # Processar acció
+
+    for threadName, content in threadsInfo.items():
+        action_line = content["Action"]
+        correction_line = content["Correction"]
+
+    # Processar acció
         parts = action_line.split("    ")
         if len(parts) < 10:
             print("Format d'acció incorrecte, torna-ho a provar.")
@@ -130,25 +134,31 @@ def main():
 
         # Processar correcció
         correction_parts = correction_line.split(" ")
-        if len(correction_parts) > 0:
+        if len(correction_parts) == 3:
             correction_type = correction_parts[0].lower()  # Insert / Delete / Change
             stats_type = correction_parts[1]
             modification = correction_parts[2]
+        elif len(correction_parts) == 1:
+            correction_type[0].lower()
+        elif len(correction_parts) > 3:
+            correction_type = correction_parts[0].lower()
+            stats_type = correction_parts[1].lower()
+            time_change = correction_parts[3]
         else:
             correction_type = ""
             stats_type = ""
             modification = ""
+            time_change = ""
 
         type_map = {
             "insert": "MISSING",
             "delete": "NOT HAPPENED",
-            "change": "MISSIDENTITY"
+            "change": "MISSIDENTITY", 
+            "place": "MISSPLACED"
         } 
         type = type_map.get(correction_type, "")
 
         if correction_type == "insert" : category = stats_type
-
-        "Falta tractar el cas d'una correcció que demana editar un tir de 2 ficat a un de 3 o a l'inrevés -->"
 
         if correction_type in ("insert", "delete") and category in scoresheet_lists: 
             boxscore_scoresheet = "SCORESHEET"
@@ -171,7 +181,23 @@ def main():
 
         if (category in missed_shots and modification in points) or (category in points and modification in missed_shots): 
             boxscore_scoresheet = "SCORESHEET"
-            type = "POINTS"      
+            type = "POINTS"   
+
+        if modification in category_list and category not in points:
+            type = "NOT HAPPENED"  
+        elif modification not in category_list:
+            type = "MISSIDENTITY"
+
+        if correction_type in ("insert", "delete") and (stats_type == "AS" or "AST"):
+            type = "CRITERIA"
+            category = "AS"
+
+        if "place" in correction_type:
+            type = "MISSPLACED"
+        
+        if "time" in stats_type and correction_type == "change":
+            type = "TIMING"
+            time = time_change
 
         # Crear nova fila
         new_row = {

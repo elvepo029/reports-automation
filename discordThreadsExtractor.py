@@ -2,8 +2,6 @@ import requests
 from datetime import datetime
 
 TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.G6uaFm.ayKgV1iEhLGKbNI5yJUMhAcep3tmi8HzKdO2_0"
-CHANNEL_ID = "884932698475462686"
-TARGET_DATE = datetime(2025, 11, 14).date()
 
 headers = {"Authorization": f"Bot {TOKEN}"}
 
@@ -14,9 +12,8 @@ def get(url):
         return {}
     return r.json()
 
-base = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/threads"
-
-def getDateThreads():
+def getDateThreads(channelId, targetDate):
+    base = f"https://discord.com/api/v10/channels/{channelId}/threads"
     # --- 1. Agafar només fils arxivats públics (els que veus que funcionen)
     archived_public = get(base + "/archived/public").get("threads", [])
 
@@ -32,7 +29,7 @@ def getDateThreads():
 
         if ts:
             date = datetime.fromisoformat(ts.replace("Z", "")).date()
-            if date == TARGET_DATE:
+            if date == targetDate:
                 filtered_threads.append(detail)
 
     return filtered_threads
