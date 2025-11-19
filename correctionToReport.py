@@ -143,6 +143,7 @@ def main():
         elif len(correction_parts) > 3:
             correction_type = correction_parts[0].lower()
             stats_type = correction_parts[1].lower()
+            modification = correction_parts[2]
             time_change = correction_parts[3]
         else:
             correction_type = ""
@@ -179,7 +180,7 @@ def main():
         else: 
             boxscore_scoresheet = "BOXSCORE"     
 
-        if (category in missed_shots and modification in points) or (category in points and modification in missed_shots): 
+        if (category in missed_shots and modification in points) or (category in points and modification in missed_shots) or (category in points and modification in points and category != modification): 
             boxscore_scoresheet = "SCORESHEET"
             type = "POINTS"   
 

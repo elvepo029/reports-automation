@@ -34,8 +34,8 @@ liveGameManagersIds = [
 ]
 
 TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.G6uaFm.ayKgV1iEhLGKbNI5yJUMhAcep3tmi8HzKdO2_0"
-CHANNEL_ID = "885149945475248149"
-TARGET_DATE = datetime(2025, 11, 4).date()
+CHANNEL_ID = "1414141771579133952"
+TARGET_DATE = datetime(2025, 11, 18).date()
 headers = {"Authorization": f"Bot {TOKEN}"}
 
 threadsList = getDateThreads(CHANNEL_ID, TARGET_DATE)
