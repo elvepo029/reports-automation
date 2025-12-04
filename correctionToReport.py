@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 from messagesFromThreads import getThreadsActionsAndCorrections
+from correctionHelpers import processCriteriaCorrections, processDeletions, processEditions, processInsertions, processInvalidCorrections, processMovements, processScoresheetCorrections
 
 """
 Estructura de cada línia del report:
@@ -79,50 +80,31 @@ def main():
     home_team = input("Nom equip local: ").strip()
     away_team = input("Nom equip visitant: ").strip()
 
-    points = ['2P', 'Two Pointer', '3P', 'Three Pointer', 'FTM', 'Free Thrown In'] 
-    fouls = ['OF FOUL', 'Offensive Foul', 'FOUL', 'Foul', 'UF', 'Unsportsmanlike Foul', 'TECH', 'Technical Foul', 'DQ Foul', 'Disqualifying Foul', ]
-    jump_ball = ['Jump Ball']
-    team_timeouts = ['TOUT', 'Time Out']
-    irs = ['IRS', 'Instant Replay'] 
-    coach_challenge = ['CC', 'Coach Challenge']
-    substitutions = ['In', 'Out']
-    missed_shots = ['M2P', 'Missed Two Pointer', 'M3P', 'Missed Three Pointer', 'MFT', 'Missed Free Throw']
-    shots = missed_shots + points
-
-    scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions + shots
-
-    category_list = ["3P", "2P", "AS", "BLK", "CC", "DR", "DQ FOUL", 
-                     "FB", "FD", "FOUL", "FTM", "IRS", "JB", "MFT",
-                     "M3P", "M2P", "OF FOUL", "OR", "PF", "REB", "SR",
-                     "ST", "SUBS", "TECH", "TOUT", "TO", "UF"]
-
     threadsInfo = getThreadsActionsAndCorrections()
-
 
     for threadName, content in threadsInfo.items():
         action_line = content["Action"]
         correction_line = content["Correction"]
 
-    # Processar acció
-        parts = action_line.split("    ")
-        if len(parts) < 10:
-            print("Format d'acció incorrecte, torna-ho a provar.")
+        action_parts = action_line.split("    ")
+        if len(action_parts) < 10:
             continue
 
-        action_number = parts[0]
-        minute = int(parts[2])
-        time = parts[3]
-        home_points = parts[4]
-        away_points = parts[5]
-        team_name = parts[6]
-        category = parts[9]
+        action_number = action_parts[0]
+        minute = int(action_parts[2])
+        time = action_parts[3]
+        home_points = action_parts[4]
+        away_points = action_parts[5]
+        #team_name = action_parts[6]
+        #stat = action_parts[9]
 
-        if (0 <= minute <= 10): quarter = "1"
-        elif (11 <= minute <= 20): quarter = "2"
-        elif (21 <= minute <= 30): quarter = "3"
-        elif (31 <= minute <= 30): quarter = "4"
-        elif (minute > 40): quarter = "ET"
-        else: quarter = ""
+        match minute: 
+            case minute if 0 <= minute <= 10: quarter = "1"
+            case minute if 11 <= minute <= 20: quarter = "2"
+            case minute if 21 <= minute <= 30: quarter = "3"
+            case minute if 31 <= minute <= 40: quarter = "4"
+            case minute if minute < 40: quarter = "ET"
+            case _: quarter = ""    
 
         # Determinar Home o Away
         if team_name.lower() == home_team.lower():
@@ -134,6 +116,23 @@ def main():
 
         # Processar correcció
         correction_parts = correction_line.split(" ")
+        correction_type = correction_parts[0].lower
+
+        if "cr" in threadName.lower():
+            correction_type = "criteria"
+
+        if "ss" in threadName.lower():
+            correction_type = "scoresheet"
+
+        match correction_type:
+            case correction if correction == "criteria": processCriteriaCorrections(correction_parts)
+            case correction if correction == "insert": processInsertions()
+            case correction if correction == "delete": processDeletions()
+            case correction if correction == "edit": processEditions()
+            case correction if correction == "move": processMovements()
+            case correction if correction == "scoresheet": processScoresheetCorrections()
+            case _: processInvalidCorrections()
+        
         if len(correction_parts) == 3:
             correction_type = correction_parts[0].lower()  # Insert / Delete / Change
             stats_type = correction_parts[1]
