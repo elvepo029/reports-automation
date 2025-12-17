@@ -1,7 +1,9 @@
 import pandas as pd
 from pathlib import Path
+import sqlite3
+from datetime import datetime
 from messagesFromThreads import getThreadsActionsAndCorrections
-from correctionHelpers import processCriteriaCorrections, processDeletions, processEditions, processInsertions, processInvalidCorrections, processMovements, processScoresheetCorrections
+#from correctionHelpers import processCriteriaCorrections, processDeletions, processEditions, processInsertions, processInvalidCorrections, processMovements, processScoresheetCorrections
 
 """
 Estructura de cada línia del report:
@@ -64,160 +66,40 @@ TO: turnover
 UF: unsportsmanlike foul
 """
 
-def main():
-    output_file = "informe_correccions.xlsx"
+conn = sqlite3.connect("dades.db")
+cursor = conn.cursor()
 
-    # Si ja existeix, carregar-lo per continuar afegint
-    if Path(output_file).exists():
-        df = pd.read_excel(output_file)
-        print(f"S'han carregat {len(df)} correccions existents.")
-    else:
-        df = pd.DataFrame(columns=[
-            "Crono", "Quarter", "Points H", "Points V",
-            "Action nmb", "BOXSC / SCORESH", "TEAM", "TYPE", "CATEGORY", "COMMENT"
-        ])
+cursor.execute("""
+    SELECT
+        g.year,
+        g.month,
+        g.day,
+        t.discord_channel_id
+    FROM Game g
+    JOIN Team t WHERE g.code_h = t.team_code
+""")
 
-    home_team = input("Nom equip local: ").strip()
-    away_team = input("Nom equip visitant: ").strip()
+raw_discord_info = cursor.fetchall()
+conn.close()
 
-    threadsInfo = getThreadsActionsAndCorrections()
+games_discord_info = [
+    {
+        "discord_channel_id": discord_channel_id,
+        "date": datetime(year, month, day).date()
+    }
+    for year, month, day, discord_channel_id in raw_discord_info
+]
 
-    for threadName, content in threadsInfo.items():
-        action_line = content["Action"]
-        correction_line = content["Correction"]
+for game_discord_info in games_discord_info:
+    date = game_discord_info["date"]
+    discord_channel_id = game_discord_info["discord_channel_id"]
 
-        action_parts = action_line.split("    ")
-        if len(action_parts) < 10:
-            continue
+    threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
 
-        action_number = action_parts[0]
-        minute = int(action_parts[2])
-        time = action_parts[3]
-        home_points = action_parts[4]
-        away_points = action_parts[5]
-        #team_name = action_parts[6]
-        #stat = action_parts[9]
 
-        match minute: 
-            case minute if 0 <= minute <= 10: quarter = "1"
-            case minute if 11 <= minute <= 20: quarter = "2"
-            case minute if 21 <= minute <= 30: quarter = "3"
-            case minute if 31 <= minute <= 40: quarter = "4"
-            case minute if minute < 40: quarter = "ET"
-            case _: quarter = ""    
 
-        # Determinar Home o Away
-        if team_name.lower() == home_team.lower():
-            team = "HOME TEAM"
-        elif team_name.lower() == away_team.lower():
-            team = "AWAY TEAM"
-        else:
-            team = ""
 
-        # Processar correcció
-        correction_parts = correction_line.split(" ")
-        correction_type = correction_parts[0].lower
 
-        if "cr" in threadName.lower():
-            correction_type = "criteria"
 
-        if "ss" in threadName.lower():
-            correction_type = "scoresheet"
+   
 
-        match correction_type:
-            case correction if correction == "criteria": processCriteriaCorrections(correction_parts)
-            case correction if correction == "insert": processInsertions()
-            case correction if correction == "delete": processDeletions()
-            case correction if correction == "edit": processEditions()
-            case correction if correction == "move": processMovements()
-            case correction if correction == "scoresheet": processScoresheetCorrections()
-            case _: processInvalidCorrections()
-        
-        if len(correction_parts) == 3:
-            correction_type = correction_parts[0].lower()  # Insert / Delete / Change
-            stats_type = correction_parts[1]
-            modification = correction_parts[2]
-        elif len(correction_parts) == 1:
-            correction_type[0].lower()
-        elif len(correction_parts) > 3:
-            correction_type = correction_parts[0].lower()
-            stats_type = correction_parts[1].lower()
-            modification = correction_parts[2]
-            time_change = correction_parts[3]
-        else:
-            correction_type = ""
-            stats_type = ""
-            modification = ""
-            time_change = ""
-
-        type_map = {
-            "insert": "MISSING",
-            "delete": "NOT HAPPENED",
-            "change": "MISSIDENTITY", 
-            "place": "MISSPLACED"
-        } 
-        type = type_map.get(correction_type, "")
-
-        if correction_type == "insert" : category = stats_type
-
-        if correction_type in ("insert", "delete") and category in scoresheet_lists: 
-            boxscore_scoresheet = "SCORESHEET"
-            if category in points:
-                type = "POINTS"
-            elif category in fouls: 
-                type = "FOULS"
-            elif category in substitutions:
-                type = "SUBSTITUTIONS"
-            elif category in jump_ball:
-                type = "JUMP BALL"
-            elif category in team_timeouts:
-                type = "TIME OUT"
-            elif category in irs:
-                type = "INSTANT REPLAY"
-            elif category in coach_challenge:
-                type = "COACH CHALLENGE"
-        else: 
-            boxscore_scoresheet = "BOXSCORE"     
-
-        if (category in missed_shots and modification in points) or (category in points and modification in missed_shots) or (category in points and modification in points and category != modification): 
-            boxscore_scoresheet = "SCORESHEET"
-            type = "POINTS"   
-
-        if modification in category_list and category not in points:
-            type = "NOT HAPPENED"  
-        elif modification not in category_list:
-            type = "MISSIDENTITY"
-
-        if correction_type in ("insert", "delete") and (stats_type == "AS" or "AST"):
-            type = "CRITERIA"
-            category = "AS"
-
-        if "place" in correction_type:
-            type = "MISSPLACED"
-        
-        if "time" in stats_type and correction_type == "change":
-            type = "TIMING"
-            time = time_change
-
-        # Crear nova fila
-        new_row = {
-            "Crono": time,
-            "Quarter": quarter,
-            "Points H": home_points,
-            "Points V": away_points,
-            "Action nmb": action_number,
-            "BOXSC / SCORESH": boxscore_scoresheet,
-            "TEAM": team,
-            "TYPE": type,
-            "CATEGORY": category,
-            "COMMENT": ""
-        }
-
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        df.to_excel(output_file, index=False)
-        print(f"Correcció afegida i guardada a {output_file}")
-
-    print(f"Informe final generat amb {len(df)} correccions!")
-
-if __name__ == "__main__":
-    main()
