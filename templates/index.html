@@ -86,8 +86,8 @@
   <label>Caller 2:</label>
   <input list="users" id="caller_2">
   
-  <label>Time:</label>
-  <input list="users" id="time_operator">
+  <label>Timer:</label>
+  <input list="users" id="timer">
   
   <label>Shot Clock Operator:</label>
   <input list="users" id="shot_clock">
@@ -102,7 +102,6 @@
     <option value="Timer">
     <option value="Shot Clock Operator">
     <option value="IRS Operator">
-    <!-- Afegir més noms si cal -->
   </datalist>
 </div>
 
@@ -188,21 +187,23 @@ function loadData() {
       document.getElementById("generate-report-btn").style.display = "inline-block";
     });
 
-  fetch(`/get_dropdowns/${gameCode}`)
+  fetch(`/get_game_uscs/${gameCode}`)
     .then(r => r.json())
-    .then(dropdowns => {
-      // Totes les 6 llistes tenen la mateixa llista
-      const dropdownIds = ["data_entry","caller_1","caller_2","time_operator","shot_clock","irs_operator"];
-      dropdownIds.forEach(id => {
-        const input = document.getElementById(id);
-        const dataList = document.getElementById(input.getAttribute("list"));
-        dataList.innerHTML = ""; // Netejar opcions antigues
+    .then(uscs => {
+      const fields = [
+        "data_entry",
+        "caller_1",
+        "caller_2",
+        "timer",
+        "shot_clock",
+        "irs_operator"
+      ];
 
-        dropdowns[id].forEach(name => {
-          const option = document.createElement("option");
-          option.value = name;
-          dataList.appendChild(option);
-        });
+      fields.forEach(id => {
+        const input = document.getElementById(id);
+        if (input && uscs[id] !== null) {
+          input.value = uscs[id];
+        }
       });
     });
 }

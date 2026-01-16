@@ -93,38 +93,38 @@ def delete_correction(rowid):
     conn.close()
     return jsonify({"status": "ok"})
 
-@app.route("/get_dropdowns/<game_code>")
-def get_dropdowns(game_code):
+@app.route("/get_game_uscs/<game_code>")
+def get_game_uscs(game_code):
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
-    #Agafar code_h de la taula Game
-    cur.execute("SELECT code_h FROM Game WHERE game_code = ?", (game_code,))
+    cur.execute("""
+        SELECT
+            data_entry,
+            caller_1,
+            caller_2,
+            timer,
+            shot_clock_operator,
+            irs_operator
+        FROM Game
+        WHERE game_code = ?
+    """, (game_code,))
+
     row = cur.fetchone()
+    conn.close()
+
     if not row:
         return jsonify({"error": "game_code no trobat"}), 404
-    code_h = row["code_h"]
 
-    #Agafar tots els noms de la taula Usc amb aquest code_h
-    cur.execute("SELECT name FROM Usc WHERE team_code = ?", (code_h,))
-    uscs = cur.fetchall()
-    
-    # Crear una llista de noms únics i ordenada
-    names = sorted({u["name"] for u in uscs})
-
-    #Omplir totes les 6 llistes amb els mateixos noms
-    dropdown_values = {
-        "data_entry": names,
-        "caller_1": names,
-        "caller_2": names,
-        "time_operator": names,
-        "shot_clock": names,
-        "irs_operator": names
-    }
-
-    conn.close()
-    return jsonify(dropdown_values)
+    return jsonify({
+        "data_entry": row["data_entry"],
+        "caller_1": row["caller_1"],
+        "caller_2": row["caller_2"],
+        "timer": row["timer"],
+        "shot_clock": row["shot_clock_operator"],
+        "irs_operator": row["irs_operator"]
+    })
 
 @app.route("/get_live_game_managers")
 def get_live_game_managers():
@@ -138,4 +138,4 @@ def get_live_game_managers():
     return jsonify(names)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5050)
+    app.run(host="0.0.0.0", port=5050, debug=True)
