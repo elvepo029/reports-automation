@@ -11,8 +11,13 @@ conn = sqlite3.connect(DB)
 fulls = pd.read_excel(EXCEL, sheet_name=None)
 
 for nom_taula, df in fulls.items():
-    print(f"Important taula: {nom_taula}")
-    print(len(df))
+    # Saltar la taula Correction
+
+    if nom_taula == "Correction":
+        print(f"Saltant la taula: {nom_taula}")
+        continue
+
+    print(f"Important taula: {nom_taula}, {len(df)} files")
 
     df.to_sql(
         nom_taula,
@@ -20,3 +25,5 @@ for nom_taula, df in fulls.items():
         if_exists="replace",  # crea o sobreescriu
         index=False
     )
+
+conn.close()

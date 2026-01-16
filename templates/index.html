@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Correccions Eurolliga</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 20px; color: #0A1F44; }
+  h2 { color: #0A1F44; }
+  label { font-weight: 600; margin-right: 5px; }
+  input, select, textarea {
+    padding: 8px 12px; font-size: 16px;
+    border-radius: 6px; border: 1px solid #ccc; margin-right: 8px; margin-bottom: 10px;
+    outline: none; transition: border 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #1B5DBF; }
+  textarea { width: 100%; min-height: 80px; resize: vertical; }
+  button {
+    background: #1B5DBF; color: white; border: none; padding: 8px 16px;
+    border-radius: 5px; cursor: pointer; transition: background 0.2s; margin-top: 5px;
+  }
+  button:hover { background: #3A7DD3; }
+  #status { font-weight: bold; margin-left: 10px; }
+  table {
+    border-collapse: collapse; width: 100%; margin-top: 15px; background: white;
+    border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  th, td { border-bottom: 1px solid #e0e0e0; padding: 10px; text-align: center; font-size: 14px; }
+  th { background: #0A1F44; color: white; position: sticky; top: 0; z-index: 2; }
+  tr:nth-child(even) { background-color: #f8faff; }
+  tr:hover { background-color: #e6f0ff; }
+  td[contenteditable="true"] { background-color: #fffde6; border-radius: 4px; }
+  td[contenteditable="true"]:focus { outline: 2px solid #1B5DBF; }
+  .field-group { margin-top: 15px; }
+</style>
+</head>
+<body>
+
+<h2>Correccions per Game Code</h2>
+
+<!-- Selecció live_game_manager, competició i número de partit -->
+<label>Live Game Manager:</label>
+<select id="live_game_manager_select">
+  <option value="">Carregant...</option>
+</select>
+
+<label>Competició:</label>
+<select id="competition">
+  <option value="E">Euroleague</option>
+  <option value="U">Eurocup</option>
+</select>
+
+<label>Num partit:</label>
+<input id="match_num" placeholder="Ex: 130">
+
+<button onclick="loadData()">Carregar</button>
+<span id="status"></span>
+
+<!-- Taula correccions -->
+<table id="table"></table>
+
+<div id="new-correction-form" style="display:none">
+<h3>Afegir nova correcció</h3>
+
+<input id="new_time" placeholder="Time">
+<input id="new_quarter" placeholder="Quarter">
+<input id="new_points_h" placeholder="Points H">
+<input id="new_points_a" placeholder="Points A">
+<input id="new_action_num" placeholder="Action Num">
+<input id="new_b_ss" placeholder="B / SS">
+<input id="new_team" placeholder="Team">
+<input id="new_type_c" placeholder="Type">
+<input id="new_category" placeholder="Category">
+
+<button onclick="addCorrection()">Afegir</button>
+</div>
+
+<!-- Camps per generar report -->
+<div class="field-group" id="report-fields" style="display:none">
+  <label>Data Entry:</label>
+  <input list="users" id="data_entry">
+  
+  <label>Caller 1:</label>
+  <input list="users" id="caller_1">
+  
+  <label>Caller 2:</label>
+  <input list="users" id="caller_2">
+  
+  <label>Time:</label>
+  <input list="users" id="time_operator">
+  
+  <label>Shot Clock Operator:</label>
+  <input list="users" id="shot_clock">
+  
+  <label>IRS Operator:</label>
+  <input list="users" id="irs_operator">
+  
+  <datalist id="users">
+    <option value="Data Entry">
+    <option value="Caller 1">
+    <option value="Caller 2">
+    <option value="Timer">
+    <option value="Shot Clock Operator">
+    <option value="IRS Operator">
+    <!-- Afegir més noms si cal -->
+  </datalist>
+</div>
+
+<div class="field-group" id="num-accions-field" style="display:none">
+  <label>Num accions del partit:</label>
+  <input id="num_accions" placeholder="Ex: 120">
+</div>
+
+<div class="field-group" id="comentari-field" style="display:none">
+  <label>Comentari:</label>
+  <textarea id="valoracions" placeholder="Introdueix aquí el comentari..."></textarea>
+</div>
+
+<button onclick="generateReport()" id="generate-report-btn" style="display:none">Generar Report</button>
+
+<script>
+const nonEditableColumns = ["game_code", "thread_name", "correction"];
+const columnOrder = ["thread_name","correction","time","quarter","points_h","points_a","action_num","b_ss","team","type_c","category"];
+let currentData = [];
+
+// Carregar live_game_manager des del servidor
+function loadLiveGameManagers() {
+  const select = document.getElementById("live_game_manager_select");
+  fetch('/live_game_managers')
+    .then(r => r.json())
+    .then(data => {
+      select.innerHTML = "";
+      if (data.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.text = "No hi ha Live Game Managers disponibles";
+        select.appendChild(option);
+      } else {
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "Selecciona un Live Game Manager";
+        select.appendChild(defaultOption);
+        data.forEach(lgm => {
+          const option = document.createElement("option");
+          option.value = lgm;
+          option.text = lgm;
+          select.appendChild(option);
+        });
+      }
+    })
+    .catch(() => {
+      select.innerHTML = "";
+      const option = document.createElement("option");
+      option.value = "";
+      option.text = "Error carregant Live Game Managers";
+      select.appendChild(option);
+    });
+}
+
+loadLiveGameManagers();
+
+function loadData() {
+  const comp = document.getElementById("competition").value;
+  const num = document.getElementById("match_num").value.trim();
+  const lgm = document.getElementById("live_game_manager_select").value;
+  if (!lgm) { alert("Selecciona un Live Game Manager"); return; }
+  if (!num) { alert("Introdueix un número de partit"); return; }
+  const gameCode = `${comp}2025_${num}`;
+
+  fetch(`/corrections/${gameCode}`)
+    .then(r => r.json())
+    .then(data => { 
+      currentData = data; 
+      renderTable(data, lgm);  // Passem el Live Game Manager seleccionat
+
+      // Només mostrar el formulari d’afegir correcció si totes les correccions pertanyen al mateix LGM
+      const canEdit = data.every(row => row.live_game_manager === lgm || row.live_game_manager === null);
+      if (canEdit) {
+        document.getElementById("new-correction-form").style.display = "block";
+      } else {
+        document.getElementById("new-correction-form").style.display = "none";
+      }
+
+      // Mostrem la resta dels camps sempre (per visualitzar report)
+      document.getElementById("report-fields").style.display = "block";
+      document.getElementById("num-accions-field").style.display = "block";
+      document.getElementById("comentari-field").style.display = "block";
+      document.getElementById("generate-report-btn").style.display = "inline-block";
+    });
+
+  fetch(`/get_dropdowns/${gameCode}`)
+    .then(r => r.json())
+    .then(dropdowns => {
+      // Totes les 6 llistes tenen la mateixa llista
+      const dropdownIds = ["data_entry","caller_1","caller_2","time_operator","shot_clock","irs_operator"];
+      dropdownIds.forEach(id => {
+        const input = document.getElementById(id);
+        const dataList = document.getElementById(input.getAttribute("list"));
+        dataList.innerHTML = ""; // Netejar opcions antigues
+
+        dropdowns[id].forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          dataList.appendChild(option);
+        });
+      });
+    });
+}
+
+function renderTable(data, selectedLGM) {
+  const table = document.getElementById("table");
+  table.innerHTML = "";
+  if (!data || data.length === 0) {
+    table.innerHTML = "<tr><td colspan='12'>No hi ha dades per aquest Game Code</td></tr>";
+    return;
+  }
+
+  const headerRow = table.insertRow();
+  columnOrder.forEach(col => { const th = document.createElement("th"); th.innerText = col; headerRow.appendChild(th); });
+  const thBtn = document.createElement("th"); thBtn.innerText = "Accions"; headerRow.appendChild(thBtn);
+
+  data.forEach(row => {
+    const tr = table.insertRow();
+    const canEditRow = row.live_game_manager === selectedLGM || row.live_game_manager === null;
+
+    columnOrder.forEach(col => {
+      const td = tr.insertCell();
+      td.innerText = row[col] || "";
+      if (!nonEditableColumns.includes(col) && canEditRow) td.contentEditable = "true";
+      else td.contentEditable = "false";
+    });
+
+    const tdAction = tr.insertCell();
+    const btnSave = document.createElement("button");
+    btnSave.innerText = "Guardar";
+    btnSave.disabled = !canEditRow;
+    btnSave.onclick = () => saveRow(row, tr);
+
+    const btnDelete = document.createElement("button");
+    btnDelete.innerText = "Eliminar";
+    btnDelete.style.background = "#E30613";
+    btnDelete.style.marginLeft = "5px";
+    btnDelete.disabled = !canEditRow;
+    btnDelete.onclick = () => deleteRow(row.rowid);
+
+    tdAction.appendChild(btnSave);
+    tdAction.appendChild(btnDelete);
+  });
+}
+
+function saveRow(rowData, tr) {
+  const newData = { rowid: rowData.rowid };
+  columnOrder.forEach(col => { if (!nonEditableColumns.includes(col)) newData[col] = tr.cells[columnOrder.indexOf(col)].innerText; });
+  fetch("/update", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newData) })
+    .then(r => r.json())
+    .then(res => {
+      const status = document.getElementById("status");
+      if (res.status === "ok") { status.innerText = "Fila guardada correctament ✅"; setTimeout(() => status.innerText = "", 2000); }
+      else { status.innerText = "Error al guardar ❌"; }
+    });
+}
+
+// Funció placeholder per generar report
+function generateReport() {
+  const requiredFields = ["data_entry","caller_1","caller_2","time_operator","shot_clock","num_accions","valoracions"];
+  for (let field of requiredFields) {
+    if (!document.getElementById(field).value.trim()) {
+      alert(`Omple el camp: ${field.replace("_"," ")}`);
+      return;
+    }
+  }
+
+  const reportData = {
+    data_entry: document.getElementById("data_entry").value,
+    caller_1: document.getElementById("caller_1").value,
+    caller_2: document.getElementById("caller_2").value,
+    time_operator: document.getElementById("time_operator").value,
+    shot_clock: document.getElementById("shot_clock").value,
+    irs_operator: document.getElementById("irs_operator").value, // opcional
+    num_accions: document.getElementById("num_accions").value,
+    valoracions: document.getElementById("valoracions").value
+  };
+
+  console.log("Dades per generar report:", reportData);
+  alert("Report generat! Mira la consola (aquesta és la fase inicial).");
+}
+
+function deleteRow(rowid) {
+  if (!confirm("Segur que vols eliminar aquesta correcció? Aquesta acció no es pot desfer.")) {
+    return;
+  }
+
+  fetch(`/delete_correction/${rowid}`, {
+    method: "DELETE"
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.status === "ok") {
+      alert("Correcció eliminada correctament");
+      loadData(); // recarregar taula
+    } else {
+      alert("Error eliminant la correcció");
+    }
+  });
+}
+
+function addCorrection() {
+  const comp = document.getElementById("competition").value;
+  const num = document.getElementById("match_num").value.trim();
+  const lgm = document.getElementById("live_game_manager_select").value;
+  if (!lgm) { alert("Selecciona un Live Game Manager"); return; }
+  if (!num) { alert("Introdueix un número de partit"); return; }
+  const gameCode = `${comp}2025_${num}`;
+
+  const data = {
+    game_code: gameCode,
+    time: document.getElementById("new_time").value,
+    quarter: document.getElementById("new_quarter").value,
+    points_h: document.getElementById("new_points_h").value,
+    points_a: document.getElementById("new_points_a").value,
+    action_num: document.getElementById("new_action_num").value,
+    b_ss: document.getElementById("new_b_ss").value,
+    team: document.getElementById("new_team").value,
+    type_c: document.getElementById("new_type_c").value,
+    category: document.getElementById("new_category").value,
+    thread_name: "Manual Correction",
+    correction: "Manual Correction",
+    live_game_manager: lgm
+  };
+
+  fetch("/add_correction", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.status === "ok") {
+      alert("Correcció afegida correctament");
+      loadData();
+
+      // Esborra tots els camps del formulari per afegir nova correcció
+      document.getElementById("new_time").value = '';
+      document.getElementById("new_quarter").value = '';
+      document.getElementById("new_points_h").value = '';
+      document.getElementById("new_points_a").value = '';
+      document.getElementById("new_action_num").value = '';
+      document.getElementById("new_b_ss").value = '';
+      document.getElementById("new_team").value = '';
+      document.getElementById("new_type_c").value = '';
+      document.getElementById("new_category").value = '';
+    } else {
+      alert("Error afegint correcció");
+    }
+  });
+}
+
+function loadLiveGameManagers() {
+  const select = document.getElementById("live_game_manager_select");
+  fetch('/get_live_game_managers')
+    .then(r => r.json())
+    .then(data => {
+      select.innerHTML = "";
+      if (!data.length) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.text = "No hi ha Live Game Managers disponibles";
+        select.appendChild(option);
+      } else {
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "Selecciona un Live Game Manager";
+        select.appendChild(defaultOption);
+        data.forEach(lgm => {
+          const option = document.createElement("option");
+          option.value = lgm;
+          option.text = lgm;
+          select.appendChild(option);
+        });
+      }
+    })
+    .catch(() => {
+      select.innerHTML = "";
+      const option = document.createElement("option");
+      option.value = "";
+      option.text = "Error carregant Live Game Managers";
+      select.appendChild(option);
+    });
+}
+</script>
+
+</body>
+</html>

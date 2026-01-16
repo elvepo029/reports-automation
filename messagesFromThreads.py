@@ -38,6 +38,7 @@ headers = {"Authorization": f"Bot {TOKEN}"}
 
 def getThreadsActionsAndCorrections(channel_id, target_date):
     threads_list = getDateThreads(channel_id, target_date)
+    lgm_id = ""
 
     thread_messages = {}
     for thread in threads_list:
@@ -62,6 +63,7 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
         
             if message != "" and author_id in live_game_managers_ids: 
                 thread_messages[thread_name].append(entry)
+                lgm_id = author_id
 
         thread_messages[thread_name].reverse()
 
@@ -85,10 +87,11 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
         if first_action and first_correction:
             filtered_threads[thread_name] = {
                 "Action": first_action,
-                "Correction": first_correction
+                "Correction": first_correction, 
+                "Live_Game_Manager": lgm_id
             }
 
     #with open("filteredThreads.json", "w", encoding="utf-8") as f:
         #json.dump(filtered_threads, f, indent=4, ensure_ascii=False)
-
+        
     return filtered_threads
