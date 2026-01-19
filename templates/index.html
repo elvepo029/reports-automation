@@ -90,7 +90,7 @@
   <input list="users" id="timer">
   
   <label>Shot Clock Operator:</label>
-  <input list="users" id="shot_clock">
+  <input list="users" id="shot_clock_operator">
   
   <label>IRS Operator:</label>
   <input list="users" id="irs_operator">
@@ -110,6 +110,40 @@
   <input id="num_accions" placeholder="Ex: 120">
 </div>
 
+<div class="field-group" id="logistics-fields" style="display:none">
+  <h3>Logistics</h3>
+
+  <label>Arrival Time:</label>
+  <select id="arrival_time">
+    <option value="">Selecciona</option>
+    <option value="Ok">Ok</option>
+    <option value="Late">Late</option>
+  </select>
+
+  <label>Check List On Time:</label>
+  <select id="checklist_on_time">
+    <option value="">Selecciona</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>Communication:</label>
+  <select id="communication">
+    <option value="">Selecciona</option>
+    <option value="Good">Good</option>
+    <option value="Ok">Ok</option>
+    <option value="Not Fluid">Not Fluid</option>
+  </select>
+
+  <label>Corrections:</label>
+  <select id="corrections_speed">
+    <option value="">Selecciona</option>
+    <option value="Fast">Fast</option>
+    <option value="Ok">Ok</option>
+    <option value="Slow">Slow</option>
+  </select>
+</div>
+
 <div class="field-group" id="comentari-field" style="display:none">
   <label>Comentari:</label>
   <textarea id="valoracions" placeholder="Introdueix aquí el comentari..."></textarea>
@@ -121,40 +155,6 @@
 const nonEditableColumns = ["game_code", "thread_name", "correction"];
 const columnOrder = ["thread_name","correction","time","quarter","points_h","points_a","action_num","b_ss","team","type_c","category"];
 let currentData = [];
-
-// Carregar live_game_manager des del servidor
-function loadLiveGameManagers() {
-  const select = document.getElementById("live_game_manager_select");
-  fetch('/live_game_managers')
-    .then(r => r.json())
-    .then(data => {
-      select.innerHTML = "";
-      if (data.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.text = "No hi ha Live Game Managers disponibles";
-        select.appendChild(option);
-      } else {
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.text = "Selecciona un Live Game Manager";
-        select.appendChild(defaultOption);
-        data.forEach(lgm => {
-          const option = document.createElement("option");
-          option.value = lgm;
-          option.text = lgm;
-          select.appendChild(option);
-        });
-      }
-    })
-    .catch(() => {
-      select.innerHTML = "";
-      const option = document.createElement("option");
-      option.value = "";
-      option.text = "Error carregant Live Game Managers";
-      select.appendChild(option);
-    });
-}
 
 loadLiveGameManagers();
 
@@ -174,6 +174,27 @@ function loadData() {
 
       // Només mostrar el formulari d’afegir correcció si totes les correccions pertanyen al mateix LGM
       const canEdit = data.every(row => row.live_game_manager === lgm || row.live_game_manager === null);
+
+      const reportInputs = [
+        "data_entry",
+        "caller_1",
+        "caller_2",
+        "timer",
+        "shot_clock_operator",
+        "irs_operator",
+        "num_accions",
+        "valoracions", 
+        "arrival_time",
+        "checklist_on_time", 
+        "communication",
+        "corrections_speed"
+      ];
+
+      reportInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !canEdit;
+      });
+
       if (canEdit) {
         document.getElementById("new-correction-form").style.display = "block";
       } else {
@@ -195,7 +216,7 @@ function loadData() {
         "caller_1",
         "caller_2",
         "timer",
-        "shot_clock",
+        "shot_clock_operator",
         "irs_operator"
       ];
 
@@ -206,6 +227,8 @@ function loadData() {
         }
       });
     });
+
+    document.getElementById("logistics-fields").style.display = "block";
 }
 
 function renderTable(data, selectedLGM) {
@@ -235,6 +258,7 @@ function renderTable(data, selectedLGM) {
     const btnSave = document.createElement("button");
     btnSave.innerText = "Guardar";
     btnSave.disabled = !canEditRow;
+
     btnSave.onclick = () => saveRow(row, tr);
 
     const btnDelete = document.createElement("button");
@@ -246,6 +270,14 @@ function renderTable(data, selectedLGM) {
 
     tdAction.appendChild(btnSave);
     tdAction.appendChild(btnDelete);
+
+    if (!canEditRow) {
+      btnSave.style.background = "#999";
+      btnSave.style.cursor = "not-allowed";
+
+      btnDelete.style.background = "#999";
+      btnDelete.style.cursor = "not-allowed";
+    }
   });
 }
 
@@ -259,31 +291,6 @@ function saveRow(rowData, tr) {
       if (res.status === "ok") { status.innerText = "Fila guardada correctament ✅"; setTimeout(() => status.innerText = "", 2000); }
       else { status.innerText = "Error al guardar ❌"; }
     });
-}
-
-// Funció placeholder per generar report
-function generateReport() {
-  const requiredFields = ["data_entry","caller_1","caller_2","time_operator","shot_clock","num_accions","valoracions"];
-  for (let field of requiredFields) {
-    if (!document.getElementById(field).value.trim()) {
-      alert(`Omple el camp: ${field.replace("_"," ")}`);
-      return;
-    }
-  }
-
-  const reportData = {
-    data_entry: document.getElementById("data_entry").value,
-    caller_1: document.getElementById("caller_1").value,
-    caller_2: document.getElementById("caller_2").value,
-    time_operator: document.getElementById("time_operator").value,
-    shot_clock: document.getElementById("shot_clock").value,
-    irs_operator: document.getElementById("irs_operator").value, // opcional
-    num_accions: document.getElementById("num_accions").value,
-    valoracions: document.getElementById("valoracions").value
-  };
-
-  console.log("Dades per generar report:", reportData);
-  alert("Report generat! Mira la consola (aquesta és la fase inicial).");
 }
 
 function deleteRow(rowid) {
@@ -388,6 +395,57 @@ function loadLiveGameManagers() {
       select.appendChild(option);
     });
 }
+
+function generateReport() {
+    // 1️⃣ Recollir Game Code i LGM
+    const comp = document.getElementById("competition").value;
+    const num = document.getElementById("match_num").value.trim();
+    const lgm = document.getElementById("live_game_manager_select").value;
+
+    if (!num || !lgm) {
+        alert("Selecciona un Live Game Manager i introdueix el número de partit");
+        return;
+    }
+
+    const gameCode = `${comp}2025_${num}`;
+
+    // 2️⃣ Recollir dades de Logistics
+    const logisticsData = {
+        arrival_time: document.getElementById("arrival_time").value,
+        checklist_on_time: document.getElementById("checklist_on_time").value,
+        communication: document.getElementById("communication").value,
+        corrections_speed: document.getElementById("corrections_speed").value
+    };
+
+    // 3️⃣ Recollir num_accions
+    const num_accions = document.getElementById("num_accions").value;
+    if (!num_accions) {
+        alert("Introdueix el número d'accions del partit");
+        return;
+    }
+
+    // Recollir comentari de Final Valorations
+    const valoracions = document.getElementById("valoracions").value;
+
+    // 4️⃣ Validació simple de Logistics
+    for (const key in logisticsData) {
+        if (!logisticsData[key]) {
+            alert(`Omple el camp: ${key.replace("_", " ")}`);
+            return;
+        }
+    }
+
+    // 5️⃣ Construir URL amb query params
+    const params = new URLSearchParams({
+        ...logisticsData,
+        num_accions: num_accions,
+        valoracions: valoracions
+    }).toString();
+
+    // 6️⃣ Obrir PDF en una nova finestra
+    window.open(`/generate_report/${gameCode}/${lgm}?${params}`, '_blank');
+}
+
 </script>
 
 </body>
