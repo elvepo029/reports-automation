@@ -91,7 +91,7 @@ def get_game_uscs(game_code):
         "caller_1": row["caller_1"],
         "caller_2": row["caller_2"],
         "timer": row["timer"],
-        "shot_clock": row["shot_clock_operator"],
+        "shot_clock_operator": row["shot_clock_operator"],
         "irs_operator": row["irs_operator"]
     })
 
@@ -350,7 +350,10 @@ def generate_report(game_code, lgm):
     """
 
     #Convertir a PDF
-    config = pdfkit.configuration(wkhtmltopdf="/usr/local/bin/wkhtmltopdf")
+    #adreça mac
+    #config = pdfkit.configuration(wkhtmltopdf="/usr/local/bin/wkhtmltopdf")
+    #adreça windows
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(html, False, configuration=config)
 
     conn.close()
