@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import io
+import json
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 import pdfkit  # Assegura’t de tenir pdfkit i wkhtmltopdf instal·lats
 
 app = Flask(__name__)
@@ -129,12 +132,12 @@ def generate_report(game_code, lgm):
     away_team = cur.fetchone()["team_name"]
 
     #Dades USCs
-    data_entry = game["data_entry"]
-    caller_1 = game["caller_1"]
-    caller_2 = game["caller_2"]
-    timer = game["timer"]
-    shot_clock = game["shot_clock_operator"]
-    irs_operator = game["irs_operator"]  # opcional
+    data_entry = request.args.get("data_entry", "")
+    caller_1 = request.args.get("caller_1", "")
+    caller_2 = request.args.get("caller_2", "")
+    timer = request.args.get("timer", "")
+    shot_clock = request.args.get("shot_clock", "")
+    irs_operator = request.args.get("irs_operator", "")
 
     # ----------------- Bloc Game Info -----------------
     html = f"""
@@ -279,6 +282,30 @@ def generate_report(game_code, lgm):
         cur.execute("SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?", (game_code, t))
         boxscore_counts[t] = cur.fetchone()["total"]
 
+    type_to_json_key = {
+        "CRITERIA": "criteria_corrections",
+        "MISSIDENTITY": "missidentity_corrections",
+        "MISSING": "missing_corrections",
+        "NOT HAPPENED": "not_happened_corrections",
+        "MISSPLACED": "missplaced_corrections",
+        "TIMING": "timing_corrections",
+        "JUMP BALL": "jump_ball_corrections",
+        "SUBS": "substitution_corrections",
+        "IRS": "irs_cc_corrections",
+        "TOUT": "time_out_corrections",
+        "FOULS": "fouls_corrections",
+        "POINTS": "points_corrections",
+    }
+
+    report_data = {key: 0 for key in type_to_json_key.values()}
+
+    for type_c, json_key in type_to_json_key.items():
+        cur.execute(
+            "SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?",
+            (game_code, type_c)
+        )
+        report_data[json_key] = cur.fetchone()["total"]
+
     # Afegir al HTML
     html += f"<h3>Scoresheet: {total_scoresheet}</h3><ul>"
     for t, c in scoresheet_counts.items():
@@ -358,11 +385,107 @@ def generate_report(game_code, lgm):
 
     conn.close()
 
+    if "E" in game_code: competition = "EUROLEAGUE" 
+    else: competition = "EUROCUP"
+
+    report_data = {
+        "game": f"GAME: {game_code} ({competition})",
+        "date": f"DATE: {game_date}",
+        "team_h": local_team,
+        "team_a": away_team,
+        "data_entry": data_entry,
+        "caller_1": caller_1,
+        "caller_2": caller_2,
+        "timer": timer,
+        "shot_clock": shot_clock,
+        "irs_operator": irs_operator,
+        "live_game_manager": lgm,
+        "arrival_time": arrival_time,
+        "checklist_on_time": checklist_on_time,
+        "communication": communication,
+        "corrections_speed": corrections_speed,
+        "rescouted": "NO",
+        "total_actions": num_accions,
+        "total_corrections": total_corrections,
+        "%_corrections": percent_corrections,
+        "home_team": team_counts["HOME TEAM"],
+        "no_team": team_counts["NO TEAM"],
+        "away_team": team_counts["AWAY TEAM"],
+        "quarter_1": quarter_counts["1"],
+        "quarter_2": quarter_counts["2"],
+        "quarter_3": quarter_counts["3"],
+        "quarter_4": quarter_counts["4"],
+        "et": quarter_counts["ET"],
+        "boxscore_corrections": total_boxscore,
+        "scoresheet_corrections": total_scoresheet,
+        "comments": comentari,
+        "result": resultat_final
+    }
+
+    with open("report_data.json", "w", encoding="utf-8") as f:
+        json.dump(report_data, f, indent=4, ensure_ascii=False)
+
+    # data = report_data (el dict)
+    pdf_buffer = generate_pdf_from_json(
+        data=report_data,
+        template_path="report_template.png"
+    )
+
     return send_file(
-        io.BytesIO(pdf),
+        pdf_buffer,
         download_name=f"Report_{game_code}.pdf",
         mimetype="application/pdf"
     )
+
+def generate_pdf_from_json(data, template_path):
+    """
+    data: dict amb les dades del report
+    template_path: path a la plantilla PNG
+    retorna: BytesIO amb el PDF generat
+    """
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    # Fons (plantilla)
+    c.drawImage(
+        template_path,
+        0, 0,
+        width=width,
+        height=height
+    )
+
+    # Font
+    c.setFont("Helvetica-Bold", 11)
+
+    # Mapa JSON -> coordenades
+    fields = {
+        "criteria_corrections": (6, 22),
+        "missidentity_corrections": (480, 680),
+        "missing_corrections": (480, 660),
+        "not_happened_corrections": (480, 640),
+        "missplaced_corrections": (480, 620),
+        "timing_corrections": (480, 600),
+        "jump_ball_corrections": (480, 580),
+        "substitution_corrections": (480, 560),
+        "irs_cc_corrections": (480, 540),
+        "time_out_corrections": (480, 520),
+        "fouls_corrections": (480, 500),
+        "points_corrections": (480, 480),
+    }
+
+    # Escriure valors
+    for key, (x, y) in fields.items():
+        value = data.get(key, "")
+        c.drawRightString(x, y, str(value))
+
+    # Tancar PDF
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+
+    return buffer
+
 
 # ----------------- Execució -----------------
 if __name__ == "__main__":

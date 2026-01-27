@@ -417,6 +417,15 @@ function generateReport() {
         corrections_speed: document.getElementById("corrections_speed").value
     };
 
+    const uscs = {
+      data_entry: document.getElementById("data_entry").value,
+      caller_1: document.getElementById("caller_1").value,
+      caller_2: document.getElementById("caller_2").value,
+      timer: document.getElementById("timer").value,
+      shot_clock: document.getElementById("shot_clock_operator").value,
+      irs_operator: document.getElementById("irs_operator").value
+    }
+
     // 3️⃣ Recollir num_accions
     const num_accions = document.getElementById("num_accions").value;
     if (!num_accions) {
@@ -439,7 +448,8 @@ function generateReport() {
     const params = new URLSearchParams({
         ...logisticsData,
         num_accions: num_accions,
-        valoracions: valoracions
+        valoracions: valoracions, 
+        ...uscs
     }).toString();
 
     // 6️⃣ Obrir PDF en una nova finestra
