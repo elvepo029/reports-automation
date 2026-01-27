@@ -282,30 +282,6 @@ def generate_report(game_code, lgm):
         cur.execute("SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?", (game_code, t))
         boxscore_counts[t] = cur.fetchone()["total"]
 
-    type_to_json_key = {
-        "CRITERIA": "criteria_corrections",
-        "MISSIDENTITY": "missidentity_corrections",
-        "MISSING": "missing_corrections",
-        "NOT HAPPENED": "not_happened_corrections",
-        "MISSPLACED": "missplaced_corrections",
-        "TIMING": "timing_corrections",
-        "JUMP BALL": "jump_ball_corrections",
-        "SUBS": "substitution_corrections",
-        "IRS": "irs_cc_corrections",
-        "TOUT": "time_out_corrections",
-        "FOULS": "fouls_corrections",
-        "POINTS": "points_corrections",
-    }
-
-    report_data = {key: 0 for key in type_to_json_key.values()}
-
-    for type_c, json_key in type_to_json_key.items():
-        cur.execute(
-            "SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?",
-            (game_code, type_c)
-        )
-        report_data[json_key] = cur.fetchone()["total"]
-
     # Afegir al HTML
     html += f"<h3>Scoresheet: {total_scoresheet}</h3><ul>"
     for t, c in scoresheet_counts.items():
@@ -383,8 +359,6 @@ def generate_report(game_code, lgm):
     config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(html, False, configuration=config)
 
-    conn.close()
-
     if "E" in game_code: competition = "EUROLEAGUE" 
     else: competition = "EUROCUP"
 
@@ -422,8 +396,32 @@ def generate_report(game_code, lgm):
         "result": resultat_final
     }
 
+    type_to_json_key = {
+        "CRITERIA": "criteria_corrections",
+        "MISSIDENTITY": "missidentity_corrections",
+        "MISSING": "missing_corrections",
+        "NOT HAPPENED": "not_happened_corrections",
+        "MISSPLACED": "missplaced_corrections",
+        "TIMING": "timing_corrections",
+        "JUMP BALL": "jump_ball_corrections",
+        "SUBS": "substitution_corrections",
+        "IRS/CC": "irs_cc_corrections",
+        "TIME OUT": "time_out_corrections",
+        "FOULS": "fouls_corrections",
+        "POINTS": "points_corrections",
+    }
+
+    for type_c, json_key in type_to_json_key.items():
+        cur.execute(
+            "SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?",
+            (game_code, type_c)
+        )
+        report_data[json_key] = cur.fetchone()["total"]
+
     with open("report_data.json", "w", encoding="utf-8") as f:
         json.dump(report_data, f, indent=4, ensure_ascii=False)
+
+    conn.close()
 
     # data = report_data (el dict)
     pdf_buffer = generate_pdf_from_json(
@@ -460,7 +458,7 @@ def generate_pdf_from_json(data, template_path):
 
     # Mapa JSON -> coordenades
     fields = {
-        "criteria_corrections": (6, 22),
+        "criteria_corrections": (108, 279),
         "missidentity_corrections": (480, 680),
         "missing_corrections": (480, 660),
         "not_happened_corrections": (480, 640),
