@@ -142,6 +142,13 @@
     <option value="Ok">Ok</option>
     <option value="Slow">Slow</option>
   </select>
+
+  <label>Rescouted:</label>
+  <select id="rescouted">
+    <option value="">Selecciona</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
 </div>
 
 <div class="field-group" id="comentari-field" style="display:none">
@@ -414,7 +421,8 @@ function generateReport() {
         arrival_time: document.getElementById("arrival_time").value,
         checklist_on_time: document.getElementById("checklist_on_time").value,
         communication: document.getElementById("communication").value,
-        corrections_speed: document.getElementById("corrections_speed").value
+        corrections_speed: document.getElementById("corrections_speed").value,
+        rescouted: document.getElementById("rescouted").value
     };
 
     const uscs = {

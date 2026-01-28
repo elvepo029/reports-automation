@@ -4,6 +4,7 @@ import io
 import json
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
 import pdfkit  # Assegura’t de tenir pdfkit i wkhtmltopdf instal·lats
 
 app = Flask(__name__)
@@ -164,6 +165,7 @@ def generate_report(game_code, lgm):
     checklist_on_time = request.args.get("checklist_on_time", "")
     communication = request.args.get("communication", "")
     corrections_speed = request.args.get("corrections_speed", "")
+    rescouted = request.args.get("rescouted", "")
 
     html += f"""
     <h2>Logistics</h2>
@@ -352,13 +354,6 @@ def generate_report(game_code, lgm):
     </ul>
     """
 
-    #Convertir a PDF
-    #adreça mac
-    #config = pdfkit.configuration(wkhtmltopdf="/usr/local/bin/wkhtmltopdf")
-    #adreça windows
-    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-    pdf = pdfkit.from_string(html, False, configuration=config)
-
     if "E" in game_code: competition = "EUROLEAGUE" 
     else: competition = "EUROCUP"
 
@@ -378,7 +373,7 @@ def generate_report(game_code, lgm):
         "checklist_on_time": checklist_on_time,
         "communication": communication,
         "corrections_speed": corrections_speed,
-        "rescouted": "NO",
+        "rescouted": rescouted,
         "total_actions": num_accions,
         "total_corrections": total_corrections,
         "%_corrections": percent_corrections,
@@ -453,29 +448,131 @@ def generate_pdf_from_json(data, template_path):
         height=height
     )
 
-    # Font
-    c.setFont("Helvetica-Bold", 11)
+    DEFAULT_FONT = "Helvetica"
+    DEFAULT_SIZE = 11
+    DEFAULT_COLOR = colors.black
 
     # Mapa JSON -> coordenades
     fields = {
+        "game": {
+            "pos": (400, 775),
+            "color": colors.white,
+            "font": "Helvetica-Bold",
+            "size": 12
+        },
+        "date": (340, 754),
+        "team_h": {
+            "pos": (199, 714),
+            "color": colors.white,
+            "font": "Helvetica",
+            "size": 11,
+        },
+        "team_a": {
+            "pos": (454, 714),
+            "color": colors.white,
+            "font": "Helvetica",
+            "size": 11,
+        },
+        "data_entry": {
+            "pos": (124, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "caller_1": {
+            "pos": (197, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "caller_2": {
+            "pos": (274, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "timer": {
+            "pos": (347, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "shot_clock": {
+            "pos": (449, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "irs_operator": {
+            "pos": (124, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "live_game_manager": {
+            "pos": (124, 579),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 8,
+        },
+        "arrival_time": (106, 559),
+        "checklist_on_time": (204, 559),
+        "communication": (277, 559),
+        "corrections_speed": (410, 559),
+        "rescouted": (510, 559),
+        "total_actions": (108, 279),
+        "total_corrections": (108, 279),
+        "%_corrections": (108, 279),
+        "home_team": (108, 279),
+        "no_team": (108, 279),
+        "away_team": (108, 279),
+        "quarter_1": (108, 279),
+        "quarter_2": (108, 279),
+        "quarter_3": (108, 279),
+        "quarter_4": (108, 279),
+        "et": (108, 279),
+        "boxscore_corrections": (108, 279),
+        "scoresheet_corrections": (108, 279),
+        "comments": (108, 279),
+        "result": (108, 279),
         "criteria_corrections": (108, 279),
-        "missidentity_corrections": (480, 680),
-        "missing_corrections": (480, 660),
-        "not_happened_corrections": (480, 640),
-        "missplaced_corrections": (480, 620),
-        "timing_corrections": (480, 600),
-        "jump_ball_corrections": (480, 580),
-        "substitution_corrections": (480, 560),
-        "irs_cc_corrections": (480, 540),
-        "time_out_corrections": (480, 520),
-        "fouls_corrections": (480, 500),
-        "points_corrections": (480, 480),
+        "missidentity_corrections": (0, 0),
+        "missing_corrections": (0, 0),
+        "not_happened_corrections": (0, 0),
+        "missplaced_corrections": (0, 0),
+        "timing_corrections": (0, 0),
+        "jump_ball_corrections": (0, 0),
+        "substitution_corrections": (0, 0),
+        "irs_cc_corrections": (0, 0),
+        "time_out_corrections": (0, 0),
+        "fouls_corrections": (0, 0),
+        "points_corrections": (0, 0),
     }
 
     # Escriure valors
-    for key, (x, y) in fields.items():
+    for key, cfg in fields.items():
         value = data.get(key, "")
-        c.drawRightString(x, y, str(value))
+        if value == "":
+            continue
+
+        # CAS SIMPLE → només coordenades
+        if isinstance(cfg, tuple):
+            x, y = cfg
+            font = DEFAULT_FONT
+            size = DEFAULT_SIZE
+            color = DEFAULT_COLOR
+
+        # CAS AVANÇAT → dict
+        else:
+            x, y = cfg["pos"]
+            font = cfg.get("font", DEFAULT_FONT)
+            size = cfg.get("size", DEFAULT_SIZE)
+            color = cfg.get("color", DEFAULT_COLOR)
+
+        c.setFont(font, size)
+        c.setFillColor(color)
+        c.drawString(x, y, str(value))
+
 
     # Tancar PDF
     c.showPage()
