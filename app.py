@@ -5,6 +5,9 @@ import json
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 import pdfkit  # Assegura’t de tenir pdfkit i wkhtmltopdf instal·lats
 
 app = Flask(__name__)
@@ -194,7 +197,7 @@ def generate_report(game_code, lgm):
     <ul>
         <li><b>Num d'accions:</b> {num_accions}</li>
         <li><b>Nombre de correccions:</b> {total_corrections}</li>
-        <li><b>% de correccions respecte el total d'accions:</b> {percent_corrections:.2f}%</li>
+        <li><b>% de correccions respecte el total d'accions:</b> {percent_corrections:.1f}%</li>
     </ul>
     """
 
@@ -368,7 +371,7 @@ def generate_report(game_code, lgm):
         "timer": timer,
         "shot_clock": shot_clock,
         "irs_operator": irs_operator,
-        "live_game_manager": lgm,
+        "live_game_manager": f"LGM: {lgm}",
         "arrival_time": arrival_time,
         "checklist_on_time": checklist_on_time,
         "communication": communication,
@@ -376,7 +379,7 @@ def generate_report(game_code, lgm):
         "rescouted": rescouted,
         "total_actions": num_accions,
         "total_corrections": total_corrections,
-        "%_corrections": percent_corrections,
+        "%_corrections": f"{percent_corrections:.1f}",
         "home_team": team_counts["HOME TEAM"],
         "no_team": team_counts["NO TEAM"],
         "away_team": team_counts["AWAY TEAM"],
@@ -388,7 +391,7 @@ def generate_report(game_code, lgm):
         "boxscore_corrections": total_boxscore,
         "scoresheet_corrections": total_scoresheet,
         "comments": comentari,
-        "result": resultat_final
+        "result": f"{resultat_final:.1f}"
     }
 
     type_to_json_key = {
@@ -407,10 +410,23 @@ def generate_report(game_code, lgm):
     }
 
     for type_c, json_key in type_to_json_key.items():
-        cur.execute(
-            "SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?",
-            (game_code, type_c)
-        )
+        if type_c == "IRS/CC":
+            cur.execute(
+                """
+                SELECT COUNT(*) as total
+                FROM Correction
+                WHERE game_code = ?
+                AND type_c IN ('IRS', 'CC')
+                """,
+                (game_code,)
+            )
+        
+        else:
+            cur.execute(
+                "SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?",
+                (game_code, type_c)
+            )
+            
         report_data[json_key] = cur.fetchone()["total"]
 
     with open("report_data.json", "w", encoding="utf-8") as f:
@@ -451,36 +467,41 @@ def generate_pdf_from_json(data, template_path):
     DEFAULT_FONT = "Helvetica"
     DEFAULT_SIZE = 11
     DEFAULT_COLOR = colors.black
+    DEFAULT_ALIGN = "right"
 
     # Mapa JSON -> coordenades
     fields = {
         "game": {
-            "pos": (400, 775),
+            "pos": (300, 775),
             "color": colors.white,
             "font": "Helvetica-Bold",
-            "size": 12
+            "size": 12,
+            "align": "center"
         },
         "date": (340, 754),
         "team_h": {
-            "pos": (199, 714),
+            "pos": (169, 714),
             "color": colors.white,
             "font": "Helvetica",
             "size": 11,
+            "align": "center"
         },
         "team_a": {
-            "pos": (454, 714),
+            "pos": (425, 714),
             "color": colors.white,
             "font": "Helvetica",
             "size": 11,
+            "align": "center"
         },
         "data_entry": {
-            "pos": (124, 579),
+            "pos": (86, 665),
             "color": colors.black,
             "font": "Helvetica",
             "size": 8,
+            "align": "center",
         },
         "caller_1": {
-            "pos": (197, 579),
+            "pos": (197, 750),
             "color": colors.black,
             "font": "Helvetica",
             "size": 8,
@@ -510,48 +531,242 @@ def generate_pdf_from_json(data, template_path):
             "size": 8,
         },
         "live_game_manager": {
-            "pos": (124, 579),
+            "pos": (480, 637),
             "color": colors.black,
             "font": "Helvetica",
             "size": 8,
+            "align": "center"
         },
-        "arrival_time": (106, 559),
-        "checklist_on_time": (204, 559),
-        "communication": (277, 559),
-        "corrections_speed": (410, 559),
-        "rescouted": (510, 559),
-        "total_actions": (108, 279),
-        "total_corrections": (108, 279),
-        "%_corrections": (108, 279),
-        "home_team": (108, 279),
-        "no_team": (108, 279),
-        "away_team": (108, 279),
-        "quarter_1": (108, 279),
-        "quarter_2": (108, 279),
-        "quarter_3": (108, 279),
-        "quarter_4": (108, 279),
-        "et": (108, 279),
-        "boxscore_corrections": (108, 279),
-        "scoresheet_corrections": (108, 279),
-        "comments": (108, 279),
-        "result": (108, 279),
-        "criteria_corrections": (108, 279),
-        "missidentity_corrections": (0, 0),
-        "missing_corrections": (0, 0),
-        "not_happened_corrections": (0, 0),
-        "missplaced_corrections": (0, 0),
-        "timing_corrections": (0, 0),
-        "jump_ball_corrections": (0, 0),
-        "substitution_corrections": (0, 0),
-        "irs_cc_corrections": (0, 0),
-        "time_out_corrections": (0, 0),
-        "fouls_corrections": (0, 0),
-        "points_corrections": (0, 0),
+        "arrival_time": {
+            "pos": (95, 559),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "checklist_on_time": {
+            "pos": (195, 559),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "communication": {
+            "pos": (295, 559),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "corrections_speed": {
+            "pos": (395, 559),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "rescouted": {
+            "pos": (495, 559),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "total_actions": {
+            "pos": (125, 477),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "total_corrections": {
+            "pos": (295, 477),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "%_corrections": {
+            "pos": (465, 477),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "home_team": {
+            "pos": (125, 419),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "no_team": {
+            "pos": (295, 419),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "away_team": {
+            "pos": (465, 419),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "quarter_1": {
+            "pos": (95, 376),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "quarter_2": {
+            "pos": (195, 376),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "quarter_3": {
+            "pos": (295, 376),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "quarter_4": {
+            "pos": (395, 376),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "et": {
+            "pos": (495, 376),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "boxscore_corrections": {
+            "pos": (169, 318),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "scoresheet_corrections": {
+            "pos": (425, 318),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "comments": {
+            "pos": (0, 290),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "result": {
+            "pos": (84, 28),
+            "color": colors.black,
+            "font": "Helvetica-Bold",
+            "size": 15,
+            "align": "center"
+        },
+        "criteria_corrections": {
+            "pos": (87, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "missidentity_corrections": {
+            "pos": (169, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "missing_corrections": {
+            "pos": (251, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "not_happened_corrections": {
+            "pos": (87, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "missplaced_corrections": {
+            "pos": (169, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "timing_corrections": {
+            "pos": (251, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "jump_ball_corrections": {
+            "pos": (336, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "substitution_corrections": {
+            "pos": (422, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "irs_cc_corrections": {
+            "pos": (508, 275),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "time_out_corrections": {
+            "pos": (336, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "fouls_corrections": {
+            "pos": (422, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
+        "points_corrections": {
+            "pos": (508, 232),
+            "color": colors.black,
+            "font": "Helvetica",
+            "size": 11,
+            "align": "center"
+        },
     }
 
     # Escriure valors
     for key, cfg in fields.items():
         value = data.get(key, "")
+
         if value == "":
             continue
 
@@ -561,6 +776,7 @@ def generate_pdf_from_json(data, template_path):
             font = DEFAULT_FONT
             size = DEFAULT_SIZE
             color = DEFAULT_COLOR
+            align = DEFAULT_ALIGN
 
         # CAS AVANÇAT → dict
         else:
@@ -568,11 +784,17 @@ def generate_pdf_from_json(data, template_path):
             font = cfg.get("font", DEFAULT_FONT)
             size = cfg.get("size", DEFAULT_SIZE)
             color = cfg.get("color", DEFAULT_COLOR)
+            align = cfg.get("align", DEFAULT_ALIGN)
 
         c.setFont(font, size)
         c.setFillColor(color)
-        c.drawString(x, y, str(value))
 
+        if align == "left":
+            c.drawString(x, y, str(value))
+        elif align == "center":
+            c.drawCentredString(x, y, str(value))
+        else:
+            c.drawRightString(x, y, str(value))
 
     # Tancar PDF
     c.showPage()
@@ -580,7 +802,6 @@ def generate_pdf_from_json(data, template_path):
     buffer.seek(0)
 
     return buffer
-
 
 # ----------------- Execució -----------------
 if __name__ == "__main__":
