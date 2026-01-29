@@ -2,12 +2,13 @@ from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import io
 import json
+import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 import pdfkit  # Assegura’t de tenir pdfkit i wkhtmltopdf instal·lats
 
 app = Flask(__name__)
@@ -429,9 +430,6 @@ def generate_report(game_code, lgm):
             
         report_data[json_key] = cur.fetchone()["total"]
 
-    with open("report_data.json", "w", encoding="utf-8") as f:
-        json.dump(report_data, f, indent=4, ensure_ascii=False)
-
     conn.close()
 
     # data = report_data (el dict)
@@ -467,7 +465,7 @@ def generate_pdf_from_json(data, template_path):
     DEFAULT_FONT = "Helvetica"
     DEFAULT_SIZE = 11
     DEFAULT_COLOR = colors.black
-    DEFAULT_ALIGN = "right"
+    DEFAULT_ALIGN = "center"
 
     # Mapa JSON -> coordenades
     fields = {
@@ -478,7 +476,7 @@ def generate_pdf_from_json(data, template_path):
             "size": 12,
             "align": "center"
         },
-        "date": (340, 754),
+        "date": (300, 754),
         "team_h": {
             "pos": (169, 714),
             "color": colors.white,
@@ -492,43 +490,6 @@ def generate_pdf_from_json(data, template_path):
             "font": "Helvetica",
             "size": 11,
             "align": "center"
-        },
-        "data_entry": {
-            "pos": (86, 665),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
-            "align": "center",
-        },
-        "caller_1": {
-            "pos": (197, 750),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
-        },
-        "caller_2": {
-            "pos": (274, 579),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
-        },
-        "timer": {
-            "pos": (347, 579),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
-        },
-        "shot_clock": {
-            "pos": (449, 579),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
-        },
-        "irs_operator": {
-            "pos": (124, 579),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 8,
         },
         "live_game_manager": {
             "pos": (480, 637),
@@ -663,13 +624,6 @@ def generate_pdf_from_json(data, template_path):
             "size": 11,
             "align": "center"
         },
-        "comments": {
-            "pos": (0, 290),
-            "color": colors.black,
-            "font": "Helvetica",
-            "size": 11,
-            "align": "center"
-        },
         "result": {
             "pos": (84, 28),
             "color": colors.black,
@@ -763,6 +717,78 @@ def generate_pdf_from_json(data, template_path):
         },
     }
 
+    draw_name_multiline(
+        c,
+        text=data["data_entry"],
+        x=86,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_name_multiline(
+        c,
+        text=data["caller_1"],
+        x=170,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_name_multiline(
+        c,
+        text=data["caller_2"],
+        x=254,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_name_multiline(
+        c,
+        text=data["timer"],
+        x=338,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_name_multiline(
+        c,
+        text=data["shot_clock"],
+        x=422,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_name_multiline(
+        c,
+        text=data["irs_operator"],
+        x=506,
+        y=654,
+        box_height=30,
+        font="Helvetica",
+        size=8
+    )
+
+    draw_comments_justified(
+        c,
+        text=data["comments"],
+        x=50,         
+        y=135,
+        box_width=495, 
+        box_height=50, 
+        font="Helvetica",
+        size=8
+    )
+
+
     # Escriure valors
     for key, cfg in fields.items():
         value = data.get(key, "")
@@ -802,6 +828,99 @@ def generate_pdf_from_json(data, template_path):
     buffer.seek(0)
 
     return buffer
+
+def draw_name_multiline(
+    c,
+    text,
+    x,
+    y,
+    box_height,
+    font="Helvetica",
+    size=8,
+    color=colors.black,
+    max_lines=3,
+    leading=None
+):
+    lines = split_name_keep_dash(text)
+    if not lines:
+        return
+
+    lines = lines[:max_lines]
+
+    if leading is None:
+        leading = size + 2
+
+    c.setFont(font, size)
+    c.setFillColor(color)
+
+    total_text_height = leading * len(lines)
+    start_y = y + (box_height + total_text_height) / 2 - leading
+
+    for i, line in enumerate(lines):
+        c.drawCentredString(x, start_y - i * leading, line)
+
+def split_name_keep_dash(text):
+    """
+    Separa per espais o guions,
+    però conserva el guió al final de la paraula
+    """
+    if not text:
+        return []
+
+    # Espais → separació normal
+    parts = text.strip().split(" ")
+    result = []
+
+    for part in parts:
+        if "-" in part:
+            subparts = part.split("-")
+            for i, sp in enumerate(subparts):
+                if i < len(subparts) - 1:
+                    result.append(sp + "-")  # 👈 conserva guió
+                else:
+                    result.append(sp)
+        else:
+            result.append(part)
+
+    return [r for r in result if r]
+
+def draw_comments_justified(
+    c,
+    text,
+    x,
+    y,
+    box_width,
+    box_height,
+    font="Helvetica",
+    size=8,
+    color=colors.black,
+    leading=None
+):
+    if not text:
+        return
+
+    if leading is None:
+        leading = size + 2
+
+    style = ParagraphStyle(
+        name="CommentsStyle",
+        fontName=font,
+        fontSize=size,
+        leading=leading,
+        textColor=color,
+        alignment=TA_JUSTIFY,
+    )
+
+    p = Paragraph(text, style)
+
+    # Mesura el text
+    w, h = p.wrap(box_width, box_height)
+
+    # IMPORTANT: Paragraph creix cap amunt,
+    # així que el dibuixem des de baix del requadre
+    draw_y = y + box_height - h
+
+    p.drawOn(c, x, draw_y)
 
 # ----------------- Execució -----------------
 if __name__ == "__main__":

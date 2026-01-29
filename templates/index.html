@@ -145,11 +145,37 @@
 <div class="field-group" id="comentari-field" style="display:none">
   <label>Comentari:</label>
   <textarea id="valoracions" placeholder="Introdueix aquí el comentari..."></textarea>
+  <small id="contador">0 / 150 paraules</small>
+  <p id="missatge" style="display:none; color:red;">
+    Has arribat al límit màxim de paraules.
+  </p>
 </div>
 
 <button onclick="generateReport()" id="generate-report-btn" style="display:none">Generar Report</button>
 
 <script>
+const textarea = document.getElementById("valoracions");
+const contador = document.getElementById("contador");
+const missatge = document.getElementById("missatge");
+const maxParaules = 150;
+
+textarea.addEventListener("input", () => {
+  let paraules = textarea.value
+    .trim()
+    .split(/\s+/)
+    .filter(p => p.length > 0);
+
+  if (paraules.length > maxParaules) {
+    textarea.value = paraules.slice(0, maxParaules).join(" ");
+    textarea.blur(); // treu el focus del camp
+    missatge.style.display = "block";
+  } else {
+    missatge.style.display = "none";
+  }
+
+  contador.textContent = `${paraules.length} / ${maxParaules} paraules`;
+});
+
 const nonEditableColumns = ["game_code", "thread_name", "correction"];
 const columnOrder = ["thread_name","correction","time","quarter","points_h","points_a","action_num","b_ss","team","type_c","category"];
 let currentData = [];
