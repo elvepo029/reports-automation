@@ -70,7 +70,7 @@ UF: unsportsmanlike foul
 """
 
 def insertCorrection(cursor, correction):
-    cursor.execute("""
+   cursor.execute("""
         INSERT INTO Correction (
             game_code, time, quarter, points_h, points_a,
             action_num, b_ss, team, type_c, category, thread_name, correction, live_game_manager
@@ -142,7 +142,8 @@ for game_info in games_info:
     pbp_name_h = game_info["pbp_name_h"]
     pbp_name_a = game_info["pbp_name_a"]
 
-    threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+    if date == datetime(2026, 1, 30).date(): threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+    else: continue
 
     for thread_name, thread in threads_corrections.items():
         action = thread["Action"]
