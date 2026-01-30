@@ -561,14 +561,14 @@ def generate_pdf_from_json(data, template_path):
             "size": 11,
             "align": "center"
         },
-        "no_team": {
+        "away_team": {
             "pos": (295, 419),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
-        "away_team": {
+        "no_team": {
             "pos": (465, 419),
             "color": colors.black,
             "font": "Helvetica",
