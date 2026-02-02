@@ -129,6 +129,7 @@ def generate_report(game_code, lgm):
 
     #Crear data DD/MM/YYYY
     game_date = f"{game['day']:02d}/{game['month']:02d}/{game['year']}"
+    round = game['round']
 
     #Equips
     cur.execute("SELECT team_name FROM Team WHERE team_code = ?", (game["code_h"],))
@@ -362,7 +363,7 @@ def generate_report(game_code, lgm):
     else: competition = "EUROCUP"
 
     report_data = {
-        "game": f"GAME: {game_code} ({competition})",
+        "game": f"GAME: {game_code} ({competition}, Round: {round})",
         "date": f"DATE: {game_date}",
         "team_h": local_team,
         "team_a": away_team,

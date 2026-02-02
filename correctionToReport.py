@@ -69,57 +69,6 @@ TO: turnover
 UF: unsportsmanlike foul
 """
 
-def insertCorrection(cursor, correction):
-   cursor.execute("""
-        INSERT INTO Correction (
-            game_code, time, quarter, points_h, points_a,
-            action_num, b_ss, team, type_c, category, thread_name, correction, live_game_manager
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        correction.game_code, correction.time, correction.quarter, correction.points_h, correction.points_a, correction.action_num,
-        correction.b_ss, correction.team, correction.type_c, correction.category, correction.thread_name, correction.correction, correction.live_game_manager
-    ))
-
-def getLGMNameById(cursor, lgm_id):
-    cursor.execute("""
-        SELECT name
-        FROM Lgm
-        WHERE discord_id = ?
-    """, (lgm_id,))
-
-    row = cursor.fetchone()
-    return row[0] if row else None
-
-conn = sqlite3.connect("dades.db")
-cursor = conn.cursor()
-
-cursor.execute("""
-    SELECT
-        g.game_code,
-        g.year,
-        g.month,
-        g.day,
-        th.discord_channel_id,
-        th.pbp_name AS home_pbp_name,
-        ta.pbp_name AS away_pbp_name
-    FROM Game g
-    JOIN Team th ON g.code_h = th.team_code
-    JOIN Team ta ON g.code_a = ta.team_code
-""")
-
-raw_discord_info = cursor.fetchall()
-
-games_info = [
-    {
-        "game_code": game_code,
-        "discord_channel_id": discord_channel_id,
-        "date": datetime(year, month, day).date(),
-        "pbp_name_h": home_pbp_name,
-        "pbp_name_a": away_pbp_name
-    }
-    for game_code, year, month, day, discord_channel_id, home_pbp_name, away_pbp_name in raw_discord_info
-]
-
 def getActionAbbreviationByPbpName(pbp_name): 
     conn = sqlite3.connect("dades.db")
     cursor = conn.cursor()
@@ -135,17 +84,85 @@ def getActionAbbreviationByPbpName(pbp_name):
 
     return action_abbreviation[0] if action_abbreviation else ""
 
+def insertCorrection(cursor, correction):
+   cursor.execute("""
+        INSERT INTO Correction (
+            game_code, time, quarter, points_h, points_a,
+            action_num, b_ss, team, type_c, category, thread_name, correction, live_game_manager
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        correction.game_code, correction.time, correction.quarter, correction.points_h, correction.points_a, correction.action_num,
+        correction.b_ss, correction.team, correction.type_c, correction.category, correction.thread_name, correction.correction, correction.live_game_manager
+    ))
+   
+def updateGame(cursor, game_code):
+    cursor.execute(
+        "UPDATE Game SET is_processed = 1 WHERE game_code = ?",
+        (game_code,)
+    )
+
+def getLGMNameById(cursor, lgm_id):
+    cursor.execute("""
+        SELECT name
+        FROM Lgm
+        WHERE discord_id = ?
+    """, (lgm_id,))
+
+    row = cursor.fetchone()
+    return row[0] if row else None
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+conn = sqlite3.connect("dades.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+    SELECT
+        g.game_code,
+        g.year,
+        g.month,
+        g.day,
+        is_processed,
+        th.discord_channel_id,
+        th.pbp_name AS home_pbp_name,
+        ta.pbp_name AS away_pbp_name
+    FROM Game g
+    JOIN Team th ON g.code_h = th.team_code
+    JOIN Team ta ON g.code_a = ta.team_code
+""")
+
+raw_discord_info = cursor.fetchall()
+
+games_info = [
+    {
+        "game_code": game_code,
+        "discord_channel_id": discord_channel_id,
+        "date": datetime(year, month, day).date(),
+        "is_processed": is_processed,
+        "pbp_name_h": home_pbp_name,
+        "pbp_name_a": away_pbp_name
+    }
+    for game_code, year, month, day, is_processed, discord_channel_id, home_pbp_name, away_pbp_name in raw_discord_info
+]
+
 for game_info in games_info:
     game_code = game_info["game_code"]
     date = game_info["date"]
+    is_processed = game_info["is_processed"]
     discord_channel_id = game_info["discord_channel_id"]
     pbp_name_h = game_info["pbp_name_h"]
     pbp_name_a = game_info["pbp_name_a"]
 
-    if date == datetime(2026, 1, 30).date(): threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+    if not is_processed: threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
     else: continue
 
+    if len(threads_corrections) == 0:
+        continue
+
     for thread_name, thread in threads_corrections.items():
+        if "recovery" in thread_name.lower():
+            continue
+
         action = thread["Action"]
         correction = thread["Correction"]
         lgm = thread["Live_Game_Manager"]
@@ -209,6 +226,8 @@ for game_info in games_info:
         if not time_set: correction_values.time = time
 
         insertCorrection(cursor, correction_values)
+
+    updateGame(cursor, game_code)
 
 conn.commit()        
 conn.close()

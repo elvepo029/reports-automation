@@ -60,9 +60,14 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
                 entry = {"Action": message}
             else:
                 entry = {"Correction": message}
+
+            if "recovery" in thread_name.lower():
+                entry = {"Action": message}
+                entry1 = {"Correction": message}
         
             if message != "" and author_id in live_game_managers_ids: 
                 thread_messages[thread_name].append(entry)
+                thread_messages[thread_name].append(entry1)
                 lgm_id = author_id
 
         thread_messages[thread_name].reverse()
