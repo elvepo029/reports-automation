@@ -33,7 +33,7 @@ live_game_managers_ids = [
     "1344308238752944208", "697495204168728586"
 ]
 
-TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.G6uaFm.ayKgV1iEhLGKbNI5yJUMhAcep3tmi8HzKdO2_0"
+TOKEN = "MTQzODg5NzE5MjU3NTE3Njg1MQ.GhMX43.-74alpoimk9L4Pkyob-_d55VMaBN515CYIqsUQ"
 headers = {"Authorization": f"Bot {TOKEN}"}
 
 def getThreadsActionsAndCorrections(channel_id, target_date):
@@ -41,12 +41,14 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
     lgm_id = ""
 
     thread_messages = {}
+    recovery_code_messages = {}
     for thread in threads_list:
         thread_id = thread['id']
         thread_name = thread['name']
 
-        if thread_name not in thread_messages:
+        if thread_name not in thread_messages and thread_name not in recovery_code_messages:
             thread_messages[thread_name] = []
+            recovery_code_messages[thread_name] = []
 
         url = f"https://discord.com/api/v10/channels/{thread_id}/messages?limit=100"
         thread_content = requests.get(url, headers=headers).json()
@@ -62,18 +64,40 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
                 entry = {"Correction": message}
 
             if "recovery" in thread_name.lower():
-                entry = {"Action": message}
-                entry1 = {"Correction": message}
+                entry1 = {"Action": message}
+                entry2 = {"Correction": message}
         
             if message != "" and author_id in live_game_managers_ids: 
                 thread_messages[thread_name].append(entry)
-                thread_messages[thread_name].append(entry1)
+                recovery_code_messages[thread_name].append(entry1)
+                recovery_code_messages[thread_name].append(entry2)
                 lgm_id = author_id
 
         thread_messages[thread_name].reverse()
 
     # FILTRAR: només threads amb Action + Correction
     filtered_threads = {}
+    filtered_recovery_code_threads = {}
+
+    for thread_name, msgs in recovery_code_messages.items():
+        first_action = None
+        first_correction = None
+
+        for m in msgs:
+            if first_action is None and "Action" in m:
+                first_action = m["Action"]
+            if first_correction is None and "Correction" in m:
+                first_correction = m["Correction"]
+
+            if first_action is not None and first_correction is not None:
+                break
+
+        if first_action and first_correction:
+            filtered_recovery_code_threads[thread_name] = {
+                "Action": first_action,
+                "Correction": first_correction,
+                "Live_Game_Manager": lgm_id
+            }
 
     for thread_name, msgs in thread_messages.items():
         first_action = None
@@ -99,4 +123,4 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
     #with open("filteredThreads.json", "w", encoding="utf-8") as f:
         #json.dump(filtered_threads, f, indent=4, ensure_ascii=False)
         
-    return filtered_threads
+    return filtered_recovery_code_threads, filtered_threads

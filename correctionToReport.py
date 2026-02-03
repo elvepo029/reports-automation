@@ -153,16 +153,14 @@ for game_info in games_info:
     pbp_name_h = game_info["pbp_name_h"]
     pbp_name_a = game_info["pbp_name_a"]
 
-    if not is_processed: threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+    if not is_processed: 
+        recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
     else: continue
 
-    if len(threads_corrections) == 0:
+    if len(recovery_codes_threads) == 0:
         continue
 
     for thread_name, thread in threads_corrections.items():
-        if "recovery" in thread_name.lower():
-            continue
-
         action = thread["Action"]
         correction = thread["Correction"]
         lgm = thread["Live_Game_Manager"]
