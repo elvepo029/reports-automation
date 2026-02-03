@@ -122,6 +122,8 @@ def generate_report(game_code, lgm):
     # Crear data DD/MM/YYYY
     game_date = f"{game['day']:02d}/{game['month']:02d}/{game['year']}"
     round = game['round']
+    code_h = game['code_h']
+    code_a = game['code_a']
 
     # Equips
     cur.execute("SELECT team_name FROM Team WHERE team_code = ?", (game["code_h"],))
@@ -270,8 +272,12 @@ def generate_report(game_code, lgm):
     resultat_final = total_points + percent_corrections + logistic_points
 
     # Creació de json amb dades necessàries per omplir el report
-    if "E" in game_code: competition = "EUROLEAGUE" 
-    else: competition = "EUROCUP"
+    if "E" in game_code: 
+        competition = "EUROLEAGUE" 
+        competition_code = "E"
+    else: 
+        competition = "EUROCUP"
+        competition_code = "U"
 
     report_data = {
         "game": f"GAME: {game_code} ({competition}, Round: {round})",
@@ -353,7 +359,7 @@ def generate_report(game_code, lgm):
 
     return send_file(
         pdf_buffer,
-        download_name=f"Report_{game_code}.pdf",
+        download_name=f"REPORT_{round}_{game_code}_{code_h}_{code_a}_{competition_code}2025.pdf",
         mimetype="application/pdf"
     )
 

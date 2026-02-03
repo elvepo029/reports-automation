@@ -39,6 +39,7 @@ headers = {"Authorization": f"Bot {TOKEN}"}
 def getThreadsActionsAndCorrections(channel_id, target_date):
     threads_list = getDateThreads(channel_id, target_date)
     lgm_id = ""
+    is_recovery_code_thread = False
 
     thread_messages = {}
     recovery_code_messages = {}
@@ -64,13 +65,15 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
                 entry = {"Correction": message}
 
             if "recovery" in thread_name.lower():
+                is_recovery_code_thread = True
                 entry1 = {"Action": message}
                 entry2 = {"Correction": message}
         
             if message != "" and author_id in live_game_managers_ids: 
                 thread_messages[thread_name].append(entry)
-                recovery_code_messages[thread_name].append(entry1)
-                recovery_code_messages[thread_name].append(entry2)
+                if is_recovery_code_thread:
+                    recovery_code_messages[thread_name].append(entry1)
+                    recovery_code_messages[thread_name].append(entry2)
                 lgm_id = author_id
 
         thread_messages[thread_name].reverse()
