@@ -125,5 +125,8 @@ def getThreadsActionsAndCorrections(channel_id, target_date):
 
     #with open("filteredThreads.json", "w", encoding="utf-8") as f:
         #json.dump(filtered_threads, f, indent=4, ensure_ascii=False)
+
+    #with open("filtered_recovery.json", "w", encoding="utf-8") as f:
+        #json.dump(filtered_recovery_code_threads, f, indent=4, ensure_ascii=False)
         
     return filtered_recovery_code_threads, filtered_threads

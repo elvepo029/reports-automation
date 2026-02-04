@@ -56,8 +56,8 @@ def add_correction():
     """, (
         data["time"], data["quarter"], data["points_h"], data["points_a"],
         data["action_num"], data["b_ss"], data["team"], data["type_c"],
-        data["category"], data["game_code"], "Manual Correction",
-        "Manual Correction", data["live_game_manager"]
+        data["category"], data["game_code"], "Correcció Manual",
+        "Correcció Manual", data["live_game_manager"]
     ))
     conn.commit()
     conn.close()
@@ -279,6 +279,8 @@ def generate_report(game_code, lgm):
         competition = "EUROCUP"
         competition_code = "U"
 
+    game_number = game_code.split("_")[1]
+
     report_data = {
         "game": f"GAME: {game_code} ({competition}, Round: {round})",
         "date": f"DATE: {game_date}",
@@ -359,7 +361,7 @@ def generate_report(game_code, lgm):
 
     return send_file(
         pdf_buffer,
-        download_name=f"REPORT_{round}_{game_code}_{code_h}_{code_a}_{competition_code}2025.pdf",
+        download_name=f"REPORT_{round}_{game_number}_{code_h}_{code_a}_{competition_code}2025.pdf",
         mimetype="application/pdf"
     )
 
