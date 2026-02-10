@@ -112,7 +112,7 @@ def getLGMNameById(cursor, lgm_id):
     return row[0] if row else None
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+actual_date = datetime(2026, 2, 10).date() #modificar cada dia de partits amb la data actual
 conn = sqlite3.connect("dades.db")
 cursor = conn.cursor()
 
@@ -153,7 +153,7 @@ for game_info in games_info:
     pbp_name_h = game_info["pbp_name_h"]
     pbp_name_a = game_info["pbp_name_a"]
 
-    if not is_processed: 
+    if not is_processed and actual_date == date: 
         recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
     else: continue
 
