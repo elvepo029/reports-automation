@@ -1,25 +1,20 @@
 import requests
 import sqlite3
 from game import Game
+import json
+from usc import USC
+from dataclasses import asdict
 
 DB = "dades.db"
 conn = sqlite3.connect(DB)
 cursor = conn.cursor()
 
-def getGameCodesList():
-    cursor.execute("SELECT game_code FROM Game")
-    return [row[0] for row in cursor.fetchall()]
-
-def insertGame(game: Game):
-   cursor.execute("""
-        INSERT INTO Game (
-            game_code, code_h, code_a, year, month,
-            day, round, data_entry, caller_1, caller_2, timer, shot_clock_operator, irs_operator, is_processed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        game.game_code, game.code_h, game.code_a, game.year, game.month, game.day, game.round, game.data_entry,
-        game.caller_1, game.caller_2, game.timer, game.shot_clock_operator, game.irs_operator, game.is_processed
-    ))
+def insertUsc(usc: USC):
+    cursor.execute("""
+        INSERT OR IGNORE INTO Usc (
+            code, name, team_code
+        ) VALUES (?, ?, ?)
+    """, (usc.code, usc.name, usc.club_code))
 
 el_competition_code = "E"
 ec_competition_code = "U"
@@ -27,16 +22,35 @@ ec_competition_code = "U"
 el_season_code = "E2025"
 ec_season_code = "U2025"
 
-url_euroleague = f"https://api-live.euroleague.net/v2/competitions/{el_competition_code}/seasons/{el_season_code}/games"
-url_eurocup = f"https://api-live.euroleague.net/v2/competitions/{ec_competition_code}/seasons/{ec_season_code}/games"
-
 url_el_uscs = f"https://api-live.euroleague.net/v2/competitions/{el_competition_code}/seasons/{el_season_code}/people?personType=Z&active=true"
 url_ec_uscs = f"https://api-live.euroleague.net/v2/competitions/{ec_competition_code}/seasons/{ec_season_code}/people?personType=Z&active=true"
 
-euroleague_games_info = requests.get(url_euroleague).json()
-eurocup_games_info = requests.get(url_eurocup).json()
+euroleague_uscs_info = requests.get(url_el_uscs).json()
+eurocup_uscs_info = requests.get(url_ec_uscs).json()
 
-euroleague_games_data = euroleague_games_info["data"]
-eurocup_games_data = eurocup_games_info["data"]
+euroleague_uscs_data = euroleague_uscs_info["data"]
+eurocup_uscs_data = eurocup_uscs_info["data"]
 
-games_data = euroleague_games_data + eurocup_games_data #agrupació de partits d'eurolliga i eurocup (no distinció)
+uscs_data = euroleague_uscs_data + eurocup_uscs_data #agrupació de uscs d'eurolliga i eurocup (no distinció)
+
+for usc_data in uscs_data:
+    #dade necessàries per omplir taula de Usc de base de dades pròpia:
+    usc_code = usc_data["person"]["code"]
+    usc_name = usc_data["person"]["name"].split(", ")[1]
+    usc_surnames = usc_data["person"]["name"].split(", ")[0]
+    usc_reordered_name = usc_name + " " + usc_surnames #reordenació de components del nom tal com es vol al report (nom cognom)
+    usc_club_code = usc_data["club"]["code"]
+    
+    usc = USC(
+        code = usc_code,
+        name = usc_reordered_name,
+        club_code = usc_club_code
+    )
+
+    insertUsc(usc)
+
+#with open("uscs_data.json", "w", encoding="utf-8") as f:
+        #json.dump(uscs, f, indent=4, ensure_ascii=False)
+
+conn.commit()
+conn.close()
