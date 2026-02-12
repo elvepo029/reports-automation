@@ -62,22 +62,22 @@
 <!-- Camps per generar report -->
 <div class="field-group" id="report-fields" style="display:none">
   <label>Data Entry:</label>
-  <input type="text" id="data_entry">
+  <select id="data_entry"></select>
   
   <label>Caller 1:</label>
-  <input type="text" id="caller_1">
+  <select id="caller_1"></select>
   
   <label>Caller 2:</label>
-  <input type="text" id="caller_2">
+  <select id="caller_2"></select>
   
   <label>Timer:</label>
-  <input type="text" id="timer">
+  <select id="timer"></select>
   
   <label>Shot Clock Operator:</label>
-  <input type="text" id="shot_clock_operator">
+  <select id="shot_clock_operator"></select>
   
   <label>IRS Operator:</label>
-  <input type="text" id="irs_operator">
+  <select id="irs_operator"></select>
 </div>
 
 <div class="field-group" id="num-accions-field" style="display:none">
@@ -210,9 +210,9 @@ function loadData() {
       document.getElementById("generate-report-btn").style.display = "inline-block";
     });
 
-  fetch(`/get_game_uscs/${gameCode}`)
+  fetch(`/get_uscs_for_game/${gameCode}`)
     .then(r => r.json())
-    .then(uscs => {
+    .then(names => {
       const fields = [
         "data_entry",
         "caller_1",
@@ -223,10 +223,22 @@ function loadData() {
       ];
 
       fields.forEach(id => {
-        const input = document.getElementById(id);
-        if (input && uscs[id] !== null) {
-          input.value = uscs[id];
-        }
+        const select = document.getElementById(id);
+        if (!select) return;
+
+        select.innerHTML = "";
+
+        const emptyOPtion = document.createElement("option");
+        emptyOPtion.value = "";
+        emptyOPtion.textContent = "-- Selecciona USC --";
+        select.appendChild(emptyOPtion);
+
+        names.forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+        });
       });
     });
 

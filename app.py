@@ -95,6 +95,35 @@ def get_game_uscs(game_code):
         "irs_operator": row["irs_operator"]
     })
 
+# ----------------- USCs temporada -----------------
+@app.route("/get_uscs_for_game/<game_code>")
+def get_uscs_for_game(game_code):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT code_h
+        FROM Game
+        WHERE game_code = ?
+    """, (game_code,))
+    
+    row = cursor.fetchone()
+    if not row:
+        return jsonify([])
+
+    code_a = row[0]
+
+    cursor.execute("""
+        SELECT name
+        FROM Usc
+        WHERE team_code = ?
+        ORDER BY name
+    """, (code_a,))
+
+    names = [r[0] for r in cursor.fetchall()]
+
+    return jsonify(names)
+
+
 # ----------------- Live Game Managers -----------------
 @app.route("/get_live_game_managers")
 def get_live_game_managers():
