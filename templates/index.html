@@ -62,22 +62,24 @@
 <!-- Camps per generar report -->
 <div class="field-group" id="report-fields" style="display:none">
   <label>Data Entry:</label>
-  <select id="data_entry"></select>
+  <input type="text" id="data_entry" list="usc_list">
   
   <label>Caller 1:</label>
-  <select id="caller_1"></select>
+  <input type="text" id="caller_1" list="usc_list">
   
   <label>Caller 2:</label>
-  <select id="caller_2"></select>
+  <input type="text" id="caller_2" list="usc_list">
   
   <label>Timer:</label>
-  <select id="timer"></select>
+  <input type="text" id="timer" list="usc_list">
   
   <label>Shot Clock Operator:</label>
-  <select id="shot_clock_operator"></select>
+  <input type="text" id="shot_clock_operator" list="usc_list">
   
   <label>IRS Operator:</label>
-  <select id="irs_operator"></select>
+  <input type="text" id="irs_operator" list="usc_list">
+
+  <datalist id="usc_list"></datalist>
 </div>
 
 <div class="field-group" id="num-accions-field" style="display:none">
@@ -213,33 +215,15 @@ function loadData() {
   fetch(`/get_uscs_for_game/${gameCode}`)
     .then(r => r.json())
     .then(names => {
-      const fields = [
-        "data_entry",
-        "caller_1",
-        "caller_2",
-        "timer",
-        "shot_clock_operator",
-        "irs_operator"
-      ];
+      
+      const datalist = document.getElementById("usc_list");
+      datalist.innerHTML = "";
 
-      fields.forEach(id => {
-        const select = document.getElementById(id);
-        if (!select) return;
-
-        select.innerHTML = "";
-
-        const emptyOPtion = document.createElement("option");
-        emptyOPtion.value = "";
-        emptyOPtion.textContent = "-- Selecciona USC --";
-        select.appendChild(emptyOPtion);
-
-        names.forEach(name => {
-          const option = document.createElement("option");
-          option.value = name;
-          option.textContent = name;
-          select.appendChild(option);
-        });
-      });
+      names.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        datalist.appendChild(option);
+      })
     });
 
     document.getElementById("logistics-fields").style.display = "block";
