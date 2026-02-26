@@ -13,7 +13,7 @@ fulls = pd.read_excel(EXCEL, sheet_name=None)
 for nom_taula, df in fulls.items():
     # Saltar la taula Correction
 
-    if nom_taula == "Correction":
+    if nom_taula == "Correction" or nom_taula == "Usc":
         print(f"Saltant la taula: {nom_taula}")
         continue
 

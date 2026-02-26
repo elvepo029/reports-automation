@@ -112,7 +112,7 @@ def getLGMNameById(cursor, lgm_id):
     return row[0] if row else None
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-actual_date = datetime(2026, 2, 25).date() #modificar cada dia de partits amb la data actual
+actual_date = datetime(2026, 2, 26).date() #modificar cada dia de partits amb la data actual
 conn = sqlite3.connect("dades.db")
 cursor = conn.cursor()
 
