@@ -56,6 +56,8 @@
 <button onclick="loadData()">Carregar</button>
 <span id="status"></span>
 
+<button onclick="runCorrection()">Generar Correccions</button>
+
 <!-- Taula correccions -->
 <table id="table"></table>
 
@@ -512,6 +514,18 @@ function generateReport() {
 
     // 6️⃣ Obrir PDF en una nova finestra
     window.open(`/generate_report/${gameCode}/${lgm}?${params}`, '_blank');
+}
+
+function runCorrection() {
+  fetch("/run-correction", { method: "POST" })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") {
+        alert("Script executat correctament");
+      } else {
+        alert("Error: " + res.message);
+      }
+    });
 }
 
 </script>

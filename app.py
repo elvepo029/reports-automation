@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import json
 from pdfGeneratorHelper import generate_pdf_from_json
+from correctionToReport import runCorrectionsProcessor
 
 app = Flask(__name__)
 DB = "dades.db"
@@ -12,6 +13,14 @@ def get_db():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/run-correction", methods=["POST"])
+def run_correction_route():
+    try:
+        runCorrectionsProcessor()
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # ----------------- Correccions -----------------
 @app.route("/corrections/<game_code>")
@@ -396,4 +405,4 @@ def generate_report(game_code, lgm):
 
 # ----------------- Execució -----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5050, debug=True)

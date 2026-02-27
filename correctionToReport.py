@@ -111,124 +111,126 @@ def getLGMNameById(cursor, lgm_id):
     row = cursor.fetchone()
     return row[0] if row else None
 
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-actual_date = datetime(2026, 2, 26).date() #modificar cada dia de partits amb la data actual
-conn = sqlite3.connect("dades.db")
-cursor = conn.cursor()
+def runCorrectionsProcessor():
+    actual_date = datetime(2026, 2, 26).date() #modificar cada dia de partits amb la data actual
+    conn = sqlite3.connect("dades.db")
+    cursor = conn.cursor()
 
-cursor.execute("""
-    SELECT
-        g.game_code,
-        g.year,
-        g.month,
-        g.day,
-        is_processed,
-        th.discord_channel_id,
-        th.pbp_name AS home_pbp_name,
-        ta.pbp_name AS away_pbp_name
-    FROM Game g
-    JOIN Team th ON g.code_h = th.team_code
-    JOIN Team ta ON g.code_a = ta.team_code
-""")
+    cursor.execute("""
+        SELECT
+            g.game_code,
+            g.year,
+            g.month,
+            g.day,
+            is_processed,
+            th.discord_channel_id,
+            th.pbp_name AS home_pbp_name,
+            ta.pbp_name AS away_pbp_name
+        FROM Game g
+        JOIN Team th ON g.code_h = th.team_code
+        JOIN Team ta ON g.code_a = ta.team_code
+    """)
 
-raw_discord_info = cursor.fetchall()
+    raw_discord_info = cursor.fetchall()
 
-games_info = [
-    {
-        "game_code": game_code,
-        "discord_channel_id": discord_channel_id,
-        "date": datetime(year, month, day).date(),
-        "is_processed": is_processed,
-        "pbp_name_h": home_pbp_name,
-        "pbp_name_a": away_pbp_name
-    }
-    for game_code, year, month, day, is_processed, discord_channel_id, home_pbp_name, away_pbp_name in raw_discord_info
-]
+    games_info = [
+        {
+            "game_code": game_code,
+            "discord_channel_id": discord_channel_id,
+            "date": datetime(year, month, day).date(),
+            "is_processed": is_processed,
+            "pbp_name_h": home_pbp_name,
+            "pbp_name_a": away_pbp_name
+        }
+        for game_code, year, month, day, is_processed, discord_channel_id, home_pbp_name, away_pbp_name in raw_discord_info
+    ]
 
-for game_info in games_info:
-    game_code = game_info["game_code"]
-    date = game_info["date"]
-    is_processed = game_info["is_processed"]
-    discord_channel_id = game_info["discord_channel_id"]
-    pbp_name_h = game_info["pbp_name_h"]
-    pbp_name_a = game_info["pbp_name_a"]
+    for game_info in games_info:
+        game_code = game_info["game_code"]
+        date = game_info["date"]
+        is_processed = game_info["is_processed"]
+        discord_channel_id = game_info["discord_channel_id"]
+        pbp_name_h = game_info["pbp_name_h"]
+        pbp_name_a = game_info["pbp_name_a"]
 
-    if not is_processed and actual_date == date: 
-        recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
-    else: continue
+        if not is_processed and actual_date == date: 
+            recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+        else: continue
 
-    if len(recovery_codes_threads) == 0:
-        continue
+        if len(recovery_codes_threads) == 0:
+            continue
 
-    for thread_name, thread in threads_corrections.items():
-        action = thread["Action"]
-        correction = thread["Correction"]
-        lgm = thread["Live_Game_Manager"]
-        action_parts = action.split("    ")
-        correction_parts = correction.split(" ")
-        correction_instruction = correction_parts[0].lower()
-        time_set = False
+        for thread_name, thread in threads_corrections.items():
+            action = thread["Action"]
+            correction = thread["Correction"]
+            lgm = thread["Live_Game_Manager"]
+            action_parts = action.split("    ")
+            correction_parts = correction.split(" ")
+            correction_instruction = correction_parts[0].lower()
+            time_set = False
 
-        action_abb = getActionAbbreviationByPbpName(action_parts[9])
-        time = action_parts[3]
-        points_h = action_parts[4]
-        points_a = action_parts[5]
-        action_num = action_parts[0]
+            action_abb = getActionAbbreviationByPbpName(action_parts[9])
+            time = action_parts[3]
+            points_h = action_parts[4]
+            points_a = action_parts[5]
+            action_num = action_parts[0]
 
-        minute = int(action_parts[2])
-        if 0 <= minute <= 10: quarter = "1"
-        elif 11 <= minute <= 20: quarter = "2"
-        elif 21 <= minute <= 30: quarter = "3"
-        elif 31 <= minute <= 40: quarter = "4"
-        else: quarter = "ET"
+            minute = int(action_parts[2])
+            if 0 <= minute <= 10: quarter = "1"
+            elif 11 <= minute <= 20: quarter = "2"
+            elif 21 <= minute <= 30: quarter = "3"
+            elif 31 <= minute <= 40: quarter = "4"
+            else: quarter = "ET"
 
-        live_game_manager = getLGMNameById(cursor, lgm)
+            live_game_manager = getLGMNameById(cursor, lgm)
 
-        if "(CR)" in thread_name:
-            correction_values = processCriteriaCorrections(action_abb, correction_instruction, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+            if "(CR)" in thread_name:
+                correction_values = processCriteriaCorrections(action_abb, correction_instruction, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+            
+            elif "(SS)" in thread_name:
+                correction_values = processScoresheetCorrections(action_abb, correction_instruction, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+
+            elif "time" in thread_name.lower():
+                correction_values = processTimingCorrections(action_abb, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+                time_set = True
+
+            elif "insert" == correction_instruction:
+                correction_values = processInsertions(correction_parts)
+
+            elif "delete" == correction_instruction:
+                correction_values = processDeletions(action_abb, pbp_name_h, pbp_name_a, action_parts)
+
+            elif "edit" == correction_instruction: 
+                correction_values = processEditions(action_abb, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+
+            elif "move" == correction_instruction:
+                correction_values = processMovements(action_abb, pbp_name_h, pbp_name_a, action_parts)
+
+            else:
+                correction_values = processInvalidCorrections()
         
-        elif "(SS)" in thread_name:
-            correction_values = processScoresheetCorrections(action_abb, correction_instruction, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+            correction_values.game_code = game_code
+            correction_values.thread_name = thread_name
+            correction_values.quarter = quarter
+            correction_values.points_h = points_h
+            correction_values.points_a = points_a
+            correction_values.action_num = action_num
+            correction_values.correction = correction
+            correction_values.live_game_manager = live_game_manager
 
-        elif "time" in thread_name.lower():
-            correction_values = processTimingCorrections(action_abb, pbp_name_h, pbp_name_a, action_parts, correction_parts)
-            time_set = True
+            if "JB" in correction:
+                time = "09:59"
+            
+            if not time_set: correction_values.time = time
 
-        elif "insert" == correction_instruction:
-            correction_values = processInsertions(correction_parts)
+            insertCorrection(cursor, correction_values)
 
-        elif "delete" == correction_instruction:
-            correction_values = processDeletions(action_abb, pbp_name_h, pbp_name_a, action_parts)
+        updateGame(cursor, game_code)
 
-        elif "edit" == correction_instruction: 
-            correction_values = processEditions(action_abb, pbp_name_h, pbp_name_a, action_parts, correction_parts)
+    conn.commit()        
+    conn.close()
 
-        elif "move" == correction_instruction:
-            correction_values = processMovements(action_abb, pbp_name_h, pbp_name_a, action_parts)
-
-        else:
-            correction_values = processInvalidCorrections()
-    
-        correction_values.game_code = game_code
-        correction_values.thread_name = thread_name
-        correction_values.quarter = quarter
-        correction_values.points_h = points_h
-        correction_values.points_a = points_a
-        correction_values.action_num = action_num
-        correction_values.correction = correction
-        correction_values.live_game_manager = live_game_manager
-
-        if "JB" in correction:
-            time = "09:59"
-        
-        if not time_set: correction_values.time = time
-
-        insertCorrection(cursor, correction_values)
-
-    updateGame(cursor, game_code)
-
-conn.commit()        
-conn.close()
+runCorrectionsProcessor()
 
 
 
