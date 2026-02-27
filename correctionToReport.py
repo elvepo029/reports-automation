@@ -230,8 +230,6 @@ def runCorrectionsProcessor():
     conn.commit()        
     conn.close()
 
-runCorrectionsProcessor()
-
 
 
    
