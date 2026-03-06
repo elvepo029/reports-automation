@@ -430,14 +430,28 @@ def split_name_keep_dash(text):
         return []
 
     # Espais → separació normal
-    parts = text.strip().split(" ")
+    words = text.strip().split(" ")
+
+    exceptions = {"DE", "LA", "BEN"}
+
+    parts = []
+    i = 0
+
+    while i < len(words):
+        if i + 1 < len(words) and words[i+1] in exceptions:
+            parts.append(words[i] + " " + words[i+1])
+            i += 2
+        else:
+            parts.append(words[i])
+            i += 1
+
     result = []
 
     for part in parts:
         if "-" in part:
             subparts = part.split("-")
-            for i, sp in enumerate(subparts):
-                if i < len(subparts) - 1:
+            for j, sp in enumerate(subparts):
+                if j < len(subparts) - 1:
                     result.append(sp + "-")  # 👈 conserva guió
                 else:
                     result.append(sp)
