@@ -7,18 +7,61 @@ conn = sqlite3.connect(DB)
 cursor = conn.cursor()
 
 def getGameCodesList():
-    cursor.execute("SELECT game_code FROM Game")
+    cursor.execute("SELECT game_code FROM Game WHERE is_processed = 1")
     return [row[0] for row in cursor.fetchall()]
 
 def insertGame(game: Game):
-   cursor.execute("""
+    cursor.execute("""
         INSERT INTO Game (
             game_code, code_h, code_a, year, month,
-            day, round, data_entry, caller_1, caller_2, timer, shot_clock_operator, irs_operator, is_processed
+            day, round, data_entry, caller_1, caller_2,
+            timer, shot_clock_operator, irs_operator, is_processed
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+        ON CONFLICT(game_code) DO UPDATE SET
+            code_h = excluded.code_h,
+            code_a = excluded.code_a,
+            year = excluded.year,
+            month = excluded.month,
+            day = excluded.day,
+            round = excluded.round,
+            data_entry = excluded.data_entry,
+            caller_1 = excluded.caller_1,
+            caller_2 = excluded.caller_2,
+            timer = excluded.timer,
+            shot_clock_operator = excluded.shot_clock_operator,
+            irs_operator = excluded.irs_operator,
+            is_processed = excluded.is_processed
+
+        WHERE
+            code_h != excluded.code_h OR
+            code_a != excluded.code_a OR
+            year != excluded.year OR
+            month != excluded.month OR
+            day != excluded.day OR
+            round != excluded.round OR
+            data_entry != excluded.data_entry OR
+            caller_1 != excluded.caller_1 OR
+            caller_2 != excluded.caller_2 OR
+            timer != excluded.timer OR
+            shot_clock_operator != excluded.shot_clock_operator OR
+            irs_operator != excluded.irs_operator OR
+            is_processed != excluded.is_processed
     """, (
-        game.game_code, game.code_h, game.code_a, game.year, game.month, game.day, game.round, game.data_entry,
-        game.caller_1, game.caller_2, game.timer, game.shot_clock_operator, game.irs_operator, game.is_processed
+        game.game_code,
+        game.code_h,
+        game.code_a,
+        game.year,
+        game.month,
+        game.day,
+        game.round,
+        game.data_entry,
+        game.caller_1,
+        game.caller_2,
+        game.timer,
+        game.shot_clock_operator,
+        game.irs_operator,
+        game.is_processed
     ))
 
 el_competition_code = "E"
@@ -50,12 +93,12 @@ games_data.sort(
     )
 )
 
-games_in_db = getGameCodesList()
+processed_games = getGameCodesList()
 
 for game_data in games_data:
     game_identifier = game_data["identifier"] #el que a la meva base de dades és el game code, ex: E2025_234
 
-    if game_identifier in games_in_db: #si el partit ja està a la base de dades, passa al següent
+    if game_identifier in processed_games: #si el partit ja està processat, passa al següent
         continue
 
     game_date_time = game_data["date"]
