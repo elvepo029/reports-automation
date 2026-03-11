@@ -112,7 +112,7 @@ def getLGMNameById(cursor, lgm_id):
     return row[0] if row else None
 
 def runCorrectionsProcessor():
-    actual_date = datetime(2026, 3, 6).date() #modificar cada dia de partits amb la data actual
+    actual_date = datetime(2026, 3, 11).date() #modificar cada dia de partits amb la data actual
     conn = sqlite3.connect("dades.db")
     cursor = conn.cursor()
 
@@ -212,8 +212,14 @@ def runCorrectionsProcessor():
             correction_values.game_code = game_code
             correction_values.thread_name = thread_name
             correction_values.quarter = quarter
-            correction_values.points_h = points_h
-            correction_values.points_a = points_a
+            if points_h != "":
+                correction_values.points_h = points_h
+            else:
+                correction_values.points_h = "0"
+            if points_a != "":
+                correction_values.points_a = points_a
+            else:
+                correction_values.points_a = "0"
             correction_values.action_num = action_num
             correction_values.correction = correction
             correction_values.live_game_manager = live_game_manager

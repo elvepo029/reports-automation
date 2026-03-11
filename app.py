@@ -394,7 +394,7 @@ def generate_report(game_code, lgm):
     # Generació del report amb totes les dades
     pdf_buffer = generate_pdf_from_json(
         data=report_data,
-        template_path="report_template.png"
+        template_path="REPORT_U2024194.png"
     )
 
     return send_file(

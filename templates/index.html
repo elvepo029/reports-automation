@@ -56,7 +56,9 @@
 <button onclick="loadData()">Carregar</button>
 <span id="status"></span>
 
-<button onclick="runCorrection()">Generar Correccions</button>
+<button id="run-correction-btn" onclick="runCorrection()">
+  Generar Correccions
+</button>
 
 <!-- Taula correccions -->
 <table id="table"></table>
@@ -517,6 +519,12 @@ function generateReport() {
 }
 
 function runCorrection() {
+  const btn = document.getElementById("run-correction-btn");
+
+  // Bloquejar el botó
+  btn.disabled = true;
+  btn.innerText = "Executant...";
+
   fetch("/run-correction", { method: "POST" })
     .then(r => r.json())
     .then(res => {
@@ -525,6 +533,14 @@ function runCorrection() {
       } else {
         alert("Error: " + res.message);
       }
+    })
+    .catch(err => {
+      alert("Error executant l'script");
+      console.error(err);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Generar Correccions";
     });
 }
 
