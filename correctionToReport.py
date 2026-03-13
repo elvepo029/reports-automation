@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import sqlite3
+import os
 from datetime import datetime
 from correction import Correction
 from dataclasses import asdict
@@ -111,8 +112,26 @@ def getLGMNameById(cursor, lgm_id):
     row = cursor.fetchone()
     return row[0] if row else None
 
+def _resolve_process_date():
+    """
+    Returns the date to process.
+
+    - Default: today's local date.
+    - Override with env var CORRECTIONS_DATE in YYYY-MM-DD format.
+    """
+    raw = (os.getenv("CORRECTIONS_DATE") or "").strip()
+    if not raw:
+        return datetime.now().date()
+
+    try:
+        return datetime.strptime(raw, "%Y-%m-%d").date()
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid CORRECTIONS_DATE='{raw}'. Expected format YYYY-MM-DD (e.g. 2026-03-13)."
+        ) from e
+
 def runCorrectionsProcessor():
-    actual_date = datetime(2026, 3, 12).date() #modificar cada dia de partits amb la data actual
+    actual_date = _resolve_process_date()
     conn = sqlite3.connect("dades.db")
     cursor = conn.cursor()
 
