@@ -149,7 +149,7 @@ def processDeletions(action_abb, home_team, away_team, action_parts) -> Correcti
 
 def processMovements(action_abb, home_team, away_team, action_parts) -> Correction:
     b_ss = "BOXSCORE"
-    type_c = "MISSPLACED"
+    type_c = "MISPLACED"
     category = action_abb
 
     if action_parts[6] == home_team:
@@ -185,7 +185,7 @@ def processEditions(action_abb, home_team, away_team, action_parts, correction_p
         
         elif "A" in stat or "B" in stat:
             category = action_abb
-            type_c = "MISSIDENTITY"
+            type_c = "MISIDENTITY"
 
             if "A" in correction_parts[1]:
                 team = "HOME TEAM"

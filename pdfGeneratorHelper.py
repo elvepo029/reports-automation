@@ -200,7 +200,7 @@ def generate_pdf_from_json(data, template_path):
             "size": 11,
             "align": "center"
         },
-        "missidentity_corrections": {
+        "misidentity_corrections": {
             "pos": (169, 275),
             "color": colors.black,
             "font": "Helvetica",
@@ -221,7 +221,7 @@ def generate_pdf_from_json(data, template_path):
             "size": 11,
             "align": "center"
         },
-        "missplaced_corrections": {
+        "misplaced_corrections": {
             "pos": (169, 232),
             "color": colors.black,
             "font": "Helvetica",

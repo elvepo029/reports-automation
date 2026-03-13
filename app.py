@@ -10,6 +10,30 @@ DB = "dades.db"
 def get_db():
     return sqlite3.connect(DB)
 
+
+def ensure_game_logistics_columns(conn):
+    """
+    Garanteix que la taula Game tingui les columnes de logística necessàries.
+    Afegim les columnes només si no existeixen (per compatibilitat amb BDs antigues).
+    """
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(Game)")
+    existing_cols = {row[1] for row in cur.fetchall()}
+
+    needed_columns = [
+        ("arrival_time", "TEXT"),
+        ("checklist_on_time", "TEXT"),
+        ("communication", "TEXT"),
+        ("corrections_speed", "TEXT"),
+        ("rescouted", "TEXT"),
+    ]
+
+    for col_name, col_type in needed_columns:
+        if col_name not in existing_cols:
+            cur.execute(f"ALTER TABLE Game ADD COLUMN {col_name} {col_type}")
+
+    conn.commit()
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -151,6 +175,9 @@ def generate_report(game_code, lgm):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
+    # Assegurar que la taula Game té les columnes de logística necessàries
+    ensure_game_logistics_columns(conn)
+
     # Dades del partit
     cur.execute("SELECT * FROM Game WHERE game_code = ?", (game_code,))
     game = cur.fetchone()
@@ -169,7 +196,7 @@ def generate_report(game_code, lgm):
     cur.execute("SELECT team_name FROM Team WHERE team_code = ?", (game["code_a"],))
     away_team = cur.fetchone()["team_name"]
 
-    # USCs
+    # USCs rebuts del formulari
     data_entry = request.args.get("data_entry", "")
     caller_1 = request.args.get("caller_1", "")
     caller_2 = request.args.get("caller_2", "")
@@ -177,7 +204,7 @@ def generate_report(game_code, lgm):
     shot_clock = request.args.get("shot_clock", "")
     irs_operator = request.args.get("irs_operator", "")
 
-    # Logistics
+    # Logistics rebuts del formulari
     arrival_time = request.args.get("arrival_time", "")
     checklist_on_time = request.args.get("checklist_on_time", "")
     communication = request.args.get("communication", "")
@@ -185,7 +212,45 @@ def generate_report(game_code, lgm):
     rescouted = request.args.get("rescouted", "")
 
     # Num accions
-    num_accions = int(request.args.get("num_accions", 0))
+    raw_num_accions = request.args.get("num_accions", "")
+    try:
+        num_accions = int(raw_num_accions) if raw_num_accions not in ("", None) else 0
+    except ValueError:
+        num_accions = 0
+
+    # Guardar USCs i Logistics a la taula Game (persistència)
+    cur.execute(
+        """
+        UPDATE Game
+        SET data_entry = ?,
+            caller_1 = ?,
+            caller_2 = ?,
+            timer = ?,
+            shot_clock_operator = ?,
+            irs_operator = ?,
+            arrival_time = ?,
+            checklist_on_time = ?,
+            communication = ?,
+            corrections_speed = ?,
+            rescouted = ?
+        WHERE game_code = ?
+        """,
+        (
+            data_entry,
+            caller_1,
+            caller_2,
+            timer,
+            shot_clock,
+            irs_operator,
+            arrival_time,
+            checklist_on_time,
+            communication,
+            corrections_speed,
+            rescouted,
+            game_code,
+        ),
+    )
+    conn.commit()
 
     # Num correccions
     cur.execute("SELECT COUNT(*) as total_corr FROM Correction WHERE game_code = ?", (game_code,))
@@ -239,7 +304,7 @@ def generate_report(game_code, lgm):
     # Num correccions (Boxscore o Scoresheet)
     # Definir grups
     scoresheet_types = ["COACH CHALLENGE", "FOULS", "IRS", "JUMP BALL", "POINTS", "SUBS", "TOUT"]
-    boxscore_types = ["CRITERIA", "MISSIDENTITY", "MISSING", "MISSPLACED", "NOT HAPPENED", "TIMING"]
+    boxscore_types = ["CRITERIA", "MISIDENTITY", "MISSING", "MISPLACED", "NOT HAPPENED", "TIMING"]
 
     # Comptar total per b_ss
     cur.execute("SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND b_ss = 'SCORESHEET'", (game_code,))
@@ -273,9 +338,9 @@ def generate_report(game_code, lgm):
         "SUBSTITUTION": 5,
         "TIME OUT": 10,
         "CRITERIA": 0.5,
-        "MISSIDENTITY": 1,
+        "MISIDENTITY": 1,
         "MISSING": 2.5,
-        "MISSPLACED": 1,
+        "MISPLACED": 1,
         "NOT HAPPENED": 2,
         "TIMING": 1
     }
@@ -355,10 +420,10 @@ def generate_report(game_code, lgm):
 
     type_to_json_key = {
         "CRITERIA": "criteria_corrections",
-        "MISSIDENTITY": "missidentity_corrections",
+        "MISIDENTITY": "misidentity_corrections",
         "MISSING": "missing_corrections",
         "NOT HAPPENED": "not_happened_corrections",
-        "MISSPLACED": "missplaced_corrections",
+        "MISPLACED": "misplaced_corrections",
         "TIMING": "timing_corrections",
         "JUMP BALL": "jump_ball_corrections",
         "SUBS": "substitution_corrections",
@@ -390,6 +455,12 @@ def generate_report(game_code, lgm):
         report_data[json_key] = cur.fetchone()["total"]
 
     conn.close()
+
+    # Si es demana format JSON, retornar només el resultat calculat
+    if request.args.get("format") == "json":
+        return jsonify({
+            "result": float(f"{resultat_final:.1f}")
+        })
 
     # Generació del report amb totes les dades
     pdf_buffer = generate_pdf_from_json(

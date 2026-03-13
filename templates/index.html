@@ -13,6 +13,36 @@
     border-radius: 6px; border: 1px solid #ccc; margin-right: 8px; margin-bottom: 10px;
     outline: none; transition: border 0.2s;
   }
+  .quarter-input {
+    width: 45px;           /* una mica més estreta */
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .bss-input {
+    width: 135px;          /* una mica més ampla per "SCORESHEET" */
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .team-input {
+    width: 120px;          /* prou ample per "HOME TEAM" / "AWAY TEAM" */
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .typec-input {
+    width: 180px;          /* prou ample per valors llargs de type_c */
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .category-input {
+    width: 140px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .team-input {
+    width: 120px;          /* prou ample per "HOME TEAM" / "AWAY TEAM" */
+    padding-left: 6px;
+    padding-right: 6px;
+  }
   input:focus, select:focus, textarea:focus { border-color: #1B5DBF; }
   textarea { width: 100%; min-height: 80px; resize: vertical; }
   button {
@@ -142,6 +172,78 @@
 </div>
 
 <button onclick="generateReport()" id="generate-report-btn" style="display:none">Generar Report</button>
+<span id="resultat_final_label" style="margin-left: 10px; font-weight: bold;"></span>
+
+<!-- Opcions suggerides per a la columna QUARTER (es permet també text lliure) -->
+<datalist id="quarter_list">
+  <option value="1"></option>
+  <option value="2"></option>
+  <option value="3"></option>
+  <option value="4"></option>
+  <option value="ET"></option>
+</datalist>
+
+<!-- Opcions suggerides per a la columna B_SS (es permet també text lliure) -->
+<datalist id="bss_list">
+  <option value="SCORESHEET"></option>
+  <option value="BOXSCORE"></option>
+</datalist>
+
+<!-- Opcions suggerides per a la columna TEAM (es permet també text lliure) -->
+<datalist id="team_list">
+  <option value="HOME TEAM"></option>
+  <option value="AWAY TEAM"></option>
+</datalist>
+
+<!-- Opcions suggerides per a la columna TYPE_C (es permet també text lliure) -->
+<datalist id="typec_list">
+  <option value="COACH CHALLENGE"></option>
+  <option value="CRITERIA"></option>
+  <option value="FOULS"></option>
+  <option value="INSTANT REPLAY"></option>
+  <option value="JUMP BALL"></option>
+  <option value="MISIDENTITY"></option>
+  <option value="MISSING"></option>
+  <option value="MISPLACED"></option>
+  <option value="NOT HAPPENED"></option>
+  <option value="POINTS"></option>
+  <option value="SUBSTITUTIONS"></option>
+  <option value="TIME OUT"></option>
+  <option value="TIMING"></option>
+</datalist>
+
+<!-- Opcions suggerides per a la columna CATEGORY (es permet també text lliure) -->
+<datalist id="category_list">
+  <option value="3P"></option>
+  <option value="2P"></option>
+  <option value="AS"></option>
+  <option value="BLK"></option>
+  <option value="CC"></option>
+  <option value="DR"></option>
+  <option value="DQ_FOUL"></option>
+  <option value="FD"></option>
+  <option value="FOUL"></option>
+  <option value="FTM"></option>
+  <option value="IRS"></option>
+  <option value="JB"></option>
+  <option value="MFT"></option>
+  <option value="M3P"></option>
+  <option value="M2P"></option>
+  <option value="OF_FOUL"></option>
+  <option value="OR"></option>
+  <option value="SR"></option>
+  <option value="ST"></option>
+  <option value="IN"></option>
+  <option value="OUT"></option>
+  <option value="TECH"></option>
+  <option value="TOUT"></option>
+  <option value="TO"></option>
+  <option value="UF"></option>
+  <option value="TV_TOUT"></option>
+  <option value="TI_FOUL"></option>
+  <option value="TECH_COACH"></option>
+  <option value="TECH_BENCH"></option>
+</datalist>
 
 <script>
 const textarea = document.getElementById("valoracions");
@@ -169,6 +271,7 @@ textarea.addEventListener("input", () => {
 const nonEditableColumns = ["game_code", "thread_name", "correction"];
 const columnOrder = ["thread_name","correction","time","quarter","points_h","points_a","action_num","b_ss","team","type_c","category"];
 let currentData = [];
+let liveResultTimeout = null;
 
 loadLiveGameManagers();
 
@@ -231,6 +334,9 @@ function loadData() {
     });
 
     document.getElementById("logistics-fields").style.display = "block";
+
+    // Actualitzar resultat provisional un cop carregades les dades
+    scheduleLiveResultUpdate();
 }
 
 function renderTable(data, selectedLGM) {
@@ -262,9 +368,47 @@ function renderTable(data, selectedLGM) {
 
     columnOrder.forEach(col => {
       const td = tr.insertCell();
-      td.innerText = row[col] || "";
-      if (!nonEditableColumns.includes(col) && canEditRow) td.contentEditable = "true";
-      else td.contentEditable = "false";
+
+      if (col === "quarter" && canEditRow && !nonEditableColumns.includes(col)) {
+        const input = document.createElement("input");
+        input.setAttribute("list", "quarter_list");
+        input.classList.add("quarter-input");
+        input.value = row[col] || "";
+        td.appendChild(input);
+        td.contentEditable = "false";
+      } else if (col === "b_ss" && canEditRow && !nonEditableColumns.includes(col)) {
+        const input = document.createElement("input");
+        input.setAttribute("list", "bss_list");
+        input.classList.add("bss-input");
+        input.value = row[col] || "";
+        td.appendChild(input);
+        td.contentEditable = "false";
+      } else if (col === "team" && canEditRow && !nonEditableColumns.includes(col)) {
+        const input = document.createElement("input");
+        input.setAttribute("list", "team_list");
+        input.classList.add("team-input");
+        input.value = row[col] || "";
+        td.appendChild(input);
+        td.contentEditable = "false";
+      } else if (col === "type_c" && canEditRow && !nonEditableColumns.includes(col)) {
+        const input = document.createElement("input");
+        input.setAttribute("list", "typec_list");
+        input.classList.add("typec-input");
+        input.value = row[col] || "";
+        td.appendChild(input);
+        td.contentEditable = "false";
+      } else if (col === "category" && canEditRow && !nonEditableColumns.includes(col)) {
+        const input = document.createElement("input");
+        input.setAttribute("list", "category_list");
+        input.classList.add("category-input");
+        input.value = row[col] || "";
+        td.appendChild(input);
+        td.contentEditable = "false";
+      } else {
+        td.innerText = row[col] || "";
+        if (!nonEditableColumns.includes(col) && canEditRow) td.contentEditable = "true";
+        else td.contentEditable = "false";
+      }
     });
 
     const tdAction = tr.insertCell();
@@ -307,6 +451,36 @@ function insertNewCorrectionRow(table, selectedLGM) {
     if (col === "thread_name" || col === "correction") {
       td.innerText = "Correcció Nova";
       td.contentEditable = "false";
+    } else if (col === "quarter" && !nonEditableColumns.includes(col)) {
+      const input = document.createElement("input");
+      input.setAttribute("list", "quarter_list");
+      input.classList.add("quarter-input");
+      td.appendChild(input);
+      td.contentEditable = "false";
+    } else if (col === "b_ss" && !nonEditableColumns.includes(col)) {
+      const input = document.createElement("input");
+      input.setAttribute("list", "bss_list");
+      input.classList.add("bss-input");
+      td.appendChild(input);
+      td.contentEditable = "false";
+    } else if (col === "team" && !nonEditableColumns.includes(col)) {
+      const input = document.createElement("input");
+      input.setAttribute("list", "team_list");
+      input.classList.add("team-input");
+      td.appendChild(input);
+      td.contentEditable = "false";
+    } else if (col === "type_c" && !nonEditableColumns.includes(col)) {
+      const input = document.createElement("input");
+      input.setAttribute("list", "typec_list");
+      input.classList.add("typec-input");
+      td.appendChild(input);
+      td.contentEditable = "false";
+    } else if (col === "category" && !nonEditableColumns.includes(col)) {
+      const input = document.createElement("input");
+      input.setAttribute("list", "category_list");
+      input.classList.add("category-input");
+      td.appendChild(input);
+      td.contentEditable = "false";
     } else {
       td.innerText = "";
       td.contentEditable = !nonEditableColumns.includes(col);
@@ -321,7 +495,25 @@ function insertNewCorrectionRow(table, selectedLGM) {
   btnAdd.onclick = () => {
     const cells = tr.querySelectorAll("td[data-field]");
     cells.forEach(td => {
-      newData[td.dataset.field] = td.innerText.trim();
+      const field = td.dataset.field;
+      if (field === "quarter") {
+        const input = td.querySelector("input");
+        newData[field] = input ? input.value.trim() : "";
+      } else if (field === "b_ss") {
+        const input = td.querySelector("input");
+        newData[field] = input ? input.value.trim() : "";
+      } else if (field === "team") {
+        const input = td.querySelector("input");
+        newData[field] = input ? input.value.trim() : "";
+      } else if (field === "type_c") {
+        const input = td.querySelector("input");
+        newData[field] = input ? input.value.trim() : "";
+      } else if (field === "category") {
+        const input = td.querySelector("input");
+        newData[field] = input ? input.value.trim() : "";
+      } else {
+        newData[field] = td.innerText.trim();
+      }
     });
 
     newData.live_game_manager = selectedLGM;
@@ -340,6 +532,21 @@ function insertNewCorrectionRow(table, selectedLGM) {
 
       if (field === "thread_name" || field === "correction") {
         td.innerText = "Correcció Nova";
+      } else if (field === "quarter") {
+        const input = td.querySelector("input");
+        if (input) input.value = "";
+      } else if (field === "b_ss") {
+        const input = td.querySelector("input");
+        if (input) input.value = "";
+      } else if (field === "team") {
+        const input = td.querySelector("input");
+        if (input) input.value = "";
+      } else if (field === "type_c") {
+        const input = td.querySelector("input");
+        if (input) input.value = "";
+      } else if (field === "category") {
+        const input = td.querySelector("input");
+        if (input) input.value = "";
       } else {
         td.innerText = "";
       }
@@ -353,7 +560,29 @@ function insertNewCorrectionRow(table, selectedLGM) {
 
 function saveRow(rowData, tr) {
   const newData = { rowid: rowData.rowid };
-  columnOrder.forEach(col => { if (!nonEditableColumns.includes(col)) newData[col] = tr.cells[columnOrder.indexOf(col)].innerText; });
+  columnOrder.forEach(col => {
+    if (nonEditableColumns.includes(col)) return;
+
+    const cell = tr.cells[columnOrder.indexOf(col)];
+    if (col === "quarter") {
+      const input = cell.querySelector("input");
+      newData[col] = input ? input.value : "";
+    } else if (col === "b_ss") {
+      const input = cell.querySelector("input");
+      newData[col] = input ? input.value : "";
+    } else if (col === "team") {
+      const input = cell.querySelector("input");
+      newData[col] = input ? input.value : "";
+    } else if (col === "type_c") {
+      const input = cell.querySelector("input");
+      newData[col] = input ? input.value : "";
+    } else if (col === "category") {
+      const input = cell.querySelector("input");
+      newData[col] = input ? input.value : "";
+    } else {
+      newData[col] = cell.innerText;
+    }
+  });
   fetch("/update", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newData) })
     .then(r => r.json())
     .then(res => {
@@ -514,8 +743,10 @@ function generateReport() {
         ...uscs
     }).toString();
 
-    // 6️⃣ Obrir PDF en una nova finestra
-    window.open(`/generate_report/${gameCode}/${lgm}?${params}`, '_blank');
+    const baseUrl = `/generate_report/${gameCode}/${lgm}`;
+
+    // 6️⃣ Obrir PDF en una nova finestra (resultat definitiu)
+    window.open(`${baseUrl}?${params}`, '_blank');
 }
 
 function runCorrection() {
@@ -543,6 +774,87 @@ function runCorrection() {
       btn.innerText = "Generar Correccions";
     });
 }
+
+function scheduleLiveResultUpdate() {
+  if (liveResultTimeout) {
+    clearTimeout(liveResultTimeout);
+  }
+  liveResultTimeout = setTimeout(updateLiveResult, 500);
+}
+
+function updateLiveResult() {
+  const comp = document.getElementById("competition").value;
+  const num = document.getElementById("match_num").value.trim();
+  const lgm = document.getElementById("live_game_manager_select").value;
+  const label = document.getElementById("resultat_final_label");
+
+  // Si falten dades bàsiques, esborrem resultat i no fem res
+  if (!comp || !num || !lgm) {
+    if (label) label.textContent = "";
+    return;
+  }
+
+  const gameCode = `${comp}2025_${num}`;
+
+  const logisticsData = {
+    arrival_time: document.getElementById("arrival_time").value,
+    checklist_on_time: document.getElementById("checklist_on_time").value,
+    communication: document.getElementById("communication").value,
+    corrections_speed: document.getElementById("corrections_speed").value,
+    rescouted: document.getElementById("rescouted").value
+  };
+
+  const uscs = {
+    data_entry: document.getElementById("data_entry").value,
+    caller_1: document.getElementById("caller_1").value,
+    caller_2: document.getElementById("caller_2").value,
+    timer: document.getElementById("timer").value,
+    shot_clock: document.getElementById("shot_clock_operator").value,
+    irs_operator: document.getElementById("irs_operator").value
+  };
+
+  let num_accions = document.getElementById("num_accions").value;
+  if (!num_accions) {
+    // Sense número d'accions no té sentit el %; esborrem resultat provisional
+    if (label) label.textContent = "";
+    return;
+  }
+
+  const params = new URLSearchParams({
+    ...logisticsData,
+    num_accions: num_accions,
+    ...uscs
+  }).toString();
+
+  const baseUrl = `/generate_report/${gameCode}/${lgm}`;
+
+  fetch(`${baseUrl}?${params}&format=json`)
+    .then(r => r.json())
+    .then(data => {
+      if (!label) return;
+      if (data && typeof data.result !== "undefined") {
+        const value = typeof data.result === "number"
+          ? data.result.toFixed(1)
+          : data.result;
+        label.textContent = `Resultat provisional: ${value}`;
+      } else {
+        label.textContent = "";
+      }
+    })
+    .catch(() => {
+      if (label) label.textContent = "";
+    });
+}
+
+// Listeners per recalcular el resultat provisional quan canvien les dades
+["arrival_time","checklist_on_time","communication","corrections_speed","rescouted",
+ "data_entry","caller_1","caller_2","timer","shot_clock_operator","irs_operator",
+ "num_accions"].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const eventName = el.tagName === "SELECT" ? "change" : "input";
+  el.addEventListener(eventName, scheduleLiveResultUpdate);
+});
 
 </script>
 
