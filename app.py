@@ -65,48 +65,100 @@ def api_corrections_paginated():
     """Paginated list of Correction records, most recent first. Supports filters via query params."""
     page = max(1, request.args.get("page", 1, type=int))
     per_page = min(100, max(1, request.args.get("per_page", 50, type=int)))
+
+    # filters on Correction table
     filters = {}
     for col in FILTERABLE_CORRECTION_COLUMNS:
         val = request.args.get(col, "").strip()
         if val:
             filters[col] = val
 
+    # filters on Game table
+    game_filters = {}
+    game_filter_names = [
+        "home_team",
+        "away_team",
+        "data_entry",
+        "caller_1",
+        "caller_2",
+        "timer",
+        "shot_clock_operator",
+        "irs_operator",
+        "arrival_time",
+        "checklist_on_time",
+        "communication",
+        "corrections_speed",
+        "rescouted",
+    ]
+    for key in game_filter_names:
+        val = request.args.get(key, "").strip()
+        if val:
+            game_filters[key] = val
+
     competition = request.args.get("competition", "").strip()
     season = request.args.get("season", "").strip()
+
+    join_game = bool(game_filters)
 
     where_parts = []
     params = []
 
+    # Correction filters
     if filters:
         for col, val in filters.items():
-            where_parts.append(f"{col} = ?")
+            where_parts.append(f"C.{col} = ?")
             params.append(val)
 
+    # Game filters
+    if join_game:
+        # home/away team_code
+        if "home_team" in game_filters:
+            where_parts.append("G.code_h = ?")
+            params.append(game_filters["home_team"])
+        if "away_team" in game_filters:
+            where_parts.append("G.code_a = ?")
+            params.append(game_filters["away_team"])
+        # USCs
+        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+            if field in game_filters:
+                where_parts.append(f"G.{field} = ?")
+                params.append(game_filters[field])
+        # logistics
+        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+            if field in game_filters:
+                where_parts.append(f"G.{field} = ?")
+                params.append(game_filters[field])
+
+    # virtual filters (competition, season)
     if competition:
         # game_code starts with competition letter, e.g. 'E' or 'U'
-        where_parts.append("game_code LIKE ?")
+        where_parts.append("C.game_code LIKE ?")
         params.append(f"{competition}%")
 
     if season:
         # season is in format '2025-2026' → use the first part '2025'
         season_year = season.split("-")[0].strip()
         if season_year:
-            where_parts.append("game_code LIKE ?")
+            where_parts.append("C.game_code LIKE ?")
             params.append(f"%{season_year}%")
 
     where_clause = ""
     if where_parts:
         where_clause = " WHERE " + " AND ".join(where_parts)
 
+    from_clause = " FROM Correction C"
+    if join_game:
+        from_clause += " JOIN Game G ON C.game_code = G.game_code"
+
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) AS total FROM Correction" + where_clause, params)
+    cur.execute("SELECT COUNT(*) AS total" + from_clause + where_clause, params)
     total = cur.fetchone()["total"]
     offset = (page - 1) * per_page
     select_params = params + [per_page, offset]
     cur.execute(
-        "SELECT rowid, * FROM Correction" + where_clause + " ORDER BY rowid DESC LIMIT ? OFFSET ?",
+        "SELECT C.rowid, C.*" + from_clause + where_clause + " ORDER BY C.rowid DESC LIMIT ? OFFSET ?",
         select_params,
     )
     rows = [dict(r) for r in cur.fetchall()]
@@ -119,6 +171,105 @@ def api_corrections_paginated():
         "per_page": per_page,
         "total_pages": total_pages,
     })
+
+
+@app.route("/api/team_codes")
+def api_team_codes():
+    """Return distinct team codes for filters."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT DISTINCT team_code FROM Team WHERE team_code IS NOT NULL AND team_code != '' ORDER BY team_code")
+    codes = [row[0] for row in cur.fetchall()]
+    conn.close()
+    return jsonify(codes)
+
+
+@app.route("/api/uscs_for_team/<team_code>")
+def api_uscs_for_team(team_code: str):
+    """Return USC names for a given team_code (for filters)."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT DISTINCT name FROM Usc WHERE team_code = ? AND name IS NOT NULL AND name != '' ORDER BY name",
+        (team_code,),
+    )
+    names = [row[0] for row in cur.fetchall()]
+    conn.close()
+    return jsonify(names)
+
+
+@app.route("/api/logistics_counts")
+def api_logistics_counts():
+    """Return counts for each logistics value, given current Game-level filters."""
+    # read game filters from query parameters
+    game_filters = {}
+    game_filter_names = [
+        "home_team",
+        "away_team",
+        "data_entry",
+        "caller_1",
+        "caller_2",
+        "timer",
+        "shot_clock_operator",
+        "irs_operator",
+        "arrival_time",
+        "checklist_on_time",
+        "communication",
+        "corrections_speed",
+        "rescouted",
+    ]
+    for key in game_filter_names:
+        val = request.args.get(key, "").strip()
+        if val:
+            game_filters[key] = val
+
+    # helper to build WHERE for Game table, excluding a specific field
+    def build_where(exclude_field: str):
+        parts = []
+        params_local = []
+        # home/away codes
+        if "home_team" in game_filters and exclude_field != "home_team":
+            parts.append("code_h = ?")
+            params_local.append(game_filters["home_team"])
+        if "away_team" in game_filters and exclude_field != "away_team":
+            parts.append("code_a = ?")
+            params_local.append(game_filters["away_team"])
+        # USCs
+        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+            if field in game_filters and exclude_field != field:
+                parts.append(f"{field} = ?")
+                params_local.append(game_filters[field])
+        # logistics
+        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+            if field in game_filters and exclude_field != field:
+                parts.append(f"{field} = ?")
+                params_local.append(game_filters[field])
+
+        where_clause_local = ""
+        if parts:
+            where_clause_local = " WHERE " + " AND ".join(parts)
+        return where_clause_local, params_local
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    result = {}
+    logistics_fields = ["arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"]
+    for field in logistics_fields:
+        where_clause, params_local = build_where(field)
+        query = f"SELECT {field} AS v, COUNT(*) AS c FROM Game{where_clause} GROUP BY {field}"
+        cur.execute(query, params_local)
+        counts = {}
+        for row in cur.fetchall():
+            val = row["v"]
+            if val is None or val == "":
+                continue
+            counts[val] = row["c"]
+        result[field] = counts
+
+    conn.close()
+    return jsonify(result)
 
 @app.route("/run-correction", methods=["POST"])
 def run_correction_route():

@@ -13,6 +13,41 @@
       color: #0A1F44;
       margin-bottom: 4px;
     }
+    .filters-block-wrap {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .filters-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .filters-block-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0A1F44;
+      margin: 0;
+    }
+    .filters-block-header button {
+      background: #e0e4ec;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #0A1F44;
+    }
+    .filters-block-header button:hover {
+      background: #d0d6e6;
+    }
+    .filters-block-wrap .filters {
+      margin-bottom: 0;
+      padding: 0;
+    }
     .pagination {
       display: flex;
       align-items: center;
@@ -119,6 +154,19 @@
       width: 245px;
       box-sizing: border-box;
     }
+    .logistics-count {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #555;
+      line-height: 1.2;
+    }
+    /* Forcing a break between rows inside the game filters grid */
+    #game-filters .filters-row-break {
+      grid-column: 1 / -1;
+      height: 0;
+      padding: 0;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -129,29 +177,145 @@
 <div id="loading">Loading…</div>
 <div id="error" style="display:none;"></div>
 
-<div class="filters-toolbar">
-  <button type="button" id="clear-all-filters">Clear all filters</button>
+<div class="filters-block-wrap">
+  <div class="filters-block-header">
+    <h3 class="filters-block-title">Game filters</h3>
+    <button type="button" id="clear-game-filters">Clear game filters</button>
+  </div>
+  <div class="filters" id="game-filters">
+  <!-- Row 1: home/away teams and USCs -->
+  <div class="filter-container filter-container-home_team">
+    <label for="filter-home_team">home_team (team code)</label>
+    <div class="filter-field">
+      <input type="text" id="filter-home_team" list="datalist_team_codes" placeholder="All home teams">
+      <button type="button" class="filter-clear" data-col="home_team">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-away_team">
+    <label for="filter-away_team">away_team (team code)</label>
+    <div class="filter-field">
+      <input type="text" id="filter-away_team" list="datalist_team_codes" placeholder="All away teams">
+      <button type="button" class="filter-clear" data-col="away_team">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-data_entry">
+    <label for="filter-data_entry">data_entry</label>
+    <div class="filter-field">
+      <input type="text" id="filter-data_entry" list="datalist_data_entry" placeholder="All data entries">
+      <button type="button" class="filter-clear" data-col="data_entry">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-caller_1">
+    <label for="filter-caller_1">caller_1</label>
+    <div class="filter-field">
+      <input type="text" id="filter-caller_1" list="datalist_caller_1" placeholder="All caller 1">
+      <button type="button" class="filter-clear" data-col="caller_1">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-caller_2">
+    <label for="filter-caller_2">caller_2</label>
+    <div class="filter-field">
+      <input type="text" id="filter-caller_2" list="datalist_caller_2" placeholder="All caller 2">
+      <button type="button" class="filter-clear" data-col="caller_2">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-timer">
+    <label for="filter-timer">timer</label>
+    <div class="filter-field">
+      <input type="text" id="filter-timer" list="datalist_timer" placeholder="All timers">
+      <button type="button" class="filter-clear" data-col="timer">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-shot_clock_operator">
+    <label for="filter-shot_clock_operator">shot_clock_operator</label>
+    <div class="filter-field">
+      <input type="text" id="filter-shot_clock_operator" list="datalist_shot_clock_operator" placeholder="All shot clock operators">
+      <button type="button" class="filter-clear" data-col="shot_clock_operator">Clear</button>
+    </div>
+  </div>
+
+  <div class="filter-container filter-container-irs_operator">
+    <label for="filter-irs_operator">irs_operator</label>
+    <div class="filter-field">
+      <input type="text" id="filter-irs_operator" list="datalist_irs_operator" placeholder="All IRS operators">
+      <button type="button" class="filter-clear" data-col="irs_operator">Clear</button>
+    </div>
+  </div>
+
+  <!-- Force new grid row for logistics -->
+  <div class="filters-row-break"></div>
+
+  <!-- Row 2: logistics -->
+  <div class="filter-container filter-container-arrival_time">
+    <label for="filter-arrival_time">arrival_time</label>
+    <div class="filter-field">
+      <input type="text" id="filter-arrival_time" list="datalist_arrival_time" placeholder="All">
+      <button type="button" class="filter-clear" data-col="arrival_time">Clear</button>
+    </div>
+    <div class="logistics-count" id="logistics-count-arrival_time"></div>
+  </div>
+
+  <div class="filter-container filter-container-checklist_on_time">
+    <label for="filter-checklist_on_time">checklist_on_time</label>
+    <div class="filter-field">
+      <input type="text" id="filter-checklist_on_time" list="datalist_checklist_on_time" placeholder="All">
+      <button type="button" class="filter-clear" data-col="checklist_on_time">Clear</button>
+    </div>
+    <div class="logistics-count" id="logistics-count-checklist_on_time"></div>
+  </div>
+
+  <div class="filter-container filter-container-communication">
+    <label for="filter-communication">communication</label>
+    <div class="filter-field">
+      <input type="text" id="filter-communication" list="datalist_communication" placeholder="All">
+      <button type="button" class="filter-clear" data-col="communication">Clear</button>
+    </div>
+    <div class="logistics-count" id="logistics-count-communication"></div>
+  </div>
+
+  <div class="filter-container filter-container-corrections_speed">
+    <label for="filter-corrections_speed">corrections_speed</label>
+    <div class="filter-field">
+      <input type="text" id="filter-corrections_speed" list="datalist_corrections_speed" placeholder="All">
+      <button type="button" class="filter-clear" data-col="corrections_speed">Clear</button>
+    </div>
+    <div class="logistics-count" id="logistics-count-corrections_speed"></div>
+  </div>
+
+  <div class="filter-container filter-container-rescouted">
+    <label for="filter-rescouted">rescouted</label>
+    <div class="filter-field">
+      <input type="text" id="filter-rescouted" list="datalist_rescouted" placeholder="All">
+      <button type="button" class="filter-clear" data-col="rescouted">Clear</button>
+    </div>
+    <div class="logistics-count" id="logistics-count-rescouted"></div>
+  </div>
+</div>
 </div>
 
-<div class="filters" id="filters">
+<div class="filters-block-wrap">
+  <div class="filters-block-header">
+    <h3 class="filters-block-title">Correction filters</h3>
+    <button type="button" id="clear-corrections-filters">Clear corrections filters</button>
+  </div>
+  <div class="filters" id="filters">
   <div class="filter-container filter-container-competition">
     <label for="filter-competition">competition</label>
     <div class="filter-field">
-      <select id="filter-competition" class="filter-competition">
-        <option value="">All competitions</option>
-        <option value="E">E</option>
-        <option value="U">U</option>
-      </select>
+      <input type="text" id="filter-competition" class="filter-competition" list="datalist_competition" placeholder="All competitions">
       <button type="button" class="filter-clear" data-col="competition">Clear</button>
     </div>
   </div>
   <div class="filter-container filter-container-season">
     <label for="filter-season">season</label>
     <div class="filter-field">
-      <select id="filter-season" class="filter-season">
-        <option value="">All seasons</option>
-        <option value="2025-2026">2025-2026</option>
-      </select>
+      <input type="text" id="filter-season" class="filter-season" list="datalist_season" placeholder="All seasons">
       <button type="button" class="filter-clear" data-col="season">Clear</button>
     </div>
   </div>
@@ -228,14 +392,52 @@
   <div class="filter-container filter-container-live_game_manager">
     <label for="filter-live_game_manager">live_game_manager</label>
     <div class="filter-field">
-      <select id="filter-live_game_manager" class="filter-live-game-manager">
-        <option value="">All Live Game Managers</option>
-      </select>
+      <input type="text" id="filter-live_game_manager" class="filter-live-game-manager" list="datalist_live_game_manager" placeholder="All Live Game Managers">
       <button type="button" class="filter-clear" data-col="live_game_manager">Clear</button>
     </div>
   </div>
 </div>
+</div>
 <p class="filter-count" id="filter-count" style="display:none;"></p>
+
+<!-- Datalists for game/logistics filters (options + free text) -->
+<datalist id="datalist_team_codes"></datalist>
+<datalist id="datalist_data_entry"></datalist>
+<datalist id="datalist_caller_1"></datalist>
+<datalist id="datalist_caller_2"></datalist>
+<datalist id="datalist_timer"></datalist>
+<datalist id="datalist_shot_clock_operator"></datalist>
+<datalist id="datalist_irs_operator"></datalist>
+<datalist id="datalist_arrival_time">
+  <option value="Ok"></option>
+  <option value="Late"></option>
+</datalist>
+<datalist id="datalist_checklist_on_time">
+  <option value="Yes"></option>
+  <option value="No"></option>
+</datalist>
+<datalist id="datalist_communication">
+  <option value="Good"></option>
+  <option value="Ok"></option>
+  <option value="Not Fluid"></option>
+</datalist>
+<datalist id="datalist_corrections_speed">
+  <option value="Fast"></option>
+  <option value="Ok"></option>
+  <option value="Slow"></option>
+</datalist>
+<datalist id="datalist_rescouted">
+  <option value="Yes"></option>
+  <option value="No"></option>
+</datalist>
+<datalist id="datalist_competition">
+  <option value="E"></option>
+  <option value="U"></option>
+</datalist>
+<datalist id="datalist_season">
+  <option value="2025-2026"></option>
+</datalist>
+<datalist id="datalist_live_game_manager"></datalist>
 
 <!-- Datalists for filters, aligned with the report generator -->
 <datalist id="quarter_list">
@@ -329,6 +531,14 @@ const filterableColumns = [
   "game_code", "time", "quarter", "points_h", "points_a", "action_num",
   "b_ss", "team", "type_c", "category", "live_game_manager"
 ];
+// filters that live in the Game table (home/away, USCs, logistics)
+const gameFilterColumns = [
+  "home_team", "away_team",
+  "data_entry", "caller_1", "caller_2", "timer",
+  "shot_clock_operator", "irs_operator",
+  "arrival_time", "checklist_on_time", "communication",
+  "corrections_speed", "rescouted"
+];
 const extraFilterColumns = ["competition", "season"];
 
 let currentPage = 1;
@@ -358,6 +568,12 @@ function getFilterParams() {
     const input = document.getElementById("filter-" + col);
     if (input && input.value.trim()) params.set(col, input.value.trim());
   });
+  // game-level filters (Game table)
+  gameFilterColumns.forEach(col => {
+    const input = document.getElementById("filter-" + col);
+    if (input && input.value.trim()) params.set(col, input.value.trim());
+  });
+
   // extra virtual filters (competition, season)
   const competitionEl = document.getElementById("filter-competition");
   if (competitionEl && competitionEl.value) {
@@ -448,29 +664,107 @@ function clearFilter(col) {
 }
 
 function loadFilterLiveGameManagers() {
-  const select = document.getElementById("filter-live_game_manager");
-  if (!select) return;
+  const datalist = document.getElementById("datalist_live_game_manager");
+  if (!datalist) return;
   fetch("/get_live_game_managers")
     .then(r => r.json())
     .then(data => {
-      select.innerHTML = "";
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.text = "All Live Game Managers";
-      select.appendChild(defaultOption);
+      datalist.innerHTML = "";
       data.forEach(lgm => {
         const option = document.createElement("option");
         option.value = lgm;
-        option.text = lgm;
-        select.appendChild(option);
+        datalist.appendChild(option);
       });
     })
     .catch(() => {
-      select.innerHTML = "";
-      const option = document.createElement("option");
-      option.value = "";
-      option.text = "Error loading Live Game Managers";
-      select.appendChild(option);
+      datalist.innerHTML = "";
+    });
+}
+
+function loadTeamCodes() {
+  const datalist = document.getElementById("datalist_team_codes");
+  if (!datalist) return;
+  fetch("/api/team_codes")
+    .then(r => r.json())
+    .then(data => {
+      datalist.innerHTML = "";
+      data.forEach(code => {
+        const opt = document.createElement("option");
+        opt.value = code;
+        datalist.appendChild(opt);
+      });
+    });
+}
+
+function loadUscsForTeam(teamCode) {
+  const datalistIds = [
+    "datalist_data_entry",
+    "datalist_caller_1",
+    "datalist_caller_2",
+    "datalist_timer",
+    "datalist_shot_clock_operator",
+    "datalist_irs_operator",
+  ];
+  datalistIds.forEach(id => {
+    const datalist = document.getElementById(id);
+    if (!datalist) return;
+    datalist.innerHTML = "";
+  });
+  if (!teamCode) return;
+  fetch("/api/uscs_for_team/" + encodeURIComponent(teamCode))
+    .then(r => r.json())
+    .then(names => {
+      datalistIds.forEach(id => {
+        const datalist = document.getElementById(id);
+        if (!datalist) return;
+        names.forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          datalist.appendChild(opt);
+        });
+      });
+    });
+}
+
+function updateLogisticsCounts() {
+  const params = new URLSearchParams();
+  gameFilterColumns.forEach(col => {
+    const el = document.getElementById("filter-" + col);
+    if (el && el.value.trim()) {
+      params.set(col, el.value.trim());
+    }
+  });
+  fetch("/api/logistics_counts?" + params.toString())
+    .then(r => r.json())
+    .then(data => {
+      // helper to render % under each logistics filter (over total for that field)
+      function renderCounts(containerId, fieldName, orderedValues) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const counts = data[fieldName] || {};
+        let total = 0;
+        Object.values(counts).forEach(c => { total += c; });
+        if (!Object.keys(counts).length || total === 0) {
+          container.textContent = "";
+          return;
+        }
+        const parts = [];
+        orderedValues.forEach(v => {
+          const c = counts[v] || 0;
+          const pct = Math.round((c / total) * 100);
+          parts.push(`${v}: ${pct}%`);
+        });
+        container.textContent = parts.join(" · ") + (total ? `   (${total})` : "");
+      }
+
+      renderCounts("logistics-count-arrival_time", "arrival_time", ["Ok", "Late"]);
+      renderCounts("logistics-count-checklist_on_time", "checklist_on_time", ["Yes", "No"]);
+      renderCounts("logistics-count-communication", "communication", ["Good", "Ok", "Not Fluid"]);
+      renderCounts("logistics-count-corrections_speed", "corrections_speed", ["Fast", "Ok", "Slow"]);
+      renderCounts("logistics-count-rescouted", "rescouted", ["Yes", "No"]);
+    })
+    .catch(() => {
+      // silent fail; do not break main flow
     });
 }
 
@@ -494,9 +788,29 @@ extraFilterColumns.forEach(col => {
   }
 });
 
-const clearAllBtn = document.getElementById("clear-all-filters");
-if (clearAllBtn) {
-  clearAllBtn.addEventListener("click", () => {
+// game-level filters: listen to changes (only on commit, not every keystroke)
+gameFilterColumns.forEach(col => {
+  const input = document.getElementById("filter-" + col);
+  if (input) {
+    input.addEventListener("change", () => {
+      fetchPage(1);
+      updateLogisticsCounts();
+    });
+  }
+});
+
+const clearGameBtn = document.getElementById("clear-game-filters");
+if (clearGameBtn) {
+  clearGameBtn.addEventListener("click", () => {
+    gameFilterColumns.forEach(col => clearFilter(col));
+    fetchPage(1);
+    updateLogisticsCounts();
+  });
+}
+
+const clearCorrectionsBtn = document.getElementById("clear-corrections-filters");
+if (clearCorrectionsBtn) {
+  clearCorrectionsBtn.addEventListener("click", () => {
     const allCols = [...filterableColumns, ...extraFilterColumns];
     allCols.forEach(col => clearFilter(col));
     fetchPage(1);
@@ -513,7 +827,19 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
 });
 
 loadFilterLiveGameManagers();
+loadTeamCodes();
+
+const homeTeamInput = document.getElementById("filter-home_team");
+if (homeTeamInput) {
+  homeTeamInput.addEventListener("change", () => {
+    loadUscsForTeam(homeTeamInput.value.trim() || "");
+    fetchPage(1);
+    updateLogisticsCounts();
+  });
+}
+
 fetchPage(1);
+updateLogisticsCounts();
 </script>
 
 </body>
