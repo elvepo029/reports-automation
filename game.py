@@ -16,3 +16,12 @@ class Game:
     shot_clock_operator: str = ""
     irs_operator: str = ""
     is_processed: bool = False
+    arrival_time: str = ""
+    checklist_on_time: str = ""
+    communication: str = ""
+    corrections_speed: str = ""
+    rescouted: str = ""
+    total_actions: int = 0
+    total_corrections: int = 0
+    lgm_comment: str = ""
+    result: float = 0.0

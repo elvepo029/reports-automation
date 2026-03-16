@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      color: #000;
+    }
+    .report {
+      width: 100%;
+      max-width: 210mm;
+      margin: 0 auto;
+      min-height: calc(297mm - 28mm); /* full A4 height minus top/bottom margins */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cell {
+      text-align: center;
+      vertical-align: middle;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+    }
+    .cell-label {
+      font-size: 9px;
+      color: #555;
+      text-align: center;
+      vertical-align: middle;
+      padding: 2px 4px;
+      border: 1px solid #ddd;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+    }
+    table td, table th {
+      border: 1px solid #ccc;
+      padding: 4px 6px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .top-logo {
+      margin-bottom: 8px;
+    }
+    .top-logo img {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+    .header {
+      background: #0A1F44;
+      color: white;
+      padding: 10px 12px;
+      text-align: center;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .header .game { font-weight: bold; font-size: 12px; }
+    .header .date { font-size: 11px; margin-top: 4px; }
+    .teams-row {
+      background: #1a3566;
+      color: white;
+      padding: 8px 12px;
+    }
+    .teams-row td {
+      border: none;
+      font-size: 11px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .section-title {
+      background: #e8e8e8;
+      font-weight: bold;
+      padding: 6px 8px;
+      text-align: left;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+    .type-section-label {
+      background: #e0e0e0;
+      font-weight: bold;
+      font-size: 10px;
+      text-align: center;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+    }
+    .usc-cell, .logistics-cell {
+      min-width: 70px;
+      min-height: 28px;
+    }
+    .num-cell {
+      min-width: 60px;
+      min-height: 22px;
+    }
+    .totals-table .num-cell {
+      min-height: 18px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+    .corrections-table .num-cell {
+      min-height: 30px;
+    }
+    .value-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 20px;
+    }
+    .comments-box {
+      min-height: 50px;
+      text-align: justify;
+      padding: 8px;
+      border: 1px solid #ccc;
+      margin-top: 8px;
+      font-size: 9px;
+    }
+    .result-cell {
+      font-weight: bold;
+      font-size: 15px;
+      padding: 10px;
+      border: 2px solid #0A1F44;
+      margin-top: 10px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="report">
+    <div class="top-logo">
+      <img src="static/logo.png" alt="Logo">
+    </div>
+    <div class="header">
+      <div class="game">{{ game }}</div>
+      <div class="date">{{ date }}</div>
+    </div>
+
+    <table class="teams-row">
+      <tr>
+        <td style="width:50%;">{{ team_h }}</td>
+        <td style="width:50%;">{{ team_a }}</td>
+      </tr>
+    </table>
+
+    <div class="section-title">USCs</div>
+    <table>
+      <tr>
+        <td class="cell-label">Data Entry</td>
+        <td class="cell-label">Caller 1</td>
+        <td class="cell-label">Caller 2</td>
+        <td class="cell-label">Timer</td>
+        <td class="cell-label">Shot Clock</td>
+        <td class="cell-label">IRS Operator</td>
+      </tr>
+      <tr>
+        <td class="cell usc-cell"><div class="value-cell">{{ data_entry }}</div></td>
+        <td class="cell usc-cell"><div class="value-cell">{{ caller_1 }}</div></td>
+        <td class="cell usc-cell"><div class="value-cell">{{ caller_2 }}</div></td>
+        <td class="cell usc-cell"><div class="value-cell">{{ timer }}</div></td>
+        <td class="cell usc-cell"><div class="value-cell">{{ shot_clock }}</div></td>
+        <td class="cell usc-cell"><div class="value-cell">{{ irs_operator }}</div></td>
+      </tr>
+    </table>
+
+    <p style="text-align:right; margin:4px 0;"><strong>{{ live_game_manager }}</strong></p>
+
+    <div class="section-title">Logistics</div>
+    <table>
+      <tr>
+        <td class="cell-label">Arrival Time</td>
+        <td class="cell-label">Checklist On Time</td>
+        <td class="cell-label">Communication</td>
+        <td class="cell-label">Corrections Speed</td>
+        <td class="cell-label">Rescouted</td>
+      </tr>
+      <tr>
+        <td class="cell logistics-cell"><div class="value-cell">{{ arrival_time }}</div></td>
+        <td class="cell logistics-cell"><div class="value-cell">{{ checklist_on_time }}</div></td>
+        <td class="cell logistics-cell"><div class="value-cell">{{ communication }}</div></td>
+        <td class="cell logistics-cell"><div class="value-cell">{{ corrections_speed }}</div></td>
+        <td class="cell logistics-cell"><div class="value-cell">{{ rescouted }}</div></td>
+      </tr>
+    </table>
+
+    <div class="section-title">Totals</div>
+    <table class="totals-table">
+      <tr>
+        <td class="cell-label">Total Actions</td>
+        <td class="cell-label">Total Corrections</td>
+        <td class="cell-label">% Corrections</td>
+      </tr>
+      <tr>
+        <td class="cell num-cell"><div class="value-cell">{{ total_actions }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ total_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ percent_corrections }}</div></td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td class="cell-label">HOME TEAM</td>
+        <td class="cell-label">AWAY TEAM</td>
+        <td class="cell-label">NO TEAM</td>
+      </tr>
+      <tr>
+        <td class="cell num-cell"><div class="value-cell">{{ home_team }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ away_team }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ no_team }}</div></td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td class="cell-label">Q1</td>
+        <td class="cell-label">Q2</td>
+        <td class="cell-label">Q3</td>
+        <td class="cell-label">Q4</td>
+        <td class="cell-label">ET</td>
+      </tr>
+      <tr>
+        <td class="cell num-cell"><div class="value-cell">{{ quarter_1 }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ quarter_2 }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ quarter_3 }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ quarter_4 }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ et }}</div></td>
+      </tr>
+    </table>
+
+    <div class="section-title">Corrections by type</div>
+    <table class="corrections-table">
+      <tr>
+        <td class="type-section-label" colspan="6">BOXSCORE ({{ boxscore_corrections }})</td>
+      </tr>
+      <tr>
+        <td class="cell-label">Criteria</td>
+        <td class="cell-label">Misidentity</td>
+        <td class="cell-label">Missing</td>
+        <td class="cell-label">Not Happened</td>
+        <td class="cell-label">Misplaced</td>
+        <td class="cell-label">Timing</td>
+      </tr>
+      <tr>
+        <td class="cell num-cell"><div class="value-cell">{{ criteria_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ misidentity_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ missing_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ not_happened_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ misplaced_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ timing_corrections }}</div></td>
+      </tr>
+      <tr>
+        <td class="type-section-label" colspan="6">SCORESHEET ({{ scoresheet_corrections }})</td>
+      </tr>
+      <tr>
+        <td class="cell-label">Jump Ball</td>
+        <td class="cell-label">Substitution</td>
+        <td class="cell-label">IRS/CC</td>
+        <td class="cell-label">Time Out</td>
+        <td class="cell-label">Fouls</td>
+        <td class="cell-label">Points</td>
+      </tr>
+      <tr>
+        <td class="cell num-cell"><div class="value-cell">{{ jump_ball_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ substitution_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ irs_cc_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ time_out_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ fouls_corrections }}</div></td>
+        <td class="cell num-cell"><div class="value-cell">{{ points_corrections }}</div></td>
+      </tr>
+    </table>
+
+    <div class="section-title">Comments</div>
+    <div class="comments-box">{{ comments }}</div>
+
+    <div class="result-cell">Result: {{ result }}</div>
+  </div>
+</body>
+</html>

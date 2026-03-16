@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Corrections analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 20px; color: #0A1F44; }
+    .back-link { margin-bottom: 12px; }
+    .back-link a { color: #1B5DBF; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+    h2 {
+      color: #0A1F44;
+      margin-bottom: 4px;
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .pagination button {
+      background: #1B5DBF;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .pagination button:hover:not(:disabled) { background: #3A7DD3; }
+    .pagination button:disabled { background: #999; cursor: not-allowed; }
+    .pagination span { font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+    table {
+      border-collapse: separate;
+      border-spacing: 6px;
+      width: 100%;
+      margin-top: 8px;
+      background: #f0f2f5;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 13px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    th { background: #0A1F44; color: white; position: sticky; top: 0; z-index: 2; white-space: nowrap; border-color: #0A1F44; }
+    tbody tr:nth-child(even) td { background-color: #f8faff; }
+    tbody tr:hover td { background-color: #e6f0ff; }
+    #loading { margin: 6px 0 8px 0; color: #666; }
+    #error { margin: 16px 0; color: #c00; }
+    .filters {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      row-gap: 12px;
+      column-gap: 32px;
+      align-items: end;
+    }
+    .filters label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 4px; color: #0A1F44; }
+    .filters input,
+    .filters select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      background: white;
+      font-size: 14px;
+    }
+    .filter-count { margin: 12px 0; font-weight: 600; color: #0A1F44; }
+    .filters-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+    .filters-toolbar button {
+      background: #e0e4ec;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #0A1F44;
+    }
+    .filters-toolbar button:hover {
+      background: #d0d6e6;
+    }
+    .filter-field {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .filter-clear {
+      background: #f0f2f5;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font-size: 11px;
+      cursor: pointer;
+      color: #555;
+      white-space: nowrap;
+    }
+    .filter-clear:hover {
+      background: #e2e6f0;
+    }
+
+    /* Filter container width – unified for all filters */
+    .filter-container {
+      width: 245px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+<div class="back-link"><a href="/">← Home</a></div>
+<h2>Corrections analysis</h2>
+
+<div id="loading">Loading…</div>
+<div id="error" style="display:none;"></div>
+
+<div class="filters-toolbar">
+  <button type="button" id="clear-all-filters">Clear all filters</button>
+</div>
+
+<div class="filters" id="filters">
+  <div class="filter-container filter-container-competition">
+    <label for="filter-competition">competition</label>
+    <div class="filter-field">
+      <select id="filter-competition" class="filter-competition">
+        <option value="">All competitions</option>
+        <option value="E">E</option>
+        <option value="U">U</option>
+      </select>
+      <button type="button" class="filter-clear" data-col="competition">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-season">
+    <label for="filter-season">season</label>
+    <div class="filter-field">
+      <select id="filter-season" class="filter-season">
+        <option value="">All seasons</option>
+        <option value="2025-2026">2025-2026</option>
+      </select>
+      <button type="button" class="filter-clear" data-col="season">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-game_code">
+    <label for="filter-game_code">game_code</label>
+    <div class="filter-field">
+      <input type="text" id="filter-game_code" class="filter-game-code" placeholder="Ex: E2025_130">
+      <button type="button" class="filter-clear" data-col="game_code">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-time">
+    <label for="filter-time">time</label>
+    <div class="filter-field">
+      <input type="text" id="filter-time" class="filter-time" placeholder="Ex: 05:34">
+      <button type="button" class="filter-clear" data-col="time">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-quarter">
+    <label for="filter-quarter">quarter</label>
+    <div class="filter-field">
+      <input type="text" id="filter-quarter" class="filter-quarter" list="quarter_list">
+      <button type="button" class="filter-clear" data-col="quarter">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-points_h">
+    <label for="filter-points_h">points_h</label>
+    <div class="filter-field">
+      <input type="text" id="filter-points_h" class="filter-points-h" placeholder="Ex: 45">
+      <button type="button" class="filter-clear" data-col="points_h">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-points_a">
+    <label for="filter-points_a">points_a</label>
+    <div class="filter-field">
+      <input type="text" id="filter-points_a" class="filter-points-a" placeholder="Ex: 42">
+      <button type="button" class="filter-clear" data-col="points_a">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-action_num">
+    <label for="filter-action_num">action_num</label>
+    <div class="filter-field">
+      <input type="text" id="filter-action_num" class="filter-action-num" placeholder="Ex: 12">
+      <button type="button" class="filter-clear" data-col="action_num">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-b_ss">
+    <label for="filter-b_ss">b_ss</label>
+    <div class="filter-field">
+      <input type="text" id="filter-b_ss" class="filter-b-ss" list="bss_list">
+      <button type="button" class="filter-clear" data-col="b_ss">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-team">
+    <label for="filter-team">team</label>
+    <div class="filter-field">
+      <input type="text" id="filter-team" class="filter-team" list="team_list">
+      <button type="button" class="filter-clear" data-col="team">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-type_c">
+    <label for="filter-type_c">type_c</label>
+    <div class="filter-field">
+      <input type="text" id="filter-type_c" class="filter-type-c" list="typec_list">
+      <button type="button" class="filter-clear" data-col="type_c">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-category">
+    <label for="filter-category">category</label>
+    <div class="filter-field">
+      <input type="text" id="filter-category" class="filter-category" list="category_list">
+      <button type="button" class="filter-clear" data-col="category">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-live_game_manager">
+    <label for="filter-live_game_manager">live_game_manager</label>
+    <div class="filter-field">
+      <select id="filter-live_game_manager" class="filter-live-game-manager">
+        <option value="">All Live Game Managers</option>
+      </select>
+      <button type="button" class="filter-clear" data-col="live_game_manager">Clear</button>
+    </div>
+  </div>
+</div>
+<p class="filter-count" id="filter-count" style="display:none;"></p>
+
+<!-- Datalists for filters, aligned with the report generator -->
+<datalist id="quarter_list">
+  <option value="1"></option>
+  <option value="2"></option>
+  <option value="3"></option>
+  <option value="4"></option>
+  <option value="ET"></option>
+</datalist>
+
+<datalist id="bss_list">
+  <option value="SCORESHEET"></option>
+  <option value="BOXSCORE"></option>
+</datalist>
+
+<datalist id="team_list">
+  <option value="HOME TEAM"></option>
+  <option value="AWAY TEAM"></option>
+</datalist>
+
+<datalist id="typec_list">
+  <option value="COACH CHALLENGE"></option>
+  <option value="CRITERIA"></option>
+  <option value="FOULS"></option>
+  <option value="INSTANT REPLAY"></option>
+  <option value="JUMP BALL"></option>
+  <option value="MISIDENTITY"></option>
+  <option value="MISSING"></option>
+  <option value="MISPLACED"></option>
+  <option value="NOT HAPPENED"></option>
+  <option value="POINTS"></option>
+  <option value="SUBSTITUTIONS"></option>
+  <option value="TIME OUT"></option>
+  <option value="TIMING"></option>
+</datalist>
+
+<datalist id="category_list">
+  <option value="3P"></option>
+  <option value="2P"></option>
+  <option value="AS"></option>
+  <option value="BLK"></option>
+  <option value="CC"></option>
+  <option value="DR"></option>
+  <option value="DQ_FOUL"></option>
+  <option value="DSS FREE THROWS"></option>
+  <option value="FD"></option>
+  <option value="FOUL"></option>
+  <option value="FTM"></option>
+  <option value="IRS"></option>
+  <option value="JB"></option>
+  <option value="MFT"></option>
+  <option value="M3P"></option>
+  <option value="M2P"></option>
+  <option value="OF_FOUL"></option>
+  <option value="OR"></option>
+  <option value="SR"></option>
+  <option value="ST"></option>
+  <option value="IN"></option>
+  <option value="OUT"></option>
+  <option value="TECH"></option>
+  <option value="TOUT"></option>
+  <option value="TO"></option>
+  <option value="UF"></option>
+  <option value="TV_TOUT"></option>
+  <option value="TI_FOUL"></option>
+  <option value="TECH_COACH"></option>
+  <option value="TECH_BENCH"></option>
+</datalist>
+
+<div class="table-wrap" id="table-wrap" style="display:none;">
+  <table id="table">
+    <thead id="thead"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="pagination" id="pagination">
+    <button type="button" id="btn-first">First</button>
+    <button type="button" id="btn-prev">Previous</button>
+    <span id="page-info"></span>
+    <button type="button" id="btn-next">Next</button>
+    <button type="button" id="btn-last">Last</button>
+  </div>
+</div>
+
+<script>
+const PER_PAGE = 10;
+const displayColumns = [
+  "game_code", "time", "quarter", "points_h", "points_a", "action_num",
+  "b_ss", "team", "type_c", "category", "thread_name", "correction", "live_game_manager"
+];
+const filterableColumns = [
+  "game_code", "time", "quarter", "points_h", "points_a", "action_num",
+  "b_ss", "team", "type_c", "category", "live_game_manager"
+];
+const extraFilterColumns = ["competition", "season"];
+
+let currentPage = 1;
+let totalPages = 0;
+let total = 0;
+
+function showLoading(show) {
+  document.getElementById("loading").style.display = show ? "block" : "none";
+}
+function showError(msg) {
+  const el = document.getElementById("error");
+  el.textContent = msg || "";
+  el.style.display = msg ? "block" : "none";
+}
+function showTable(show) {
+  document.getElementById("table-wrap").style.display = show ? "block" : "none";
+}
+function showFilterCount(show) {
+  const el = document.getElementById("filter-count");
+  el.style.display = show ? "block" : "none";
+}
+
+function getFilterParams() {
+  const params = new URLSearchParams({ page: String(currentPage), per_page: String(PER_PAGE) });
+  // standard equality filters
+  filterableColumns.forEach(col => {
+    const input = document.getElementById("filter-" + col);
+    if (input && input.value.trim()) params.set(col, input.value.trim());
+  });
+  // extra virtual filters (competition, season)
+  const competitionEl = document.getElementById("filter-competition");
+  if (competitionEl && competitionEl.value) {
+    params.set("competition", competitionEl.value);
+  }
+  const seasonEl = document.getElementById("filter-season");
+  if (seasonEl && seasonEl.value) {
+    params.set("season", seasonEl.value);
+  }
+  return params;
+}
+
+function fetchPage(page) {
+  currentPage = page;
+  showLoading(true);
+  showError("");
+  const params = getFilterParams();
+  params.set("page", String(page));
+  fetch("/api/corrections?" + params)
+    .then(r => r.json())
+    .then(data => {
+      showLoading(false);
+      total = data.total;
+      totalPages = data.total_pages;
+      currentPage = data.page;
+      renderTable(data.items);
+      renderPagination();
+      renderFilterCount();
+      showTable(true);
+      showFilterCount(true);
+    })
+    .catch(err => {
+      showLoading(false);
+      showError("Error loading data: " + err.message);
+      showTable(false);
+      showFilterCount(false);
+    });
+}
+
+function renderFilterCount() {
+  document.getElementById("filter-count").textContent =
+    "Number of records with selected filters: " + total;
+}
+
+function renderTable(items) {
+  const thead = document.getElementById("thead");
+  const tbody = document.getElementById("tbody");
+  thead.innerHTML = "";
+  tbody.innerHTML = "";
+
+  const headerRow = document.createElement("tr");
+  displayColumns.forEach(col => {
+    const th = document.createElement("th");
+    th.textContent = col;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+
+  items.forEach(row => {
+    const tr = document.createElement("tr");
+    displayColumns.forEach(col => {
+      const td = document.createElement("td");
+      const val = row[col];
+      td.textContent = val != null && val !== "" ? String(val) : "";
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function renderPagination() {
+  document.getElementById("page-info").textContent =
+    "Page " + currentPage + " of " + (totalPages || 1) + " (" + total + " total records)";
+  document.getElementById("btn-first").disabled = currentPage <= 1;
+  document.getElementById("btn-prev").disabled = currentPage <= 1;
+  document.getElementById("btn-next").disabled = currentPage >= totalPages || totalPages === 0;
+  document.getElementById("btn-last").disabled = currentPage >= totalPages || totalPages === 0;
+}
+
+function clearFilter(col) {
+  const el = document.getElementById("filter-" + col);
+  if (!el) return;
+  if (el.tagName === "SELECT") {
+    el.value = "";
+  } else {
+    el.value = "";
+  }
+}
+
+function loadFilterLiveGameManagers() {
+  const select = document.getElementById("filter-live_game_manager");
+  if (!select) return;
+  fetch("/get_live_game_managers")
+    .then(r => r.json())
+    .then(data => {
+      select.innerHTML = "";
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.text = "All Live Game Managers";
+      select.appendChild(defaultOption);
+      data.forEach(lgm => {
+        const option = document.createElement("option");
+        option.value = lgm;
+        option.text = lgm;
+        select.appendChild(option);
+      });
+    })
+    .catch(() => {
+      select.innerHTML = "";
+      const option = document.createElement("option");
+      option.value = "";
+      option.text = "Error loading Live Game Managers";
+      select.appendChild(option);
+    });
+}
+
+document.getElementById("btn-first").onclick = () => fetchPage(1);
+document.getElementById("btn-prev").onclick = () => fetchPage(Math.max(1, currentPage - 1));
+document.getElementById("btn-next").onclick = () => fetchPage(Math.min(totalPages, currentPage + 1));
+document.getElementById("btn-last").onclick = () => fetchPage(totalPages || 1);
+
+filterableColumns.forEach(col => {
+  const input = document.getElementById("filter-" + col);
+  if (input) {
+    input.addEventListener("input", () => fetchPage(1));
+    input.addEventListener("change", () => fetchPage(1));
+  }
+});
+
+extraFilterColumns.forEach(col => {
+  const input = document.getElementById("filter-" + col);
+  if (input) {
+    input.addEventListener("change", () => fetchPage(1));
+  }
+});
+
+const clearAllBtn = document.getElementById("clear-all-filters");
+if (clearAllBtn) {
+  clearAllBtn.addEventListener("click", () => {
+    const allCols = [...filterableColumns, ...extraFilterColumns];
+    allCols.forEach(col => clearFilter(col));
+    fetchPage(1);
+  });
+}
+
+document.querySelectorAll(".filter-clear").forEach(btn => {
+  const col = btn.getAttribute("data-col");
+  if (!col) return;
+  btn.addEventListener("click", () => {
+    clearFilter(col);
+    fetchPage(1);
+  });
+});
+
+loadFilterLiveGameManagers();
+fetchPage(1);
+</script>
+
+</body>
+</html>

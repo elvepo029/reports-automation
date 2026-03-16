@@ -5,6 +5,29 @@ from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
 import io
+import os
+
+
+def html_to_pdf(html_string, base_url=None):
+    """
+    Convert HTML string to PDF using WeasyPrint.
+    base_url: directory path or file URL for resolving relative links (e.g. images).
+    Returns: BytesIO containing the PDF.
+    """
+    from weasyprint import HTML, CSS
+
+    if base_url is None:
+        base_url = os.path.dirname(os.path.abspath(__file__))
+    if not base_url.startswith(("http://", "https://", "file://")):
+        base_url = "file://" + os.path.abspath(base_url).replace(os.sep, "/")
+    if not base_url.endswith("/"):
+        base_url += "/"
+
+    html = HTML(string=html_string, base_url=base_url)
+    pdf_bytes = html.write_pdf()
+    buffer = io.BytesIO(pdf_bytes)
+    buffer.seek(0)
+    return buffer
 
 def generate_pdf_from_json(data, template_path):
     """

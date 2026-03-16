@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import json
-from pdfGeneratorHelper import generate_pdf_from_json
+from pdfGeneratorHelper import html_to_pdf
 from correctionToReport import runCorrectionsProcessor
 
 app = Flask(__name__)
@@ -26,6 +26,11 @@ def ensure_game_logistics_columns(conn):
         ("communication", "TEXT"),
         ("corrections_speed", "TEXT"),
         ("rescouted", "TEXT"),
+        # Camps addicionals per guardar informació del report
+        ("total_actions", "INTEGER"),
+        ("total_corrections", "INTEGER"),
+        ("lgm_comment", "TEXT"),
+        ("result", "REAL"),
     ]
 
     for col_name, col_type in needed_columns:
@@ -36,7 +41,84 @@ def ensure_game_logistics_columns(conn):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("home.html")
+
+
+@app.route("/report-generator")
+def report_generator():
+    return render_template("report_generator.html")
+
+
+@app.route("/corrections-analysis")
+def corrections_analysis():
+    return render_template("corrections_analysis.html")
+
+
+FILTERABLE_CORRECTION_COLUMNS = (
+    "game_code", "time", "quarter", "points_h", "points_a", "action_num",
+    "b_ss", "team", "type_c", "category", "live_game_manager",
+)
+
+
+@app.route("/api/corrections")
+def api_corrections_paginated():
+    """Paginated list of Correction records, most recent first. Supports filters via query params."""
+    page = max(1, request.args.get("page", 1, type=int))
+    per_page = min(100, max(1, request.args.get("per_page", 50, type=int)))
+    filters = {}
+    for col in FILTERABLE_CORRECTION_COLUMNS:
+        val = request.args.get(col, "").strip()
+        if val:
+            filters[col] = val
+
+    competition = request.args.get("competition", "").strip()
+    season = request.args.get("season", "").strip()
+
+    where_parts = []
+    params = []
+
+    if filters:
+        for col, val in filters.items():
+            where_parts.append(f"{col} = ?")
+            params.append(val)
+
+    if competition:
+        # game_code starts with competition letter, e.g. 'E' or 'U'
+        where_parts.append("game_code LIKE ?")
+        params.append(f"{competition}%")
+
+    if season:
+        # season is in format '2025-2026' → use the first part '2025'
+        season_year = season.split("-")[0].strip()
+        if season_year:
+            where_parts.append("game_code LIKE ?")
+            params.append(f"%{season_year}%")
+
+    where_clause = ""
+    if where_parts:
+        where_clause = " WHERE " + " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) AS total FROM Correction" + where_clause, params)
+    total = cur.fetchone()["total"]
+    offset = (page - 1) * per_page
+    select_params = params + [per_page, offset]
+    cur.execute(
+        "SELECT rowid, * FROM Correction" + where_clause + " ORDER BY rowid DESC LIMIT ? OFFSET ?",
+        select_params,
+    )
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    total_pages = (total + per_page - 1) // per_page if total else 0
+    return jsonify({
+        "items": rows,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    })
 
 @app.route("/run-correction", methods=["POST"])
 def run_correction_route():
@@ -186,7 +268,7 @@ def generate_report(game_code, lgm):
 
     # Crear data DD/MM/YYYY
     game_date = f"{game['day']:02d}/{game['month']:02d}/{game['year']}"
-    round = game['round']
+    game_round = game['round']
     code_h = game['code_h']
     code_a = game['code_a']
 
@@ -217,40 +299,6 @@ def generate_report(game_code, lgm):
         num_accions = int(raw_num_accions) if raw_num_accions not in ("", None) else 0
     except ValueError:
         num_accions = 0
-
-    # Guardar USCs i Logistics a la taula Game (persistència)
-    cur.execute(
-        """
-        UPDATE Game
-        SET data_entry = ?,
-            caller_1 = ?,
-            caller_2 = ?,
-            timer = ?,
-            shot_clock_operator = ?,
-            irs_operator = ?,
-            arrival_time = ?,
-            checklist_on_time = ?,
-            communication = ?,
-            corrections_speed = ?,
-            rescouted = ?
-        WHERE game_code = ?
-        """,
-        (
-            data_entry,
-            caller_1,
-            caller_2,
-            timer,
-            shot_clock,
-            irs_operator,
-            arrival_time,
-            checklist_on_time,
-            communication,
-            corrections_speed,
-            rescouted,
-            game_code,
-        ),
-    )
-    conn.commit()
 
     # Num correccions
     cur.execute("SELECT COUNT(*) as total_corr FROM Correction WHERE game_code = ?", (game_code,))
@@ -372,7 +420,49 @@ def generate_report(game_code, lgm):
     elif corrections_speed == "Slow":
         logistic_points += 2
 
-    resultat_final = total_points + percent_corrections + logistic_points
+    resultat_final = round(total_points + percent_corrections + logistic_points, 1)
+
+    # Guardar USCs, Logistics i mètriques del report a la taula Game (persistència)
+    cur.execute(
+        """
+        UPDATE Game
+        SET data_entry = ?,
+            caller_1 = ?,
+            caller_2 = ?,
+            timer = ?,
+            shot_clock_operator = ?,
+            irs_operator = ?,
+            arrival_time = ?,
+            checklist_on_time = ?,
+            communication = ?,
+            corrections_speed = ?,
+            rescouted = ?,
+            total_actions = ?,
+            total_corrections = ?,
+            lgm_comment = ?,
+            result = ?
+        WHERE game_code = ?
+        """,
+        (
+            data_entry,
+            caller_1,
+            caller_2,
+            timer,
+            shot_clock,
+            irs_operator,
+            arrival_time,
+            checklist_on_time,
+            communication,
+            corrections_speed,
+            rescouted,
+            num_accions,
+            total_corrections,
+            comentari,
+            resultat_final,
+            game_code,
+        ),
+    )
+    conn.commit()
 
     # Creació de json amb dades necessàries per omplir el report
     if "E" in game_code: 
@@ -385,7 +475,7 @@ def generate_report(game_code, lgm):
     game_number = game_code.split("_")[1]
 
     report_data = {
-        "game": f"GAME: {game_code} ({competition}, Round: {round})",
+        "game": f"GAME: {game_code} ({competition}, Round: {game_round})",
         "date": f"DATE: {game_date}",
         "team_h": local_team,
         "team_a": away_team,
@@ -462,15 +552,14 @@ def generate_report(game_code, lgm):
             "result": float(f"{resultat_final:.1f}")
         })
 
-    # Generació del report amb totes les dades
-    pdf_buffer = generate_pdf_from_json(
-        data=report_data,
-        template_path="REPORT_U2024194.png"
-    )
+    # Generació del report: HTML → PDF (WeasyPrint)
+    report_data["percent_corrections"] = report_data.get("%_corrections", "")
+    html = render_template("report_pdf.html", **report_data)
+    pdf_buffer = html_to_pdf(html, base_url=app.root_path)
 
     return send_file(
         pdf_buffer,
-        download_name=f"REPORT_{round}_{game_number}_{code_h}_{code_a}_{competition_code}2025.pdf",
+        download_name=f"REPORT_{game_round}_{game_number}_{code_h}_{code_a}_{competition_code}2025.pdf",
         mimetype="application/pdf"
     )
 

@@ -393,8 +393,8 @@ shots = missed_shots + points
 scoresheet_lists = points + fouls + jump_ball + team_timeouts + irs + coach_challenge + substitutions + shots
 
 category_list = [
-                    "3P", "2P", "AS", "BLK", "CC", "DR", "DQ_FOUL", 
-                    "FD", "FOUL", "FTM", "IRS", "JB", "MFT",
+                    "3P", "2P", "AS", "BLK", "CC", "DR", "DQ_FOUL",
+                    "DSS FREE THROWS", "FD", "FOUL", "FTM", "IRS", "JB", "MFT",
                     "M3P", "M2P", "OF_FOUL", "OR", "SR",
                     "ST", "IN", "OUT", "TECH", "TOUT", "TO", "UF",
                     "TV_TOUT", "TI_FOUL", "TECH_COACH", "TECH_BENCH"

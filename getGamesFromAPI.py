@@ -15,8 +15,10 @@ def insertGame(game: Game):
         INSERT INTO Game (
             game_code, code_h, code_a, year, month,
             day, round, data_entry, caller_1, caller_2,
-            timer, shot_clock_operator, irs_operator, is_processed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            timer, shot_clock_operator, irs_operator, is_processed,
+            arrival_time, checklist_on_time, communication, corrections_speed,
+            rescouted, total_actions, total_corrections, lgm_comment, result
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
         ON CONFLICT(game_code) DO UPDATE SET
             code_h = excluded.code_h,
@@ -31,7 +33,16 @@ def insertGame(game: Game):
             timer = excluded.timer,
             shot_clock_operator = excluded.shot_clock_operator,
             irs_operator = excluded.irs_operator,
-            is_processed = excluded.is_processed
+            is_processed = excluded.is_processed,
+            arrival_time = excluded.arrival_time,
+            checklist_on_time = excluded.checklist_on_time,
+            communication = excluded.communication,
+            corrections_speed = excluded.corrections_speed,
+            rescouted = excluded.rescouted,
+            total_actions = excluded.total_actions,
+            total_corrections = excluded.total_corrections,
+            lgm_comment = excluded.lgm_comment,
+            result = excluded.result
 
         WHERE
             code_h != excluded.code_h OR
@@ -46,7 +57,16 @@ def insertGame(game: Game):
             timer != excluded.timer OR
             shot_clock_operator != excluded.shot_clock_operator OR
             irs_operator != excluded.irs_operator OR
-            is_processed != excluded.is_processed
+            is_processed != excluded.is_processed OR
+            arrival_time != excluded.arrival_time OR
+            checklist_on_time != excluded.checklist_on_time OR
+            communication != excluded.communication OR
+            corrections_speed != excluded.corrections_speed OR
+            rescouted != excluded.rescouted OR
+            total_actions != excluded.total_actions OR
+            total_corrections != excluded.total_corrections OR
+            lgm_comment != excluded.lgm_comment OR
+            result != excluded.result
     """, (
         game.game_code,
         game.code_h,
@@ -61,7 +81,16 @@ def insertGame(game: Game):
         game.timer,
         game.shot_clock_operator,
         game.irs_operator,
-        game.is_processed
+        game.is_processed,
+        game.arrival_time,
+        game.checklist_on_time,
+        game.communication,
+        game.corrections_speed,
+        game.rescouted,
+        game.total_actions,
+        game.total_corrections,
+        game.lgm_comment,
+        game.result
     ))
 
 el_competition_code = "E"
@@ -129,7 +158,16 @@ for game_data in games_data:
             timer = "",
             shot_clock_operator = "",
             irs_operator = "",
-            is_processed = False
+            is_processed = False,
+            arrival_time = "",
+            checklist_on_time = "",
+            communication = "",
+            corrections_speed = "",
+            rescouted = "",
+            total_actions = 0,
+            total_corrections = 0,
+            lgm_comment = "",
+            result = 0.0
         )
 
         insertGame(game)
@@ -149,7 +187,16 @@ for game_data in games_data:
             timer = "",
             shot_clock_operator = "",
             irs_operator = "",
-            is_processed = False
+            is_processed = False,
+            arrival_time = "",
+            checklist_on_time = "",
+            communication = "",
+            corrections_speed = "",
+            rescouted = "",
+            total_actions = 0,
+            total_corrections = 0,
+            lgm_comment = "",
+            result = 0.0
         )
 
         insertGame(game)
