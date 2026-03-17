@@ -398,7 +398,10 @@
   </div>
 </div>
 </div>
-<p class="filter-count" id="filter-count" style="display:none;"></p>
+<p class="filter-count" id="filter-count" style="display:none;">
+  <span id="filter-count-text"></span>
+  <span id="filter-percent-text" style="margin-left: 12px;"></span>
+</p>
 
 <!-- Datalists for game/logistics filters (options + free text) -->
 <datalist id="datalist_team_codes"></datalist>
@@ -544,6 +547,7 @@ const extraFilterColumns = ["competition", "season"];
 let currentPage = 1;
 let totalPages = 0;
 let total = 0;
+let teamCodeToName = {};
 
 function showLoading(show) {
   document.getElementById("loading").style.display = show ? "block" : "none";
@@ -601,7 +605,11 @@ function fetchPage(page) {
       currentPage = data.page;
       renderTable(data.items);
       renderPagination();
-      renderFilterCount();
+      renderFilterCount({
+        denom_total: data.denom_total,
+        percent_of_total: data.percent_of_total,
+        percent_scope: data.percent_scope,
+      });
       showTable(true);
       showFilterCount(true);
     })
@@ -613,9 +621,44 @@ function fetchPage(page) {
     });
 }
 
-function renderFilterCount() {
-  document.getElementById("filter-count").textContent =
-    "Number of records with selected filters: " + total;
+function renderFilterCount(extra) {
+  const countEl = document.getElementById("filter-count-text");
+  const pctEl = document.getElementById("filter-percent-text");
+  if (countEl) {
+    countEl.textContent = "Number of records with selected filters: " + total;
+  }
+  if (!pctEl) return;
+  if (!extra || !extra.denom_total) {
+    pctEl.textContent = "";
+    return;
+  }
+  const pct = typeof extra.percent_of_total === "number"
+    ? extra.percent_of_total
+    : 0;
+  if (extra.percent_scope === "home_team_with_selected_uscs") {
+    const homeCode = (document.getElementById("filter-home_team")?.value || "").trim();
+    const teamName = (homeCode && teamCodeToName[homeCode]) ? teamCodeToName[homeCode] : (homeCode || "home team");
+
+    const uscLabels = {
+      data_entry: "data entry",
+      caller_1: "caller 1",
+      caller_2: "caller 2",
+      timer: "timer",
+      shot_clock_operator: "shot clock operator",
+      irs_operator: "IRS operator",
+    };
+    const uscFields = ["data_entry","caller_1","caller_2","timer","shot_clock_operator","irs_operator"];
+    const parts = [];
+    uscFields.forEach(f => {
+      const v = (document.getElementById("filter-" + f)?.value || "").trim();
+      if (v) parts.push(`${v} as ${uscLabels[f]}`);
+    });
+    const withText = parts.length ? (" with " + parts.join(" and ")) : "";
+
+    pctEl.textContent = `${pct.toFixed(1)}% of ${teamName} corrections${withText}`;
+  } else {
+    pctEl.textContent = `${pct.toFixed(1)}% of total corrections`;
+  }
 }
 
 function renderTable(items) {
@@ -684,11 +727,15 @@ function loadFilterLiveGameManagers() {
 function loadTeamCodes() {
   const datalist = document.getElementById("datalist_team_codes");
   if (!datalist) return;
-  fetch("/api/team_codes")
+  fetch("/api/teams")
     .then(r => r.json())
     .then(data => {
       datalist.innerHTML = "";
-      data.forEach(code => {
+      teamCodeToName = {};
+      data.forEach(row => {
+        const code = row.team_code;
+        const name = row.team_name;
+        if (code) teamCodeToName[code] = name || "";
         const opt = document.createElement("option");
         opt.value = code;
         datalist.appendChild(opt);

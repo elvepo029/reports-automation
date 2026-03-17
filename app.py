@@ -155,6 +155,31 @@ def api_corrections_paginated():
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) AS total" + from_clause + where_clause, params)
     total = cur.fetchone()["total"]
+
+    # Denominator for percent calculation:
+    # - If no USC filter selected: total corrections overall
+    # - If any USC filter selected: total corrections where home_team == selected home team (Game.code_h)
+    usc_filter_fields = ["data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"]
+    usc_selected = any(field in game_filters for field in usc_filter_fields)
+
+    denom_total = 0
+    if not usc_selected:
+        cur.execute("SELECT COUNT(*) AS total FROM Correction")
+        denom_total = cur.fetchone()["total"]
+    else:
+        home_team_code = game_filters.get("home_team", "").strip()
+        if home_team_code:
+            cur.execute(
+                "SELECT COUNT(*) AS total FROM Correction C JOIN Game G ON C.game_code = G.game_code WHERE G.code_h = ?",
+                (home_team_code,),
+            )
+            denom_total = cur.fetchone()["total"]
+        else:
+            # fallback: if no home_team selected, use overall total
+            cur.execute("SELECT COUNT(*) AS total FROM Correction")
+            denom_total = cur.fetchone()["total"]
+
+    percent_of_total = (float(total) / float(denom_total) * 100.0) if denom_total else 0.0
     offset = (page - 1) * per_page
     select_params = params + [per_page, offset]
     cur.execute(
@@ -167,6 +192,9 @@ def api_corrections_paginated():
     return jsonify({
         "items": rows,
         "total": total,
+        "denom_total": denom_total,
+        "percent_of_total": percent_of_total,
+        "percent_scope": "home_team_with_selected_uscs" if usc_selected else "all_corrections",
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,
@@ -182,6 +210,20 @@ def api_team_codes():
     codes = [row[0] for row in cur.fetchall()]
     conn.close()
     return jsonify(codes)
+
+
+@app.route("/api/teams")
+def api_teams():
+    """Return team_code + team_name (for UI labels)."""
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT team_code, team_name FROM Team WHERE team_code IS NOT NULL AND team_code != '' ORDER BY team_code"
+    )
+    teams = [{"team_code": r["team_code"], "team_name": r["team_name"]} for r in cur.fetchall()]
+    conn.close()
+    return jsonify(teams)
 
 
 @app.route("/api/uscs_for_team/<team_code>")
