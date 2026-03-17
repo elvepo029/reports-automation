@@ -183,6 +183,28 @@
     <button type="button" id="clear-game-filters">Clear game filters</button>
   </div>
   <div class="filters" id="game-filters">
+  <div class="filter-container filter-container-competition">
+    <label for="filter-competition">competition</label>
+    <div class="filter-field">
+      <input type="text" id="filter-competition" class="filter-competition" list="datalist_competition" placeholder="All competitions">
+      <button type="button" class="filter-clear" data-col="competition">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-season">
+    <label for="filter-season">season</label>
+    <div class="filter-field">
+      <input type="text" id="filter-season" class="filter-season" list="datalist_season" placeholder="All seasons">
+      <button type="button" class="filter-clear" data-col="season">Clear</button>
+    </div>
+  </div>
+  <div class="filter-container filter-container-game_code">
+    <label for="filter-game_code">game_code</label>
+    <div class="filter-field">
+      <input type="text" id="filter-game_code" class="filter-game-code" placeholder="Ex: E2025_130">
+      <button type="button" class="filter-clear" data-col="game_code">Clear</button>
+    </div>
+  </div>
+
   <!-- Row 1: home/away teams and USCs -->
   <div class="filter-container filter-container-home_team">
     <label for="filter-home_team">home_team (team code)</label>
@@ -305,27 +327,6 @@
     <button type="button" id="clear-corrections-filters">Clear corrections filters</button>
   </div>
   <div class="filters" id="filters">
-  <div class="filter-container filter-container-competition">
-    <label for="filter-competition">competition</label>
-    <div class="filter-field">
-      <input type="text" id="filter-competition" class="filter-competition" list="datalist_competition" placeholder="All competitions">
-      <button type="button" class="filter-clear" data-col="competition">Clear</button>
-    </div>
-  </div>
-  <div class="filter-container filter-container-season">
-    <label for="filter-season">season</label>
-    <div class="filter-field">
-      <input type="text" id="filter-season" class="filter-season" list="datalist_season" placeholder="All seasons">
-      <button type="button" class="filter-clear" data-col="season">Clear</button>
-    </div>
-  </div>
-  <div class="filter-container filter-container-game_code">
-    <label for="filter-game_code">game_code</label>
-    <div class="filter-field">
-      <input type="text" id="filter-game_code" class="filter-game-code" placeholder="Ex: E2025_130">
-      <button type="button" class="filter-clear" data-col="game_code">Clear</button>
-    </div>
-  </div>
   <div class="filter-container filter-container-time">
     <label for="filter-time">time</label>
     <div class="filter-field">
@@ -543,6 +544,7 @@ const gameFilterColumns = [
   "corrections_speed", "rescouted"
 ];
 const extraFilterColumns = ["competition", "season"];
+const gameTopFilterColumns = ["competition", "season", "game_code"];
 
 let currentPage = 1;
 let totalPages = 0;
@@ -823,7 +825,6 @@ document.getElementById("btn-last").onclick = () => fetchPage(totalPages || 1);
 filterableColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
-    input.addEventListener("input", () => fetchPage(1));
     input.addEventListener("change", () => fetchPage(1));
   }
 });
@@ -849,7 +850,7 @@ gameFilterColumns.forEach(col => {
 const clearGameBtn = document.getElementById("clear-game-filters");
 if (clearGameBtn) {
   clearGameBtn.addEventListener("click", () => {
-    gameFilterColumns.forEach(col => clearFilter(col));
+    [...gameTopFilterColumns, ...gameFilterColumns].forEach(col => clearFilter(col));
     fetchPage(1);
     updateLogisticsCounts();
   });
@@ -858,7 +859,7 @@ if (clearGameBtn) {
 const clearCorrectionsBtn = document.getElementById("clear-corrections-filters");
 if (clearCorrectionsBtn) {
   clearCorrectionsBtn.addEventListener("click", () => {
-    const allCols = [...filterableColumns, ...extraFilterColumns];
+    const allCols = [...filterableColumns];
     allCols.forEach(col => clearFilter(col));
     fetchPage(1);
   });
