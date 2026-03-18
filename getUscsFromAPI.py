@@ -34,7 +34,7 @@ eurocup_uscs_data = eurocup_uscs_info["data"]
 uscs_data = euroleague_uscs_data + eurocup_uscs_data #agrupació de uscs d'eurolliga i eurocup (no distinció)
 
 for usc_data in uscs_data:
-    #dade necessàries per omplir taula de Usc de base de dades pròpia:
+    #dades necessàries per omplir taula de Usc de base de dades pròpia:
     usc_code = usc_data["person"]["code"]
     usc_name = usc_data["person"]["name"].split(", ")[1]
     usc_surnames = usc_data["person"]["name"].split(", ")[0]
