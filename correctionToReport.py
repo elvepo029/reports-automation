@@ -112,26 +112,7 @@ def getLGMNameById(cursor, lgm_id):
     row = cursor.fetchone()
     return row[0] if row else None
 
-def _resolve_process_date():
-    """
-    Returns the date to process.
-
-    - Default: today's local date.
-    - Override with env var CORRECTIONS_DATE in YYYY-MM-DD format.
-    """
-    raw = (os.getenv("CORRECTIONS_DATE") or "").strip()
-    if not raw:
-        return datetime.now().date()
-
-    try:
-        return datetime.strptime(raw, "%Y-%m-%d").date()
-    except ValueError as e:
-        raise ValueError(
-            f"Invalid CORRECTIONS_DATE='{raw}'. Expected format YYYY-MM-DD (e.g. 2026-03-13)."
-        ) from e
-
-def runCorrectionsProcessor():
-    actual_date = _resolve_process_date()
+def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: str | None = None):
     conn = sqlite3.connect("dades.db")
     cursor = conn.cursor()
 
@@ -172,8 +153,9 @@ def runCorrectionsProcessor():
         pbp_name_h = game_info["pbp_name_h"]
         pbp_name_a = game_info["pbp_name_a"]
 
-        if not is_processed and actual_date == date: 
-            recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(discord_channel_id, date)
+        if not is_processed and game_code == game_code_to_process:
+            effective_channel_id = alternative_channel_id or discord_channel_id
+            recovery_codes_threads, threads_corrections = getThreadsActionsAndCorrections(effective_channel_id, date)
         else: continue
 
         if len(recovery_codes_threads) == 0:

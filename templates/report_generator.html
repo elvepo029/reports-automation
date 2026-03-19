@@ -52,6 +52,22 @@
     background: #1B5DBF; color: white; border: none; padding: 8px 16px;
     border-radius: 5px; cursor: pointer; transition: background 0.2s; margin-top: 5px;
   }
+  /* Align header controls nicely in first row */
+  .top-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .top-controls > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .top-controls button {
+    margin-top: 0;
+    align-self: center;
+  }
   button:hover { background: #3A7DD3; }
   #status { font-weight: bold; margin-left: 10px; }
   table {
@@ -165,26 +181,44 @@
 <h2>Corrections by game code</h2>
 
 <!-- Live Game Manager, competition and game number selection -->
-<label>Live Game Manager:</label>
-<select id="live_game_manager_select">
-  <option value="">Loading...</option>
-</select>
+<div class="field-group top-controls">
+  <div>
+    <label>Live Game Manager:</label>
+    <select id="live_game_manager_select">
+      <option value="">Loading...</option>
+    </select>
+  </div>
 
-<label>Competition:</label>
-<select id="competition">
-  <option value="E">Euroleague</option>
-  <option value="U">Eurocup</option>
-</select>
+  <div>
+    <label>Competition:</label>
+    <select id="competition">
+      <option value="E">Euroleague</option>
+      <option value="U">Eurocup</option>
+    </select>
+  </div>
 
-<label>Game number:</label>
-<input id="match_num" placeholder="Ex: 130">
+  <div>
+    <label>Game number:</label>
+    <input id="match_num" placeholder="Ex: 130">
+  </div>
 
-<button onclick="loadData()">Load</button>
-<span id="status"></span>
+  <div>
+    <button id="run-correction-btn" onclick="runCorrection()">
+      Generate corrections
+    </button>
+  </div>
 
-<button id="run-correction-btn" onclick="runCorrection()">
-  Generate corrections
-</button>
+  <div>
+    <button onclick="loadData()">Load</button>
+  </div>
+
+  <span id="status"></span>
+</div>
+
+<div class="field-group">
+  <label>Alternative Discord Channel Id:</label>
+  <input id="alt_discord_channel_id" placeholder="Optional: override channel id">
+</div>
 
 <!-- Taula correccions -->
 <table id="table"></table>
@@ -888,7 +922,25 @@ function runCorrection() {
   btn.disabled = true;
   btn.innerText = "Running...";
 
-  fetch("/run-correction", { method: "POST" })
+  const comp = document.getElementById("competition").value;
+  const num = document.getElementById("match_num").value.trim();
+  if (!comp || !num) {
+    alert("Select a competition and enter the game number before generating corrections.");
+    btn.disabled = false;
+    btn.innerText = "Generate corrections";
+    return;
+  }
+  const gameCode = `${comp}2025_${num}`;
+  const altChannelId = (document.getElementById("alt_discord_channel_id")?.value || "").trim();
+
+  fetch("/run-correction", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      game_code: gameCode,
+      alternative_channel_id: altChannelId || null,
+    })
+  })
     .then(r => r.json())
     .then(res => {
       if (res.status === "ok") {

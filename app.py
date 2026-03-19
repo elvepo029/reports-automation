@@ -316,7 +316,13 @@ def api_logistics_counts():
 @app.route("/run-correction", methods=["POST"])
 def run_correction_route():
     try:
-        runCorrectionsProcessor()
+        data = request.get_json(silent=True) or {}
+        game_code = data.get("game_code")
+        alt_channel_id = data.get("alternative_channel_id")
+        if not game_code:
+            return jsonify({"status": "error", "message": "game_code is required"}), 400
+        # Positional args to be compatible with current runCorrectionsProcessor signature
+        runCorrectionsProcessor(game_code, alt_channel_id)
         return jsonify({"status": "ok"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
