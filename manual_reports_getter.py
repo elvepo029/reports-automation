@@ -56,6 +56,27 @@ def load_team_mapping(db_path):
     conn.close()
     return mapping
 
+def get_game_codes_to_import_manual_report(db_path):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                    SELECT game_code
+                    FROM GAME
+                    WHERE 
+                        (
+                        (game_code LIKE '%E%' AND round <= 31)
+                        OR
+                        (game_code LIKE '%U%' AND round <= 19)
+                        )
+                        AND is_processed = 0;
+    """)
+    
+    codes = {row[0] for row in  cursor.fetchall()}
+    
+    conn.close()
+    return codes
+
 
 def parse_date(value):
     """Converteix la cel·la B3 a year, month, day"""
@@ -146,7 +167,13 @@ def process_folder():
 
     folder_path = "./excels"
 
+    game_codes_to_import = get_game_codes_to_import_manual_report("dades.db")
+
     for file in os.listdir(folder_path):
+        game_code = file.split("_")[-1] + "_" + file.split("_")[2]
+        if game_code not in game_codes_to_import:
+            continue
+
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
             file_path = os.path.join(folder_path, file)
             print(f"Processing: {file}")
@@ -155,6 +182,8 @@ def process_folder():
 
             game_data_list.append(game_data)
             corrections_data_list.append(corrections_data)
+
+        game_codes_to_import.remove(game_code)
 
     # Guardar JSONs
     with open("game_data.json", "w", encoding="utf-8") as f:

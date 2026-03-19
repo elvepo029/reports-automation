@@ -143,66 +143,33 @@ for game_data in games_data:
     code_a = game_data["road"]["club"]["code"]
     round = game_data["round"]
 
-    if game_month == 2 and game_day > 9: #partits que falten de febrer
-        game = Game(
-            game_code = game_identifier,
-            code_h = code_h,
-            code_a = code_a,
-            year = game_year,
-            month = game_month,
-            day = game_day,
-            round = round,
-            data_entry = "",
-            caller_1 = "",
-            caller_2 = "",
-            timer = "",
-            shot_clock_operator = "",
-            irs_operator = "",
-            is_processed = False,
-            arrival_time = "",
-            checklist_on_time = "",
-            communication = "",
-            corrections_speed = "",
-            rescouted = "",
-            total_actions = 0,
-            total_corrections = 0,
-            lgm_comment = "",
-            result = 0.0
-        )
+    game = Game(
+        game_code = game_identifier,
+        code_h = code_h,
+        code_a = code_a,
+        year = game_year,
+        month = game_month,
+        day = game_day,
+        round = round,
+        data_entry = "",
+        caller_1 = "",
+        caller_2 = "",
+        timer = "",
+        shot_clock_operator = "",
+        irs_operator = "",
+        is_processed = False,
+        arrival_time = "",
+        checklist_on_time = "",
+        communication = "",
+        corrections_speed = "",
+        rescouted = "",
+        total_actions = 0,
+        total_corrections = 0,
+        lgm_comment = "",
+        result = 0.0
+    )
 
-        insertGame(game)
-
-    elif game_year == 2026 and game_month >= 3: #tots els altres partits a partir del primer dia de març
-        game = Game(
-            game_code = game_identifier,
-            code_h = code_h,
-            code_a = code_a,
-            year = game_year,
-            month = game_month,
-            day = game_day,
-            round = round,
-            data_entry = "",
-            caller_1 = "",
-            caller_2 = "",
-            timer = "",
-            shot_clock_operator = "",
-            irs_operator = "",
-            is_processed = False,
-            arrival_time = "",
-            checklist_on_time = "",
-            communication = "",
-            corrections_speed = "",
-            rescouted = "",
-            total_actions = 0,
-            total_corrections = 0,
-            lgm_comment = "",
-            result = 0.0
-        )
-
-        insertGame(game)
-
-    else:
-        continue
+    insertGame(game)
 
 conn.commit()        
 conn.close()
