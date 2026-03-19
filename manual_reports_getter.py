@@ -183,8 +183,6 @@ def process_folder():
             game_data_list.append(game_data)
             corrections_data_list.append(corrections_data)
 
-        game_codes_to_import.remove(game_code)
-
     # Guardar JSONs
     with open("game_data.json", "w", encoding="utf-8") as f:
         json.dump(game_data_list, f, indent=4, ensure_ascii=False)
