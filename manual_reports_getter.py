@@ -77,25 +77,14 @@ def get_game_codes_to_import_manual_report(db_path):
     conn.close()
     return codes
 
-
-def parse_date(value):
-    """Converteix la cel·la B3 a year, month, day"""
-    if isinstance(value, datetime):
-        return value.year, value.month, value.day
-    try:
-        dt = pd.to_datetime(value)
-        return dt.year, dt.month, dt.day
-    except:
-        return None, None, None
-
-def process_excel(file_path):
+def process_excel(file_path, game_code):
     # Llegir Excel sense header
     df = pd.read_excel(file_path, header=None, engine="openpyxl")
 
     def cell(row, col):
         return df.iloc[row, col]
     
-    year, month, day = parse_date(cell(2, 1))  # B3
+    year, month, day = parse_date(cell(2, 1), game_code)  # B3
 
     # --- GAME CODE ---
     game_code = f"{cell(1,1)}_{cell(1,2)}"  # B2_C2
@@ -127,6 +116,9 @@ def process_excel(file_path):
         "lgm_comment": cell(3, 12),  # M4
         "result": round(cell(6, 12), 1),  # M7
     }
+   
+    #if game_data["data_entry"] == "":
+       #print("caca de vaca")
 
     #columnes (dreta): 3 -> 12
     #files (esquerra): 16 -> (16 + num_correccions - 1) - 1
@@ -170,18 +162,20 @@ def process_folder():
     game_codes_to_import = get_game_codes_to_import_manual_report("dades.db")
 
     for file in os.listdir(folder_path):
-        game_code = file.split("_")[-1] + "_" + file.split("_")[2]
+        game_code = file.split("_")[-1].split(".")[0] + "_" + str(int(file.split("_")[2]))
+        
         if game_code not in game_codes_to_import:
             continue
 
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
             file_path = os.path.join(folder_path, file)
-            print(f"Processing: {file}")
 
-            game_data, corrections_data = process_excel(file_path)
+            game_data, corrections_data = process_excel(file_path, game_code)
 
             game_data_list.append(game_data)
             corrections_data_list.append(corrections_data)
+
+        game_codes_to_import.remove(game_code)
 
     # Guardar JSONs
     with open("game_data.json", "w", encoding="utf-8") as f:
