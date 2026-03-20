@@ -5,6 +5,15 @@ from datetime import datetime
 from correction import Correction
 from dataclasses import asdict
 import sqlite3
+from datetime import time, datetime
+import pandas as pd
+
+def serialize(obj):
+    if isinstance(obj, (datetime, time)):
+        return obj.isoformat()
+    if pd.isna(obj):
+        return None
+    return obj
 
 type_map = {
     "MISSIDENTITY": "MISIDENTITY",
@@ -77,28 +86,18 @@ def get_game_codes_to_import_manual_report(db_path):
     conn.close()
     return codes
 
-def process_excel(file_path, game_code):
+def process_excel(file_path, game_code, empty_reports_list):
     # Llegir Excel sense header
     df = pd.read_excel(file_path, header=None, engine="openpyxl")
 
     def cell(row, col):
         return df.iloc[row, col]
-    
-    year, month, day = parse_date(cell(2, 1), game_code)  # B3
 
     # --- GAME CODE ---
     game_code = f"{cell(1,1)}_{cell(1,2)}"  # B2_C2
 
-    team_mapping = load_team_mapping("dades.db")
-
     game_data = {
         "game_code": game_code,
-        "code_h": team_mapping.get(cell(3, 3)),  # D4
-        "code_a": team_mapping.get(cell(4, 3)),  # D5
-        "year": year,
-        "month": month,
-        "day": day,
-        "round": int(cell(0, 2)),  # C1
         "data_entry": cell(5, 3),  # D6
         "caller_1": cell(6, 3),  # D7
         "caller_2": cell(7, 3),  # D8
@@ -111,14 +110,16 @@ def process_excel(file_path, game_code):
         "communication": cell(11, 10),  # K12
         "corrections_speed": cell(11, 11),  # L12
         "rescouted": cell(11, 12),  # M12
-        "total_actions": cell(2, 3),  # D3
-        "total_corrections": cell(2, 5),  # F3
+        "total_actions": int(cell(2, 3)),  # D3
+        "total_corrections": int(cell(2, 5)),  # F3
         "lgm_comment": cell(3, 12),  # M4
         "result": round(cell(6, 12), 1),  # M7
     }
    
-    #if game_data["data_entry"] == "":
-       #print("caca de vaca")
+    if game_data["data_entry"] == "Data entry Name" or game_data["data_entry"] is None:
+        game_data = {}
+        empty_reports_list.append(game_code)
+
 
     #columnes (dreta): 3 -> 12
     #files (esquerra): 16 -> (16 + num_correccions - 1) - 1
@@ -150,38 +151,43 @@ def process_excel(file_path, game_code):
 
     # Pots adaptar això si vols més camps de corrections
 
-    return game_data, game_corrections_data
+    return game_data, game_corrections_data, 
 
 
 def process_folder():
     game_data_list = []
     corrections_data_list = []
+    empty_reports_list = []
 
     folder_path = "./excels"
 
     game_codes_to_import = get_game_codes_to_import_manual_report("dades.db")
 
     for file in os.listdir(folder_path):
-        game_code = file.split("_")[-1].split(".")[0] + "_" + str(int(file.split("_")[2]))
-        
-        if game_code not in game_codes_to_import:
-            continue
-
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
+
+            game_code = file.split("_")[-1].split(".")[0] + "_" + str(int(file.split("_")[2]))
+        
+            if game_code not in game_codes_to_import:
+                continue
+
             file_path = os.path.join(folder_path, file)
 
-            game_data, corrections_data = process_excel(file_path, game_code)
+            game_data, corrections_data = process_excel(file_path, game_code, empty_reports_list)
 
             game_data_list.append(game_data)
             corrections_data_list.append(corrections_data)
 
-        game_codes_to_import.remove(game_code)
+            game_codes_to_import.remove(game_code)
 
     # Guardar JSONs
     with open("game_data.json", "w", encoding="utf-8") as f:
-        json.dump(game_data_list, f, indent=4, ensure_ascii=False)
+        json.dump(game_data_list, f, indent=4, ensure_ascii=False, default=serialize)
 
     with open("corrections_data.json", "w", encoding="utf-8") as f:
-        json.dump(corrections_data_list, f, indent=4, ensure_ascii=False)
+        json.dump(corrections_data_list, f, indent=4, ensure_ascii=False, default=serialize)
+
+    print(empty_reports_list)
+    print(len(empty_reports_list))
 
 process_folder()
