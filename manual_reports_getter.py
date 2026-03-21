@@ -8,6 +8,43 @@ import sqlite3
 from datetime import time, datetime
 import pandas as pd
 
+def update_game(conn, game_code, game_data):
+    cursor = conn.cursor()
+
+    # eliminar claus buides si has marcat report buit
+    if not game_data:
+        return
+
+    fields = ", ".join([f"{key} = ?" for key in game_data.keys()])
+    values = list(game_data.values())
+
+    query = f"""
+        UPDATE GAME
+        SET {fields}
+        WHERE game_code = ?
+    """
+
+    cursor.execute(query, values + [game_code])
+
+def insert_corrections(conn, corrections_data):
+    cursor = conn.cursor()
+
+    if not corrections_data:
+        return
+
+    keys = corrections_data[0].keys()
+    fields = ", ".join(keys)
+    placeholders = ", ".join(["?"] * len(keys))
+
+    query = f"""
+        INSERT INTO Correction ({fields})
+        VALUES ({placeholders})
+    """
+
+    values = [tuple(c.values()) for c in corrections_data]
+
+    cursor.executemany(query, values)
+
 def serialize(obj):
     if isinstance(obj, (datetime, time)):
         return obj.isoformat()
@@ -86,18 +123,25 @@ def get_game_codes_to_import_manual_report(db_path):
     conn.close()
     return codes
 
-def process_excel(file_path, game_code, empty_reports_list):
+def process_excel(conn, file_path, game_code, empty_reports_list):
     # Llegir Excel sense header
     df = pd.read_excel(file_path, header=None, engine="openpyxl")
 
     def cell(row, col):
-        return df.iloc[row, col]
+        value = df.iloc[row, col]
+
+        if pd.isna(value):
+            return None
+        
+        if isinstance(value, (datetime, time)):
+            return value.isoformat()
+        
+        return value
 
     # --- GAME CODE ---
     game_code = f"{cell(1,1)}_{cell(1,2)}"  # B2_C2
 
     game_data = {
-        "game_code": game_code,
         "data_entry": cell(5, 3),  # D6
         "caller_1": cell(6, 3),  # D7
         "caller_2": cell(7, 3),  # D8
@@ -120,6 +164,7 @@ def process_excel(file_path, game_code, empty_reports_list):
         game_data = {}
         empty_reports_list.append(game_code)
 
+    update_game(conn, game_code, game_data)
 
     #columnes (dreta): 3 -> 12
     #files (esquerra): 16 -> (16 + num_correccions - 1) - 1
@@ -151,12 +196,11 @@ def process_excel(file_path, game_code, empty_reports_list):
 
     # Pots adaptar això si vols més camps de corrections
 
-    return game_data, game_corrections_data, 
+    insert_corrections(conn, game_corrections_data)
 
 
 def process_folder():
-    game_data_list = []
-    corrections_data_list = []
+    conn = sqlite3.connect("dades.db")
     empty_reports_list = []
 
     folder_path = "./excels"
@@ -173,19 +217,12 @@ def process_folder():
 
             file_path = os.path.join(folder_path, file)
 
-            game_data, corrections_data = process_excel(file_path, game_code, empty_reports_list)
-
-            game_data_list.append(game_data)
-            corrections_data_list.append(corrections_data)
+            process_excel(conn, file_path, game_code, empty_reports_list)
 
             game_codes_to_import.remove(game_code)
 
-    # Guardar JSONs
-    with open("game_data.json", "w", encoding="utf-8") as f:
-        json.dump(game_data_list, f, indent=4, ensure_ascii=False, default=serialize)
-
-    with open("corrections_data.json", "w", encoding="utf-8") as f:
-        json.dump(corrections_data_list, f, indent=4, ensure_ascii=False, default=serialize)
+    conn.commit()
+    conn.close()
 
     print(empty_reports_list)
     print(len(empty_reports_list))
