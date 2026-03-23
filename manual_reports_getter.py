@@ -87,10 +87,6 @@ category_map = {
     "UNSPORTSMANLIKE FOUL": "UF"
 }
 
-team_map = {
-
-}
-
 def load_team_mapping(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -111,9 +107,11 @@ def get_game_codes_to_import_manual_report(db_path):
                     FROM GAME
                     WHERE 
                         (
-                        (game_code LIKE '%E%' AND round <= 31)
+                        (year = 2025)
                         OR
-                        (game_code LIKE '%U%' AND round <= 19)
+                        (year = 2026 AND month < 3)
+                        OR
+                        (year = 2026 AND month = 3 AND day <= 13)
                         )
                         AND is_processed = 0;
     """)
@@ -159,12 +157,6 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
         "lgm_comment": cell(3, 12),  # M4
         "result": round(cell(6, 12), 1),  # M7
     }
-   
-    if game_data["data_entry"] == "Data entry Name" or game_data["data_entry"] is None:
-        game_data = {}
-        empty_reports_list.append(game_code)
-
-    update_game(conn, game_code, game_data)
 
     #columnes (dreta): 3 -> 12
     #files (esquerra): 16 -> (16 + num_correccions - 1) - 1
@@ -196,7 +188,12 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
 
     # Pots adaptar això si vols més camps de corrections
 
-    insert_corrections(conn, game_corrections_data)
+    if (game_data["data_entry"] == "Data entry Name" or game_data["data_entry"] is None) and len(game_corrections_data) == 0:
+        game_data = {}
+        empty_reports_list.append(game_code)
+    else:
+        update_game(conn, game_code, game_data)
+        insert_corrections(conn, game_corrections_data)
 
 
 def process_folder():
