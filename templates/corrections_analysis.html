@@ -413,26 +413,26 @@
 <datalist id="datalist_shot_clock_operator"></datalist>
 <datalist id="datalist_irs_operator"></datalist>
 <datalist id="datalist_arrival_time">
-  <option value="Ok"></option>
-  <option value="Late"></option>
+  <option value="OK"></option>
+  <option value="LATE"></option>
 </datalist>
 <datalist id="datalist_checklist_on_time">
-  <option value="Yes"></option>
-  <option value="No"></option>
+  <option value="YES"></option>
+  <option value="NO"></option>
 </datalist>
 <datalist id="datalist_communication">
-  <option value="Good"></option>
-  <option value="Ok"></option>
-  <option value="Not Fluid"></option>
+  <option value="GOOD"></option>
+  <option value="OK"></option>
+  <option value="NOT FLUID"></option>
 </datalist>
 <datalist id="datalist_corrections_speed">
-  <option value="Fast"></option>
-  <option value="Ok"></option>
-  <option value="Slow"></option>
+  <option value="FAST"></option>
+  <option value="OK"></option>
+  <option value="SLOW"></option>
 </datalist>
 <datalist id="datalist_rescouted">
-  <option value="Yes"></option>
-  <option value="No"></option>
+  <option value="YES"></option>
+  <option value="NO"></option>
 </datalist>
 <datalist id="datalist_competition">
   <option value="E"></option>
@@ -806,11 +806,11 @@ function updateLogisticsCounts() {
         container.textContent = parts.join(" · ") + (total ? `   (${total})` : "");
       }
 
-      renderCounts("logistics-count-arrival_time", "arrival_time", ["Ok", "Late"]);
-      renderCounts("logistics-count-checklist_on_time", "checklist_on_time", ["Yes", "No"]);
-      renderCounts("logistics-count-communication", "communication", ["Good", "Ok", "Not Fluid"]);
-      renderCounts("logistics-count-corrections_speed", "corrections_speed", ["Fast", "Ok", "Slow"]);
-      renderCounts("logistics-count-rescouted", "rescouted", ["Yes", "No"]);
+      renderCounts("logistics-count-arrival_time", "arrival_time", ["OK", "LATE"]);
+      renderCounts("logistics-count-checklist_on_time", "checklist_on_time", ["YES", "NO"]);
+      renderCounts("logistics-count-communication", "communication", ["GOOD", "OK", "NOT FLUID"]);
+      renderCounts("logistics-count-corrections_speed", "corrections_speed", ["FAST", "OK", "SLOW"]);
+      renderCounts("logistics-count-rescouted", "rescouted", ["YES", "NO"]);
     })
     .catch(() => {
       // silent fail; do not break main flow

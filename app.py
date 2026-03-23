@@ -606,17 +606,17 @@ def generate_report(game_code, lgm):
 
     # Punts de Logistics
     logistic_points = 0
-    if arrival_time == "Late":
+    if arrival_time == "LATE":
         logistic_points += 2
-    if checklist_on_time == "No":
+    if checklist_on_time == "NO":
         logistic_points += 5
-    if communication == "Ok":
+    if communication == "OK":
         logistic_points += 1
-    elif communication == "Not Fluid":
+    elif communication == "NOT FLUID":
         logistic_points += 2
-    if corrections_speed == "Ok":
+    if corrections_speed == "OK":
         logistic_points += 1
-    elif corrections_speed == "Slow":
+    elif corrections_speed == "SLOW":
         logistic_points += 2
 
     resultat_final = round(total_points + percent_corrections + logistic_points, 1)
