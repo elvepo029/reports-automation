@@ -4,6 +4,7 @@ import json
 from pdfGeneratorHelper import html_to_pdf
 from correctionToReport import runCorrectionsProcessor
 import os
+import base64
 
 os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
@@ -12,6 +13,17 @@ DB = "dades.db"
 
 def get_db():
     return sqlite3.connect(DB)
+
+
+def get_logo_data_uri():
+    """PNG incrustat en base64 perquè WeasyPrint mostri el logo (evita alt text si falla el fitxer)."""
+    logo_path = os.path.join(app.root_path, "static", "logo.png")
+    try:
+        with open(logo_path, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("ascii")
+        return f"data:image/png;base64,{b64}"
+    except Exception:
+        return ""
 
 
 def ensure_game_logistics_columns(conn):
@@ -412,6 +424,50 @@ def get_game_uscs(game_code):
         "irs_operator": row["irs_operator"]
     })
 
+
+@app.route("/game_report_data/<game_code>")
+def game_report_data(game_code):
+    """Dades persistides del report (Game): accions, USCs, logística, comentari LGM."""
+    conn = get_db()
+    ensure_game_logistics_columns(conn)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT data_entry, caller_1, caller_2, timer, shot_clock_operator, irs_operator,
+               arrival_time, checklist_on_time, communication, corrections_speed, rescouted,
+               total_actions, lgm_comment
+        FROM Game WHERE game_code = ?
+        """,
+        (game_code,),
+    )
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return jsonify({"error": "game not found"}), 404
+
+    def nz(v):
+        return v if v is not None else ""
+
+    ta = row["total_actions"]
+    return jsonify(
+        {
+            "data_entry": nz(row["data_entry"]),
+            "caller_1": nz(row["caller_1"]),
+            "caller_2": nz(row["caller_2"]),
+            "timer": nz(row["timer"]),
+            "shot_clock_operator": nz(row["shot_clock_operator"]),
+            "irs_operator": nz(row["irs_operator"]),
+            "arrival_time": nz(row["arrival_time"]),
+            "checklist_on_time": nz(row["checklist_on_time"]),
+            "communication": nz(row["communication"]),
+            "corrections_speed": nz(row["corrections_speed"]),
+            "rescouted": nz(row["rescouted"]),
+            "total_actions": "" if ta is None else ta,
+            "lgm_comment": nz(row["lgm_comment"]),
+        }
+    )
+
 # ----------------- USCs temporada -----------------
 @app.route("/get_uscs_for_game/<game_code>")
 def get_uscs_for_game(game_code):
@@ -756,6 +812,7 @@ def generate_report(game_code, lgm):
 
     # Generació del report: HTML → PDF (WeasyPrint)
     report_data["percent_corrections"] = report_data.get("%_corrections", "")
+    report_data["logo_data_uri"] = get_logo_data_uri()
     html = render_template("report_pdf.html", **report_data)
     pdf_buffer = html_to_pdf(html, base_url=app.root_path)
 

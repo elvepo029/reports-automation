@@ -5,6 +5,7 @@
 <title>Euroleague corrections</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; }
   body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 20px; color: #0A1F44; }
   .back-link { margin-bottom: 12px; }
   .back-link a { color: #1B5DBF; text-decoration: none; }
@@ -41,11 +42,6 @@
     padding-left: 6px;
     padding-right: 6px;
   }
-  .team-input {
-    width: 120px;          /* prou ample per "HOME TEAM" / "AWAY TEAM" */
-    padding-left: 6px;
-    padding-right: 6px;
-  }
   input:focus, select:focus, textarea:focus { border-color: #1B5DBF; }
   textarea { width: 100%; min-height: 80px; resize: vertical; }
   button {
@@ -70,16 +66,92 @@
   }
   button:hover { background: #3A7DD3; }
   #status { font-weight: bold; margin-left: 10px; }
-  table {
-    border-collapse: collapse; width: 100%; margin-top: 15px; background: white;
-    border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  /* Taula correccions: cabre al viewport sense scroll horitzontal */
+  .corrections-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 15px;
   }
-  th, td { border-bottom: 1px solid #e0e0e0; padding: 10px; text-align: center; font-size: 14px; }
-  th { background: #0A1F44; color: white; position: sticky; top: 0; z-index: 2; }
-  tr:nth-child(even) { background-color: #f8faff; }
-  tr:hover { background-color: #e6f0ff; }
-  td[contenteditable="true"] { background-color: #fffde6; border-radius: 4px; }
-  td[contenteditable="true"]:focus { outline: 2px solid #1B5DBF; }
+  table#table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    margin-top: 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  #table th, #table td {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 7px 5px;
+    text-align: center;
+    font-size: 13px;
+    vertical-align: middle;
+    min-width: 0;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  #table th {
+    background: #0A1F44;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  /* Repartiment aproximat: columnes estretes a l’esquerra, més espai a type_c / category / accions */
+  #table th:nth-child(1), #table td:nth-child(1) { width: 8%; }
+  #table th:nth-child(2), #table td:nth-child(2) { width: 8%; }
+  #table th:nth-child(3), #table td:nth-child(3) { width: 5%; }
+  #table th:nth-child(4), #table td:nth-child(4),
+  #table th:nth-child(5), #table td:nth-child(5),
+  #table th:nth-child(6), #table td:nth-child(6),
+  #table th:nth-child(7), #table td:nth-child(7) { width: 3.8%; }
+  #table th:nth-child(8), #table td:nth-child(8) { width: 9%; }
+  #table th:nth-child(9), #table td:nth-child(9) { width: 9%; }
+  #table th:nth-child(10), #table td:nth-child(10) { width: 15%; }
+  #table th:nth-child(11), #table td:nth-child(11) { width: 14%; }
+  #table th:last-child, #table td:last-child { width: 5%; min-width: 0; max-width: 88px; }
+  #table .actions-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+  }
+  #table .actions-stack button {
+    width: 100%;
+    margin: 0;
+  }
+  #table input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    padding: 6px 7px;
+    font-size: 13px;
+  }
+  #table .quarter-input,
+  #table .bss-input,
+  #table .team-input,
+  #table .typec-input,
+  #table .category-input {
+    width: 100% !important;
+    max-width: 100%;
+  }
+  #table td:last-child button {
+    margin-top: 0;
+    padding: 5px 6px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  #table tr:nth-child(even) { background-color: #f8faff; }
+  #table tr:hover { background-color: #e6f0ff; }
+  #table td[contenteditable="true"] { background-color: #fffde6; border-radius: 4px; }
+  #table td[contenteditable="true"]:focus { outline: 2px solid #1B5DBF; }
   .field-group { margin-top: 15px; }
 
   /* Step cards under the corrections table */
@@ -156,15 +228,12 @@
       width: 100%;
     }
 
-    /* Table can scroll horizontally on narrow screens */
-    table {
-      display: block;
-      overflow-x: auto;
+    /* Taula correccions: sense scroll horitzontal */
+    #table {
       font-size: 12px;
     }
-
-    th, td {
-      white-space: nowrap;
+    #table th, #table td {
+      padding: 5px 3px;
     }
 
     .step-card {
@@ -221,7 +290,9 @@
 </div>
 
 <!-- Taula correccions -->
+<div class="corrections-table-wrap">
 <table id="table"></table>
+</div>
 
 <!-- Step 1: Total game actions -->
 <div class="step-card" id="step-actions" style="display:none">
@@ -442,6 +513,59 @@ let liveResultTimeout = null;
 
 loadLiveGameManagers();
 
+/** Omple accions, USCs, logística i comentari des de la resposta de /game_report_data (o buida si no hi ha partit). */
+function fillReportFormFromServer(reportData) {
+  const setInput = (id, val) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (val === null || val === undefined) {
+      el.value = "";
+    } else {
+      el.value = typeof val === "number" ? String(val) : String(val);
+    }
+  };
+
+  if (!reportData) {
+    setInput("num_accions", "");
+    setInput("data_entry", "");
+    setInput("caller_1", "");
+    setInput("caller_2", "");
+    setInput("timer", "");
+    setInput("shot_clock_operator", "");
+    setInput("irs_operator", "");
+    setInput("arrival_time", "");
+    setInput("checklist_on_time", "");
+    setInput("communication", "");
+    setInput("corrections_speed", "");
+    setInput("rescouted", "");
+    const commentEl = document.getElementById("valoracions");
+    if (commentEl) {
+      commentEl.value = "";
+      commentEl.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    return;
+  }
+
+  const numAccions = reportData.total_actions;
+  setInput("num_accions", numAccions === "" || numAccions === null || numAccions === undefined ? "" : numAccions);
+  setInput("data_entry", reportData.data_entry);
+  setInput("caller_1", reportData.caller_1);
+  setInput("caller_2", reportData.caller_2);
+  setInput("timer", reportData.timer);
+  setInput("shot_clock_operator", reportData.shot_clock_operator);
+  setInput("irs_operator", reportData.irs_operator);
+  setInput("arrival_time", reportData.arrival_time);
+  setInput("checklist_on_time", reportData.checklist_on_time);
+  setInput("communication", reportData.communication);
+  setInput("corrections_speed", reportData.corrections_speed);
+  setInput("rescouted", reportData.rescouted);
+  const tv = document.getElementById("valoracions");
+  if (tv) {
+    tv.value = reportData.lgm_comment || "";
+    tv.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+}
+
 function loadData() {
   const comp = document.getElementById("competition").value;
   const num = document.getElementById("match_num").value.trim();
@@ -450,13 +574,21 @@ function loadData() {
   if (!num) { alert("Enter a game number"); return; }
   const gameCode = `${comp}2025_${num}`;
 
-  fetch(`/corrections/${gameCode}`)
-    .then(r => r.json())
-    .then(data => { 
-      currentData = data; 
-      renderTable(data, lgm);  // Passem el Live Game Manager seleccionat
+  const pCorr = fetch(`/corrections/${gameCode}`).then(r => r.json());
+  const pReport = fetch(`/game_report_data/${gameCode}`).then(r => {
+    if (r.status === 404) return null;
+    if (!r.ok) return null;
+    return r.json();
+  });
+  const pUscNames = fetch(`/get_uscs_for_game/${gameCode}`).then(r => r.json());
 
-      // Només mostrar el formulari d'afegir correcció si totes les correccions pertanyen al mateix LGM
+  Promise.all([pCorr, pReport, pUscNames])
+    .then(([data, reportData, names]) => {
+      currentData = data;
+      renderTable(data, lgm);
+
+      fillReportFormFromServer(reportData);
+
       const canEdit = data.every(row => row.live_game_manager === lgm || row.live_game_manager === null);
 
       const reportInputs = [
@@ -467,11 +599,12 @@ function loadData() {
         "shot_clock_operator",
         "irs_operator",
         "num_accions",
-        "valoracions", 
+        "valoracions",
         "arrival_time",
-        "checklist_on_time", 
+        "checklist_on_time",
         "communication",
-        "corrections_speed"
+        "corrections_speed",
+        "rescouted",
       ];
 
       reportInputs.forEach(id => {
@@ -479,31 +612,21 @@ function loadData() {
         if (el) el.disabled = !canEdit;
       });
 
-      // Always show the rest of the fields (to view the report)
       document.getElementById("step-actions").style.display = "block";
       document.getElementById("step-uscs").style.display = "block";
       document.getElementById("step-logistics").style.display = "block";
       document.getElementById("step-comment").style.display = "block";
-    });
 
-  fetch(`/get_uscs_for_game/${gameCode}`)
-    .then(r => r.json())
-    .then(names => {
-      
       const datalist = document.getElementById("usc_list");
       datalist.innerHTML = "";
-
       names.forEach(name => {
         const option = document.createElement("option");
         option.value = name;
         datalist.appendChild(option);
-      })
+      });
+
+      scheduleLiveResultUpdate();
     });
-
-    // Logistics card is already unhidden above
-
-    // Actualitzar resultat provisional un cop carregades les dades
-    scheduleLiveResultUpdate();
 }
 
 function renderTable(data, selectedLGM) {
@@ -655,6 +778,8 @@ function insertNewCorrectionRow(table, selectedLGM) {
   });
 
   const tdActions = tr.insertCell();
+  const actionsStack = document.createElement("div");
+  actionsStack.className = "actions-stack";
 
   const btnAdd = document.createElement("button");
   btnAdd.innerText = "Add";
@@ -691,7 +816,6 @@ function insertNewCorrectionRow(table, selectedLGM) {
   const btnDiscard = document.createElement("button");
   btnDiscard.innerText = "Discard";
   btnDiscard.style.background = "#E30613";
-  btnDiscard.style.marginLeft = "5px";
 
   btnDiscard.onclick = () => {
     tr.querySelectorAll("td[data-field]").forEach(td => {
@@ -720,8 +844,9 @@ function insertNewCorrectionRow(table, selectedLGM) {
     });
   };
 
-  tdActions.appendChild(btnAdd);
-  tdActions.appendChild(btnDiscard);
+  actionsStack.appendChild(btnAdd);
+  actionsStack.appendChild(btnDiscard);
+  tdActions.appendChild(actionsStack);
 }
 
 

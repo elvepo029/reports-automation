@@ -149,7 +149,9 @@
 <body>
   <div class="report">
     <div class="top-logo">
-      <img src="static/logo.png" alt="Logo">
+      {% if logo_data_uri %}
+        <img src="{{ logo_data_uri }}" alt="">
+      {% endif %}
     </div>
     <div class="header">
       <div class="game">{{ game }}</div>
