@@ -3,6 +3,9 @@ import sqlite3
 import json
 from pdfGeneratorHelper import html_to_pdf
 from correctionToReport import runCorrectionsProcessor
+import os
+
+os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
 app = Flask(__name__)
 DB = "dades.db"
