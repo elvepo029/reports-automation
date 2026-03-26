@@ -5,8 +5,10 @@ from pdfGeneratorHelper import html_to_pdf
 from correctionToReport import runCorrectionsProcessor
 import os
 import base64
+import sys
 
-os.add_dll_directory(r"C:\msys64\ucrt64\bin")
+if sys.platform == "win32":
+    os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
 app = Flask(__name__)
 DB = "dades.db"
