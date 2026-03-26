@@ -6,7 +6,6 @@ from correction import Correction
 from dataclasses import asdict
 import sqlite3
 from datetime import time, datetime
-import pandas as pd
 
 def update_game(conn, game_code, game_data):
     cursor = conn.cursor()
