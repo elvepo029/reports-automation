@@ -12,9 +12,9 @@ cursor = conn.cursor()
 def insertUsc(usc: USC):
     cursor.execute("""
         INSERT OR IGNORE INTO Usc (
-            code, name, team_code
-        ) VALUES (?, ?, ?)
-    """, (usc.code, usc.name, usc.club_code))
+            code, name, team_code, season
+        ) VALUES (?, ?, ?, ?)
+    """, (usc.code, usc.name, usc.club_code, usc.season))
 
 el_competition_code = "E"
 ec_competition_code = "U"
@@ -33,6 +33,9 @@ eurocup_uscs_data = eurocup_uscs_info["data"]
 
 uscs_data = euroleague_uscs_data + eurocup_uscs_data #agrupació de uscs d'eurolliga i eurocup (no distinció)
 
+#with open("uscs_data.json", "w", encoding="utf-8") as f:
+    #json.dump(uscs_data, f, indent=4, ensure_ascii=False)
+
 for usc_data in uscs_data:
     #dades necessàries per omplir taula de Usc de base de dades pròpia:
     usc_code = usc_data["person"]["code"]
@@ -40,17 +43,16 @@ for usc_data in uscs_data:
     usc_surnames = usc_data["person"]["name"].split(", ")[0]
     usc_reordered_name = usc_name + " " + usc_surnames #reordenació de components del nom tal com es vol al report (nom cognom)
     usc_club_code = usc_data["club"]["code"]
+    usc_season = usc_data["season"]["code"]
     
     usc = USC(
         code = usc_code,
         name = usc_reordered_name,
-        club_code = usc_club_code
+        club_code = usc_club_code,
+        season = usc_season
     )
 
     insertUsc(usc)
-
-#with open("uscs_data.json", "w", encoding="utf-8") as f:
-        #json.dump(uscs, f, indent=4, ensure_ascii=False)
 
 conn.commit()
 conn.close()
