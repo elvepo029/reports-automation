@@ -776,7 +776,7 @@ def generate_report(game_code, lgm):
         "MISPLACED": "misplaced_corrections",
         "TIMING": "timing_corrections",
         "JUMP BALL": "jump_ball_corrections",
-        "SUBS": "substitution_corrections",
+        "SUBSTITUTIONS": "substitution_corrections",
         "IRS/CC": "irs_cc_corrections",
         "TIME OUT": "time_out_corrections",
         "FOULS": "fouls_corrections",
