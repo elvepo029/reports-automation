@@ -11,8 +11,24 @@ if sys.platform == "win32":
     os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
 app = Flask(__name__)
-#DB = "dades_staging.db" #PROVES
-DB = "dades_prod.db" #PRODUCCIó
+
+
+def get_app_version() -> str:
+    path = os.path.join(app.root_path, "VERSION")
+    try:
+        with open(path, encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return "unknown"
+
+
+@app.context_processor
+def inject_app_version():
+    return {"app_version": get_app_version()}
+
+
+DB = "dades_staging.db" #PROVES
+#DB = "dades_prod.db" #PRODUCCIó
 
 def get_db():
     return sqlite3.connect(DB)
