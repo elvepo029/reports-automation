@@ -2,8 +2,8 @@ import requests
 import sqlite3
 from game import Game
 
-#DB = "dades_staging.db" #PROVES
-DB = "dades_prod.db" #PRODUCCIó
+DB = "dades_staging.db" #PROVES
+#DB = "dades_prod.db" #PRODUCCIó
 
 conn = sqlite3.connect(DB)
 cursor = conn.cursor()

@@ -11,8 +11,8 @@ if sys.platform == "win32":
     os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
 app = Flask(__name__)
-#DB = "dades_staging.db" #PROVES
-DB = "dades_prod.db" #PRODUCCIó
+DB = "dades_staging.db" #PROVES
+#DB = "dades_prod.db" #PRODUCCIó
 
 def get_db():
     return sqlite3.connect(DB)
