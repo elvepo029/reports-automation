@@ -6,9 +6,6 @@ __pycache__/
 # Virtual environment
 venv/
 
-# Database
-*.db
-
 # Logs
 *.log
 
