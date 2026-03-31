@@ -55,162 +55,162 @@ def generate_pdf_from_json(data, template_path):
     # Mapa JSON -> coordenades
     fields = {
         "game": {
-            "pos": (300, 775),
+            "pos": (300, 765),
             "color": colors.white,
             "font": "Helvetica-Bold",
             "size": 12,
             "align": "center"
         },
-        "date": (300, 754),
+        "date": (300, 744),
         "team_h": {
-            "pos": (169, 714),
+            "pos": (169, 705),
             "color": colors.white,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "team_a": {
-            "pos": (425, 714),
+            "pos": (425, 705),
             "color": colors.white,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "live_game_manager": {
-            "pos": (480, 637),
+            "pos": (480, 630),
             "color": colors.black,
             "font": "Helvetica",
             "size": 8,
             "align": "center"
         },
         "arrival_time": {
-            "pos": (95, 559),
+            "pos": (95, 552),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "checklist_on_time": {
-            "pos": (195, 559),
+            "pos": (195, 552),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "communication": {
-            "pos": (295, 559),
+            "pos": (295, 552),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "corrections_speed": {
-            "pos": (395, 559),
+            "pos": (395, 552),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "rescouted": {
-            "pos": (495, 559),
+            "pos": (495, 552),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "total_actions": {
-            "pos": (125, 477),
+            "pos": (125, 474),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "total_corrections": {
-            "pos": (295, 477),
+            "pos": (295, 474),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "%_corrections": {
-            "pos": (465, 477),
+            "pos": (465, 474),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "home_team": {
-            "pos": (125, 419),
+            "pos": (125, 416),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "away_team": {
-            "pos": (295, 419),
+            "pos": (295, 416),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "no_team": {
-            "pos": (465, 419),
+            "pos": (465, 416),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "quarter_1": {
-            "pos": (95, 376),
+            "pos": (95, 373),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "quarter_2": {
-            "pos": (195, 376),
+            "pos": (195, 373),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "quarter_3": {
-            "pos": (295, 376),
+            "pos": (295, 373),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "quarter_4": {
-            "pos": (395, 376),
+            "pos": (395, 373),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "et": {
-            "pos": (495, 376),
+            "pos": (495, 373),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "boxscore_corrections": {
-            "pos": (169, 318),
+            "pos": (169, 316),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "scoresheet_corrections": {
-            "pos": (425, 318),
+            "pos": (425, 316),
             "color": colors.black,
             "font": "Helvetica",
             "size": 11,
             "align": "center"
         },
         "result": {
-            "pos": (84, 28),
+            "pos": (90, 33),
             "color": colors.black,
             "font": "Helvetica-Bold",
             "size": 15,
@@ -305,8 +305,8 @@ def generate_pdf_from_json(data, template_path):
     draw_name_multiline(
         c,
         text=data["data_entry"],
-        x=86,
-        y=654,
+        x=90,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -315,8 +315,8 @@ def generate_pdf_from_json(data, template_path):
     draw_name_multiline(
         c,
         text=data["caller_1"],
-        x=170,
-        y=654,
+        x=172,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -326,7 +326,7 @@ def generate_pdf_from_json(data, template_path):
         c,
         text=data["caller_2"],
         x=254,
-        y=654,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -336,7 +336,7 @@ def generate_pdf_from_json(data, template_path):
         c,
         text=data["timer"],
         x=338,
-        y=654,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -346,7 +346,7 @@ def generate_pdf_from_json(data, template_path):
         c,
         text=data["shot_clock"],
         x=422,
-        y=654,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -356,7 +356,7 @@ def generate_pdf_from_json(data, template_path):
         c,
         text=data["irs_operator"],
         x=506,
-        y=654,
+        y=647,
         box_height=30,
         font="Helvetica",
         size=8
@@ -365,9 +365,9 @@ def generate_pdf_from_json(data, template_path):
     draw_comments_justified(
         c,
         text=data["comments"],
-        x=50,         
+        x=55,         
         y=135,
-        box_width=495, 
+        box_width=480, 
         box_height=50, 
         font="Helvetica",
         size=8

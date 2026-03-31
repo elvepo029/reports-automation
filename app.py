@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import json
-from pdfGeneratorHelper import html_to_pdf
+from pdfGeneratorHelper import html_to_pdf, generate_pdf_from_json
 from correctionToReport import runCorrectionsProcessor
 import os
 import base64
@@ -812,11 +812,9 @@ def generate_report(game_code, lgm):
             "result": float(f"{resultat_final:.1f}")
         })
 
-    # Generació del report: HTML → PDF (WeasyPrint)
-    report_data["percent_corrections"] = report_data.get("%_corrections", "")
-    report_data["logo_data_uri"] = get_logo_data_uri()
-    html = render_template("report_pdf.html", **report_data)
-    pdf_buffer = html_to_pdf(html, base_url=app.root_path)
+    # Generació del report: PNG template → PDF (ReportLab)
+    template_path = os.path.join(app.root_path, "static", "report_template.png")
+    pdf_buffer = generate_pdf_from_json(report_data, template_path)
 
     return send_file(
         pdf_buffer,
