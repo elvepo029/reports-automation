@@ -210,7 +210,7 @@ def generate_pdf_from_json(data, template_path):
             "align": "center"
         },
         "result": {
-            "pos": (90, 33),
+            "pos": (88, 33),
             "color": colors.black,
             "font": "Helvetica-Bold",
             "size": 15,

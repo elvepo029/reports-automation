@@ -70,8 +70,11 @@ TO: turnover
 UF: unsportsmanlike foul
 """
 
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
+
 def getActionAbbreviationByPbpName(pbp_name): 
-    conn = sqlite3.connect("dades.db")
+    conn = sqlite3.connect(DB)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -113,7 +116,7 @@ def getLGMNameById(cursor, lgm_id):
     return row[0] if row else None
 
 def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: str | None = None):
-    conn = sqlite3.connect("dades.db")
+    conn = sqlite3.connect(DB)
     cursor = conn.cursor()
 
     cursor.execute("""

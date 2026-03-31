@@ -7,6 +7,9 @@ from dataclasses import asdict
 import sqlite3
 from datetime import time, datetime
 
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
+
 def update_game(conn, game_code, game_data):
     cursor = conn.cursor()
 
@@ -86,8 +89,8 @@ category_map = {
     "UNSPORTSMANLIKE FOUL": "UF"
 }
 
-def load_team_mapping(db_path):
-    conn = sqlite3.connect(db_path)
+def load_team_mapping():
+    conn = sqlite3.connect(DB)
     cursor = conn.cursor()
 
     cursor.execute("SELECT team_name, team_code FROM Team")
@@ -97,8 +100,8 @@ def load_team_mapping(db_path):
     conn.close()
     return mapping
 
-def get_game_codes_to_import_manual_report(db_path):
-    conn = sqlite3.connect(db_path)
+def get_game_codes_to_import_manual_report():
+    conn = sqlite3.connect(DB)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -196,12 +199,12 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
 
 
 def process_folder():
-    conn = sqlite3.connect("dades.db")
+    conn = sqlite3.connect(DB)
     empty_reports_list = []
 
     folder_path = "./excels"
 
-    game_codes_to_import = get_game_codes_to_import_manual_report("dades.db")
+    game_codes_to_import = get_game_codes_to_import_manual_report(DB)
 
     for file in os.listdir(folder_path):
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
