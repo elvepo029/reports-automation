@@ -5,8 +5,8 @@ import json
 from usc import USC
 from dataclasses import asdict
 
-DB = "dades_staging.db" #PROVES
-#DB = "dades_prod.db" #PRODUCCIó
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
 
 conn = sqlite3.connect(DB)
 cursor = conn.cursor()

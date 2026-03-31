@@ -70,8 +70,8 @@ TO: turnover
 UF: unsportsmanlike foul
 """
 
-DB = "dades_staging.db" #PROVES
-#DB = "dades_prod.db" #PRODUCCIó
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
 
 def getActionAbbreviationByPbpName(pbp_name): 
     conn = sqlite3.connect(DB)
