@@ -650,8 +650,13 @@ def generate_report(game_code, lgm):
         cur.execute("SELECT COUNT(*) as total FROM Correction WHERE game_code = ? AND type_c = ?", (game_code, t))
         boxscore_counts[t] = cur.fetchone()["total"]
 
-    # Comentari live game manager
-    comentari = request.args.get("valoracions", "")
+    # Comentari live game manager: el preview JSON (format=json) no envia valoracions;
+    # si no hi és als query params, conservem el valor persistit i no esborrem la BD.
+    if "valoracions" in request.args:
+        comentari = request.args.get("valoracions", "")
+    else:
+        prev = game["lgm_comment"]
+        comentari = prev if prev is not None else ""
 
     # Assignació de punts segons type_c
     points_map = {
