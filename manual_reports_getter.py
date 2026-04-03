@@ -113,7 +113,7 @@ def get_game_codes_to_import_manual_report():
                         OR
                         (year = 2026 AND month < 3)
                         OR
-                        (year = 2026 AND month = 3 AND day <= 20)
+                        (year = 2026 AND month = 3 AND day <= 27)
                         )
                         AND is_processed = 0;
     """)
@@ -204,7 +204,7 @@ def process_folder():
 
     folder_path = "./excels"
 
-    game_codes_to_import = get_game_codes_to_import_manual_report(DB)
+    game_codes_to_import = get_game_codes_to_import_manual_report()
 
     for file in os.listdir(folder_path):
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
