@@ -88,6 +88,11 @@ def corrections_analysis():
     return render_template("corrections_analysis.html")
 
 
+@app.route("/uscs-analysis")
+def uscs_analysis():
+    return render_template("uscs_analysis.html")
+
+
 FILTERABLE_CORRECTION_COLUMNS = (
     "game_code", "time", "quarter", "points_h", "points_a", "action_num",
     "b_ss", "team", "type_c", "category", "live_game_manager",
@@ -272,6 +277,153 @@ def api_uscs_for_team(team_code: str):
     names = [row[0] for row in cur.fetchall()]
     conn.close()
     return jsonify(names)
+
+
+@app.route("/api/uscs")
+def api_uscs():
+    """Return all USC names from Usc table (independent from team)."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT DISTINCT name FROM Usc WHERE name IS NOT NULL AND name != '' ORDER BY name"
+    )
+    names = [row[0] for row in cur.fetchall()]
+    conn.close()
+    return jsonify(names)
+
+
+USC_ROLE_COLUMNS = (
+    "data_entry",
+    "caller_1",
+    "caller_2",
+    "timer",
+    "shot_clock_operator",
+    "irs_operator",
+)
+
+
+@app.route("/api/usc_role_options")
+def api_usc_role_options():
+    """Return distinct USC names for the selected role column in Game."""
+    role = request.args.get("role", "").strip()
+    if role != "any" and role not in USC_ROLE_COLUMNS:
+        return jsonify({"error": "invalid role"}), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    if role == "any":
+        name_set = set()
+        for col in USC_ROLE_COLUMNS:
+            query = f"SELECT DISTINCT {col} FROM Game WHERE {col} IS NOT NULL AND {col} != ''"
+            cur.execute(query)
+            name_set.update(row[0] for row in cur.fetchall())
+        names = sorted(name_set)
+    else:
+        query = f"SELECT DISTINCT {role} FROM Game WHERE {role} IS NOT NULL AND {role} != '' ORDER BY {role}"
+        cur.execute(query)
+        names = [row[0] for row in cur.fetchall()]
+    conn.close()
+    return jsonify(names)
+
+
+@app.route("/api/usc_role_result_average")
+def api_usc_role_result_average():
+    """Return AVG(Game.result) and games count for one USC in one role (read-only)."""
+    role = request.args.get("role", "").strip()
+    usc_name = request.args.get("usc_name", "").strip()
+
+    if role != "any" and role not in USC_ROLE_COLUMNS:
+        return jsonify({"error": "invalid role"}), 400
+    if not usc_name:
+        return jsonify({"error": "usc_name is required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    if role == "any":
+        any_role_where = " OR ".join([f"{col} = ?" for col in USC_ROLE_COLUMNS])
+        params = tuple(usc_name for _ in USC_ROLE_COLUMNS)
+        query = f"""
+            SELECT
+                COUNT(*) AS games_count,
+                AVG(result) AS avg_result
+            FROM Game
+            WHERE ({any_role_where})
+              AND result IS NOT NULL
+        """
+        cur.execute(query, params)
+    else:
+        query = f"""
+            SELECT
+                COUNT(*) AS games_count,
+                AVG(result) AS avg_result
+            FROM Game
+            WHERE {role} = ?
+              AND result IS NOT NULL
+        """
+        cur.execute(query, (usc_name,))
+    row = cur.fetchone()
+    conn.close()
+
+    games_count = int(row["games_count"] or 0)
+    avg_result = float(row["avg_result"]) if row["avg_result"] is not None else None
+    return jsonify({
+        "role": role,
+        "usc_name": usc_name,
+        "games_count": games_count,
+        "avg_result": avg_result,
+    })
+
+
+@app.route("/api/uscs_result_average")
+def api_uscs_result_average():
+    """Return AVG(Game.result) and games count for combined USC role filters (read-only)."""
+    role_filters = {}
+    for col in USC_ROLE_COLUMNS:
+        val = request.args.get(col, "").strip()
+        if val:
+            role_filters[col] = val
+    any_usc = request.args.get("any_usc", "").strip()
+
+    if not role_filters and not any_usc:
+        return jsonify({"error": "at least one USC filter is required"}), 400
+
+    where_parts = []
+    params = []
+    for col, val in role_filters.items():
+        where_parts.append(f"{col} = ?")
+        params.append(val)
+    if any_usc:
+        any_role_where = " OR ".join([f"{col} = ?" for col in USC_ROLE_COLUMNS])
+        where_parts.append(f"({any_role_where})")
+        params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+
+    where_clause = " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    query = f"""
+        SELECT
+            COUNT(*) AS games_count,
+            AVG(result) AS avg_result
+        FROM Game
+        WHERE {where_clause}
+          AND result IS NOT NULL
+    """
+    cur.execute(query, params)
+    row = cur.fetchone()
+    conn.close()
+
+    games_count = int(row["games_count"] or 0)
+    avg_result = float(row["avg_result"]) if row["avg_result"] is not None else None
+
+    return jsonify({
+        "filters": role_filters,
+        "any_usc": any_usc,
+        "games_count": games_count,
+        "avg_result": avg_result,
+    })
 
 
 @app.route("/api/logistics_counts")

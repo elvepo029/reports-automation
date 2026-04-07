@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>USCs analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 20px; color: #0A1F44; }
+    .top-links { display: flex; gap: 16px; margin-bottom: 12px; }
+    .top-links a { color: #1B5DBF; text-decoration: none; }
+    .top-links a:hover { text-decoration: underline; }
+    h2 { margin-top: 0; color: #0A1F44; }
+    .panel {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      max-width: 980px;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px 20px;
+      align-items: end;
+    }
+    label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+    select, input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: white;
+    }
+    .actions { margin-top: 12px; display: flex; gap: 8px; }
+    button {
+      background: #1B5DBF;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #3A7DD3; }
+    .ghost-btn {
+      background: #e0e4ec;
+      color: #0A1F44;
+    }
+    .ghost-btn:hover { background: #d0d6e6; }
+    .result-card {
+      margin-top: 16px;
+      background: #f8faff;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .metric { font-size: 28px; font-weight: 700; color: #0A1F44; margin: 6px 0; }
+    .muted { color: #5b6470; font-size: 13px; }
+    .error { margin-top: 12px; color: #c00; display: none; }
+    .app-version-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e4ec;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-links">
+    <a href="/">← Home</a>
+    <a href="/corrections-analysis">Corrections analysis</a>
+  </div>
+
+  <h2>USCs analysis</h2>
+
+  <div class="panel">
+    <div class="filters">
+      <div>
+        <label for="filter-data_entry">data_entry</label>
+        <input type="text" id="filter-data_entry" list="datalist_data_entry" placeholder="All data entries">
+      </div>
+      <div>
+        <label for="filter-caller_1">caller_1</label>
+        <input type="text" id="filter-caller_1" list="datalist_caller_1" placeholder="All caller 1">
+      </div>
+      <div>
+        <label for="filter-caller_2">caller_2</label>
+        <input type="text" id="filter-caller_2" list="datalist_caller_2" placeholder="All caller 2">
+      </div>
+      <div>
+        <label for="filter-timer">timer</label>
+        <input type="text" id="filter-timer" list="datalist_timer" placeholder="All timers">
+      </div>
+      <div>
+        <label for="filter-shot_clock_operator">shot_clock_operator</label>
+        <input type="text" id="filter-shot_clock_operator" list="datalist_shot_clock_operator" placeholder="All shot clock operators">
+      </div>
+      <div>
+        <label for="filter-irs_operator">irs_operator</label>
+        <input type="text" id="filter-irs_operator" list="datalist_irs_operator" placeholder="All IRS operators">
+      </div>
+      <div>
+        <label for="filter-any_usc">usc (any role)</label>
+        <input type="text" id="filter-any_usc" list="datalist_any_usc" placeholder="Any role">
+      </div>
+    </div>
+
+    <datalist id="datalist_data_entry"></datalist>
+    <datalist id="datalist_caller_1"></datalist>
+    <datalist id="datalist_caller_2"></datalist>
+    <datalist id="datalist_timer"></datalist>
+    <datalist id="datalist_shot_clock_operator"></datalist>
+    <datalist id="datalist_irs_operator"></datalist>
+    <datalist id="datalist_any_usc"></datalist>
+
+    <div class="actions">
+      <button id="calculate-btn" type="button">Calculate average result</button>
+      <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="result-card">
+      <div class="muted" id="result-title">Select one or more USC role filters to compute the metric.</div>
+      <div class="metric" id="avg-result">-</div>
+      <div class="muted" id="games-count">Games: -</div>
+    </div>
+  </div>
+
+  <footer class="app-version-footer">Version {{ app_version }}</footer>
+
+  <script>
+    const calculateBtn = document.getElementById("calculate-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const errorEl = document.getElementById("error");
+    const avgResultEl = document.getElementById("avg-result");
+    const gamesCountEl = document.getElementById("games-count");
+    const resultTitleEl = document.getElementById("result-title");
+
+    const roleColumns = [
+      "data_entry",
+      "caller_1",
+      "caller_2",
+      "timer",
+      "shot_clock_operator",
+      "irs_operator",
+    ];
+
+    function getFilterValue(role) {
+      const el = document.getElementById(`filter-${role}`);
+      return (el?.value || "").trim();
+    }
+
+    async function loadAllUscOptions() {
+      errorEl.style.display = "none";
+      const datalistIds = [
+        "datalist_data_entry",
+        "datalist_caller_1",
+        "datalist_caller_2",
+        "datalist_timer",
+        "datalist_shot_clock_operator",
+        "datalist_irs_operator",
+        "datalist_any_usc",
+      ];
+      datalistIds.forEach((id) => {
+        const dl = document.getElementById(id);
+        if (dl) dl.innerHTML = "";
+      });
+
+      const res = await fetch("/api/uscs");
+      if (!res.ok) {
+        throw new Error("Could not load USC names");
+      }
+      const names = await res.json();
+      datalistIds.forEach((id) => {
+        const dl = document.getElementById(id);
+        if (!dl) return;
+        names.forEach((name) => {
+          const option = document.createElement("option");
+          option.value = name;
+          dl.appendChild(option);
+        });
+      });
+    }
+
+    async function calculateAverage() {
+      errorEl.style.display = "none";
+      const params = new URLSearchParams();
+      roleColumns.forEach((role) => {
+        const val = getFilterValue(role);
+        if (val) params.set(role, val);
+      });
+      const anyUsc = (document.getElementById("filter-any_usc")?.value || "").trim();
+      if (anyUsc) params.set("any_usc", anyUsc);
+
+      if (!params.toString()) {
+        errorEl.textContent = "At least one USC filter is required.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      const url = `/api/uscs_result_average?${params.toString()}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!res.ok) {
+        errorEl.textContent = data.error || "Could not compute average.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      const filterSummary = roleColumns
+        .filter((role) => data.filters && data.filters[role])
+        .map((role) => `${role}=${data.filters[role]}`)
+        .concat(data.any_usc ? [`any_role=${data.any_usc}`] : [])
+        .join(" · ");
+      resultTitleEl.textContent = filterSummary || "USC filter";
+      gamesCountEl.textContent = `Games: ${data.games_count}`;
+      avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
+    }
+
+    calculateBtn.addEventListener("click", () => {
+      calculateAverage().catch((err) => {
+        errorEl.textContent = err.message || "Unexpected error";
+        errorEl.style.display = "block";
+      });
+    });
+
+    clearBtn.addEventListener("click", () => {
+      roleColumns.forEach((role) => {
+        const el = document.getElementById(`filter-${role}`);
+        if (el) el.value = "";
+      });
+      const anyUscEl = document.getElementById("filter-any_usc");
+      if (anyUscEl) anyUscEl.value = "";
+      avgResultEl.textContent = "-";
+      gamesCountEl.textContent = "Games: -";
+      resultTitleEl.textContent = "Select one or more USC role filters to compute the metric.";
+      errorEl.style.display = "none";
+      loadAllUscOptions().catch((err) => {
+        errorEl.textContent = err.message || "Unexpected error";
+        errorEl.style.display = "block";
+      });
+    });
+
+    loadAllUscOptions().catch((err) => {
+      errorEl.textContent = err.message || "Unexpected error";
+      errorEl.style.display = "block";
+    });
+  </script>
+</body>
+</html>

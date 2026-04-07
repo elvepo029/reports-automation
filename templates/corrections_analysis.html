@@ -178,7 +178,7 @@
 </head>
 <body>
 
-<div class="back-link"><a href="/">← Home</a></div>
+<div class="back-link"><a href="/">← Home</a> · <a href="/uscs-analysis">USCs analysis</a></div>
 <h2>Corrections analysis</h2>
 
 <div id="loading">Loading…</div>
@@ -752,7 +752,7 @@ function loadTeamCodes() {
     });
 }
 
-function loadUscsForTeam(teamCode) {
+function loadAllUscs() {
   const datalistIds = [
     "datalist_data_entry",
     "datalist_caller_1",
@@ -766,8 +766,7 @@ function loadUscsForTeam(teamCode) {
     if (!datalist) return;
     datalist.innerHTML = "";
   });
-  if (!teamCode) return;
-  fetch("/api/uscs_for_team/" + encodeURIComponent(teamCode))
+  fetch("/api/uscs")
     .then(r => r.json())
     .then(names => {
       datalistIds.forEach(id => {
@@ -883,11 +882,11 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
 
 loadFilterLiveGameManagers();
 loadTeamCodes();
+loadAllUscs();
 
 const homeTeamInput = document.getElementById("filter-home_team");
 if (homeTeamInput) {
   homeTeamInput.addEventListener("change", () => {
-    loadUscsForTeam(homeTeamInput.value.trim() || "");
     fetchPage(1);
     updateLogisticsCounts();
   });
