@@ -377,7 +377,7 @@ def api_usc_role_result_average():
 
 @app.route("/api/uscs_result_average")
 def api_uscs_result_average():
-    """Return AVG(Game.result) and games count for combined USC role filters (read-only)."""
+    """Return averages and games count for combined USC role filters (read-only)."""
     role_filters = {}
     for col in USC_ROLE_COLUMNS:
         val = request.args.get(col, "").strip()
@@ -406,7 +406,9 @@ def api_uscs_result_average():
     query = f"""
         SELECT
             COUNT(*) AS games_count,
-            AVG(result) AS avg_result
+            AVG(result) AS avg_result,
+            AVG(total_corrections) AS avg_total_corrections,
+            AVG(total_actions) AS avg_total_actions
         FROM Game
         WHERE {where_clause}
           AND result IS NOT NULL
@@ -417,12 +419,82 @@ def api_uscs_result_average():
 
     games_count = int(row["games_count"] or 0)
     avg_result = float(row["avg_result"]) if row["avg_result"] is not None else None
+    avg_total_corrections = float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None
+    avg_total_actions = float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None
 
     return jsonify({
         "filters": role_filters,
         "any_usc": any_usc,
         "games_count": games_count,
         "avg_result": avg_result,
+        "avg_total_corrections": avg_total_corrections,
+        "avg_total_actions": avg_total_actions,
+    })
+
+
+@app.route("/api/game_uscs_snapshot")
+def api_game_uscs_snapshot():
+    """Return USC role assignments and key metrics for one game_code (read-only)."""
+    game_code = request.args.get("game_code", "").strip()
+    if not game_code:
+        return jsonify({"error": "game_code is required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            g.game_code,
+            g.code_h,
+            g.code_a,
+            th.team_name AS home_team_name,
+            ta.team_name AS away_team_name,
+            g.data_entry,
+            g.caller_1,
+            g.caller_2,
+            g.timer,
+            g.shot_clock_operator,
+            g.irs_operator,
+            g.result,
+            g.total_corrections,
+            g.total_actions
+        FROM Game g
+        LEFT JOIN Team th ON g.code_h = th.team_code
+        LEFT JOIN Team ta ON g.code_a = ta.team_code
+        WHERE g.game_code = ?
+        LIMIT 1
+        """,
+        (game_code,),
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if row is None:
+        return jsonify({"error": "game_code not found"}), 404
+
+    home_label = (row["home_team_name"] or row["code_h"] or "").strip()
+    away_label = (row["away_team_name"] or row["code_a"] or "").strip()
+
+    return jsonify({
+        "game_code": row["game_code"],
+        "code_h": row["code_h"] or "",
+        "code_a": row["code_a"] or "",
+        "home_team_name": row["home_team_name"] or "",
+        "away_team_name": row["away_team_name"] or "",
+        "home_team_label": home_label,
+        "away_team_label": away_label,
+        "roles": {
+            "data_entry": row["data_entry"] or "",
+            "caller_1": row["caller_1"] or "",
+            "caller_2": row["caller_2"] or "",
+            "timer": row["timer"] or "",
+            "shot_clock_operator": row["shot_clock_operator"] or "",
+            "irs_operator": row["irs_operator"] or "",
+        },
+        "result": float(row["result"]) if row["result"] is not None else None,
+        "total_corrections": float(row["total_corrections"]) if row["total_corrections"] is not None else None,
+        "total_actions": float(row["total_actions"]) if row["total_actions"] is not None else None,
     })
 
 
