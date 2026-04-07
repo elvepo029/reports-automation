@@ -55,6 +55,9 @@
       border-radius: 8px;
       padding: 14px;
     }
+    #result-title {
+      margin-bottom: 14px;
+    }
     .metric { font-size: 28px; font-weight: 700; color: #0A1F44; margin: 6px 0; }
     .muted { color: #5b6470; font-size: 13px; }
     .error { margin-top: 12px; color: #c00; display: none; }
@@ -77,6 +80,10 @@
 
   <div class="panel">
     <div class="filters">
+      <div>
+        <label for="filter-game_code">game_code</label>
+        <input type="text" id="filter-game_code" placeholder="Ex: E2025_130">
+      </div>
       <div>
         <label for="filter-data_entry">data_entry</label>
         <input type="text" id="filter-data_entry" list="datalist_data_entry" placeholder="All data entries">
@@ -117,6 +124,7 @@
 
     <div class="actions">
       <button id="calculate-btn" type="button">Calculate average result</button>
+      <button id="load-game-btn" type="button">Load game</button>
       <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
     </div>
 
@@ -124,8 +132,12 @@
 
     <div class="result-card">
       <div class="muted" id="result-title">Select one or more USC role filters to compute the metric.</div>
+      <div class="muted" id="label-result">Average result</div>
       <div class="metric" id="avg-result">-</div>
+      <div class="muted" id="label-corrections">Average corrections</div>
+      <div class="metric" id="avg-corrections">-</div>
       <div class="muted" id="games-count">Games: -</div>
+      <div class="muted" id="avg-actions">Average actions: -</div>
     </div>
   </div>
 
@@ -133,11 +145,16 @@
 
   <script>
     const calculateBtn = document.getElementById("calculate-btn");
+    const loadGameBtn = document.getElementById("load-game-btn");
     const clearBtn = document.getElementById("clear-btn");
     const errorEl = document.getElementById("error");
     const avgResultEl = document.getElementById("avg-result");
     const gamesCountEl = document.getElementById("games-count");
+    const avgCorrectionsEl = document.getElementById("avg-corrections");
+    const avgActionsEl = document.getElementById("avg-actions");
     const resultTitleEl = document.getElementById("result-title");
+    const labelResultEl = document.getElementById("label-result");
+    const labelCorrectionsEl = document.getElementById("label-corrections");
 
     const roleColumns = [
       "data_entry",
@@ -151,6 +168,18 @@
     function getFilterValue(role) {
       const el = document.getElementById(`filter-${role}`);
       return (el?.value || "").trim();
+    }
+
+    function setGameValues(snapshot) {
+      labelResultEl.textContent = "Result";
+      labelCorrectionsEl.textContent = "Corrections";
+      const home = snapshot.home_team_label || snapshot.code_h || "?";
+      const away = snapshot.away_team_label || snapshot.code_a || "?";
+      resultTitleEl.textContent = `game_code=${snapshot.game_code} · ${home} vs ${away}`;
+      gamesCountEl.textContent = "Games: 1";
+      avgResultEl.textContent = snapshot.result === null ? "No data" : snapshot.result.toFixed(2);
+      avgCorrectionsEl.textContent = snapshot.total_corrections === null ? "No data" : snapshot.total_corrections.toFixed(2);
+      avgActionsEl.textContent = `Actions: ${snapshot.total_actions === null ? "No data" : snapshot.total_actions.toFixed(2)}`;
     }
 
     async function loadAllUscOptions() {
@@ -217,7 +246,11 @@
         .join(" · ");
       resultTitleEl.textContent = filterSummary || "USC filter";
       gamesCountEl.textContent = `Games: ${data.games_count}`;
+      labelResultEl.textContent = "Average result";
+      labelCorrectionsEl.textContent = "Average corrections";
       avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
+      avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : data.avg_total_corrections.toFixed(2);
+      avgActionsEl.textContent = `Average actions: ${data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2)}`;
     }
 
     calculateBtn.addEventListener("click", () => {
@@ -227,6 +260,33 @@
       });
     });
 
+    loadGameBtn.addEventListener("click", async () => {
+      errorEl.style.display = "none";
+      const gameCode = (document.getElementById("filter-game_code")?.value || "").trim();
+      if (!gameCode) {
+        errorEl.textContent = "game_code is required.";
+        errorEl.style.display = "block";
+        return;
+      }
+      try {
+        const res = await fetch(`/api/game_uscs_snapshot?game_code=${encodeURIComponent(gameCode)}`);
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.error || "Could not load game.";
+          errorEl.style.display = "block";
+          return;
+        }
+        roleColumns.forEach((role) => {
+          const el = document.getElementById(`filter-${role}`);
+          if (el) el.value = (data.roles && data.roles[role]) || "";
+        });
+        setGameValues(data);
+      } catch (err) {
+        errorEl.textContent = err.message || "Unexpected error";
+        errorEl.style.display = "block";
+      }
+    });
+
     clearBtn.addEventListener("click", () => {
       roleColumns.forEach((role) => {
         const el = document.getElementById(`filter-${role}`);
@@ -234,8 +294,14 @@
       });
       const anyUscEl = document.getElementById("filter-any_usc");
       if (anyUscEl) anyUscEl.value = "";
+      const gameCodeEl = document.getElementById("filter-game_code");
+      if (gameCodeEl) gameCodeEl.value = "";
       avgResultEl.textContent = "-";
       gamesCountEl.textContent = "Games: -";
+      labelResultEl.textContent = "Average result";
+      labelCorrectionsEl.textContent = "Average corrections";
+      avgCorrectionsEl.textContent = "-";
+      avgActionsEl.textContent = "Average actions: -";
       resultTitleEl.textContent = "Select one or more USC role filters to compute the metric.";
       errorEl.style.display = "none";
       loadAllUscOptions().catch((err) => {
