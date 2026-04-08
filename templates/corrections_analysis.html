@@ -219,6 +219,9 @@
       <input type="text" id="filter-home_team" list="datalist_team_codes" placeholder="All home teams">
       <button type="button" class="filter-clear" data-col="home_team">Clear</button>
     </div>
+    <div style="margin-top: 6px;">
+      <button type="button" id="export-corrections-excel">Export selected home_team results</button>
+    </div>
   </div>
 
   <div class="filter-container filter-container-away_team">
@@ -409,6 +412,7 @@
 <p class="filter-count" id="filter-count" style="display:none;">
   <span id="filter-count-text"></span>
   <span id="filter-percent-text" style="margin-left: 12px;"></span>
+  <span id="filter-games-text" style="margin-left: 12px;"></span>
 </p>
 
 <!-- Datalists for game/logistics filters (options + free text) -->
@@ -556,7 +560,9 @@ const gameTopFilterColumns = ["competition", "season", "game_code"];
 let currentPage = 1;
 let totalPages = 0;
 let total = 0;
+let totalGames = 0;
 let teamCodeToName = {};
+let selectedFilterOrder = [];
 
 function showLoading(show) {
   document.getElementById("loading").style.display = show ? "block" : "none";
@@ -599,6 +605,37 @@ function getFilterParams() {
   return params;
 }
 
+function getCurrentFilterValue(col) {
+  const el = document.getElementById("filter-" + col);
+  return el ? el.value.trim() : "";
+}
+
+function trackFilterSelection(col) {
+  const v = getCurrentFilterValue(col);
+  selectedFilterOrder = selectedFilterOrder.filter(c => c !== col);
+  if (v) selectedFilterOrder.push(col);
+}
+
+function getActiveSelectedOrder() {
+  return selectedFilterOrder.filter(col => !!getCurrentFilterValue(col));
+}
+
+function buildParamsFromColumns(columns) {
+  const params = new URLSearchParams({ page: "1", per_page: "1" });
+  columns.forEach(col => {
+    const v = getCurrentFilterValue(col);
+    if (v) params.set(col, v);
+  });
+  return params;
+}
+
+function fetchCountForColumns(columns) {
+  const params = buildParamsFromColumns(columns);
+  return fetch("/api/corrections?" + params.toString())
+    .then(r => r.json())
+    .then(data => Number(data.total || 0));
+}
+
 function fetchPage(page) {
   currentPage = page;
   showLoading(true);
@@ -607,17 +644,30 @@ function fetchPage(page) {
   params.set("page", String(page));
   fetch("/api/corrections?" + params)
     .then(r => r.json())
-    .then(data => {
+    .then(async data => {
       showLoading(false);
       total = data.total;
+      totalGames = data.total_games || 0;
       totalPages = data.total_pages;
       currentPage = data.page;
       renderTable(data.items);
       renderPagination();
+
+      const activeOrder = getActiveSelectedOrder();
+      let denom = 0;
+      let scopeLabel = "total corrections";
+      if (activeOrder.length <= 1) {
+        denom = await fetchCountForColumns([]);
+      } else {
+        const prevSelected = activeOrder.slice(0, activeOrder.length - 1);
+        denom = await fetchCountForColumns(prevSelected);
+        scopeLabel = "records matching previous selected filters";
+      }
+      const pct = denom ? (Number(total) / Number(denom)) * 100 : 0;
       renderFilterCount({
-        denom_total: data.denom_total,
-        percent_of_total: data.percent_of_total,
-        percent_scope: data.percent_scope,
+        denom_total: denom,
+        percent_of_total: pct,
+        scope_label: scopeLabel,
       });
       showTable(true);
       showFilterCount(true);
@@ -632,9 +682,13 @@ function fetchPage(page) {
 
 function renderFilterCount(extra) {
   const countEl = document.getElementById("filter-count-text");
+  const gamesEl = document.getElementById("filter-games-text");
   const pctEl = document.getElementById("filter-percent-text");
   if (countEl) {
     countEl.textContent = "Number of records with selected filters: " + total;
+  }
+  if (gamesEl) {
+    gamesEl.textContent = "Games with selected filters: " + totalGames;
   }
   if (!pctEl) return;
   if (!extra || !extra.denom_total) {
@@ -644,30 +698,7 @@ function renderFilterCount(extra) {
   const pct = typeof extra.percent_of_total === "number"
     ? extra.percent_of_total
     : 0;
-  if (extra.percent_scope === "home_team_with_selected_uscs") {
-    const homeCode = (document.getElementById("filter-home_team")?.value || "").trim();
-    const teamName = (homeCode && teamCodeToName[homeCode]) ? teamCodeToName[homeCode] : (homeCode || "home team");
-
-    const uscLabels = {
-      data_entry: "data entry",
-      caller_1: "caller 1",
-      caller_2: "caller 2",
-      timer: "timer",
-      shot_clock_operator: "shot clock operator",
-      irs_operator: "IRS operator",
-    };
-    const uscFields = ["data_entry","caller_1","caller_2","timer","shot_clock_operator","irs_operator"];
-    const parts = [];
-    uscFields.forEach(f => {
-      const v = (document.getElementById("filter-" + f)?.value || "").trim();
-      if (v) parts.push(`${v} as ${uscLabels[f]}`);
-    });
-    const withText = parts.length ? (" with " + parts.join(" and ")) : "";
-
-    pctEl.textContent = `${pct.toFixed(1)}% of ${teamName} corrections${withText}`;
-  } else {
-    pctEl.textContent = `${pct.toFixed(1)}% of total corrections`;
-  }
+  pctEl.textContent = `${pct.toFixed(1)}% of ${extra.scope_label || "total corrections"}`;
 }
 
 function renderTable(items) {
@@ -831,14 +862,20 @@ document.getElementById("btn-last").onclick = () => fetchPage(totalPages || 1);
 filterableColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
-    input.addEventListener("change", () => fetchPage(1));
+    input.addEventListener("change", () => {
+      trackFilterSelection(col);
+      fetchPage(1);
+    });
   }
 });
 
 extraFilterColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
-    input.addEventListener("change", () => fetchPage(1));
+    input.addEventListener("change", () => {
+      trackFilterSelection(col);
+      fetchPage(1);
+    });
   }
 });
 
@@ -847,6 +884,7 @@ gameFilterColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
     input.addEventListener("change", () => {
+      trackFilterSelection(col);
       fetchPage(1);
       updateLogisticsCounts();
     });
@@ -857,6 +895,7 @@ const clearGameBtn = document.getElementById("clear-game-filters");
 if (clearGameBtn) {
   clearGameBtn.addEventListener("click", () => {
     [...gameTopFilterColumns, ...gameFilterColumns].forEach(col => clearFilter(col));
+    selectedFilterOrder = selectedFilterOrder.filter(col => ![...gameTopFilterColumns, ...gameFilterColumns].includes(col));
     fetchPage(1);
     updateLogisticsCounts();
   });
@@ -867,7 +906,23 @@ if (clearCorrectionsBtn) {
   clearCorrectionsBtn.addEventListener("click", () => {
     const allCols = [...filterableColumns];
     allCols.forEach(col => clearFilter(col));
+    selectedFilterOrder = selectedFilterOrder.filter(col => !allCols.includes(col));
     fetchPage(1);
+  });
+}
+
+const exportBtn = document.getElementById("export-corrections-excel");
+if (exportBtn) {
+  exportBtn.addEventListener("click", () => {
+    const homeTeam = (document.getElementById("filter-home_team")?.value || "").trim();
+    if (!homeTeam) {
+      showError("Select home_team to export Excel.");
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
   });
 }
 
@@ -876,6 +931,7 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
   if (!col) return;
   btn.addEventListener("click", () => {
     clearFilter(col);
+    selectedFilterOrder = selectedFilterOrder.filter(c => c !== col);
     fetchPage(1);
   });
 });

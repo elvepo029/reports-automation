@@ -55,6 +55,31 @@
       border-radius: 8px;
       padding: 14px;
     }
+    .primary-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .primary-item .muted {
+      margin-bottom: 4px;
+    }
+    .extra-metrics {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 2px solid #9fbce6;
+      background: #f3f8ff;
+      border-radius: 8px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-bottom: 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px 12px;
+    }
+    .extra-metric-item .muted {
+      margin-bottom: 4px;
+    }
     #result-title {
       margin-bottom: 14px;
     }
@@ -68,6 +93,38 @@
       font-size: 12px;
       color: #6b7280;
     }
+    .by-team-block {
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+    }
+    .by-team-block h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #0A1F44;
+    }
+    .by-team-table { width: 100%; border-collapse: collapse; }
+    .by-team-table th, .by-team-table td { border-bottom: 1px solid #e7eef9; padding: 6px 8px; text-align: left; font-size: 13px; }
+    .by-team-table th { color: #0A1F44; background: #f3f8ff; }
+    .by-role-block {
+      margin-top: 12px;
+      background: #fff;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+    }
+    .by-role-block h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #0A1F44;
+    }
+    .by-role-table { width: 100%; border-collapse: collapse; }
+    .by-role-table th, .by-role-table td { border-bottom: 1px solid #e7eef9; padding: 6px 8px; text-align: left; font-size: 13px; }
+    .by-role-table th { color: #0A1F44; background: #f3f8ff; }
   </style>
 </head>
 <body>
@@ -132,12 +189,82 @@
 
     <div class="result-card">
       <div class="muted" id="result-title">Select one or more USC role filters to compute the metric.</div>
-      <div class="muted" id="label-result">Average result</div>
-      <div class="metric" id="avg-result">-</div>
-      <div class="muted" id="label-corrections">Average corrections</div>
-      <div class="metric" id="avg-corrections">-</div>
-      <div class="muted" id="games-count">Games: -</div>
-      <div class="muted" id="avg-actions">Average actions: -</div>
+      <div class="primary-metrics">
+        <div class="primary-item">
+          <div class="muted" id="label-result">Average result</div>
+          <div class="metric" id="avg-result">-</div>
+        </div>
+        <div class="primary-item">
+          <div class="muted" id="label-corrections">Average corrections</div>
+          <div class="metric" id="avg-corrections">-</div>
+        </div>
+        <div class="primary-item">
+          <div class="muted">Games</div>
+          <div class="metric" id="games-count">-</div>
+        </div>
+        <div class="primary-item">
+          <div class="muted" id="label-actions">Average actions</div>
+          <div class="metric" id="avg-actions">-</div>
+        </div>
+      </div>
+      <div class="extra-metrics">
+        <div class="extra-metric-item">
+          <div class="muted">Euroleague result avg</div>
+          <div class="metric" id="avg-result-euroleague">-</div>
+        </div>
+        <div class="extra-metric-item">
+          <div class="muted">Eurocup result avg</div>
+          <div class="metric" id="avg-result-eurocup">-</div>
+        </div>
+        <div class="extra-metric-item">
+          <div class="muted">General result avg</div>
+          <div class="metric" id="avg-result-general">-</div>
+        </div>
+        <div class="extra-metric-item">
+          <div class="muted">Euroleague corrections avg</div>
+          <div class="metric" id="avg-corr-euroleague">-</div>
+        </div>
+        <div class="extra-metric-item">
+          <div class="muted">Eurocup corrections avg</div>
+          <div class="metric" id="avg-corr-eurocup">-</div>
+        </div>
+        <div class="extra-metric-item">
+          <div class="muted">General corrections avg</div>
+          <div class="metric" id="avg-corr-general">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="by-team-block" id="by-team-block">
+      <h3>Results by home team</h3>
+      <table class="by-team-table">
+        <thead>
+          <tr>
+            <th>Home team</th>
+            <th>Games</th>
+            <th>Avg result</th>
+            <th>Avg corrections</th>
+            <th>Avg actions</th>
+          </tr>
+        </thead>
+        <tbody id="by-team-body"></tbody>
+      </table>
+    </div>
+
+    <div class="by-role-block" id="by-role-block">
+      <h3 id="by-role-title">Any-role USC breakdown</h3>
+      <table class="by-role-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Games</th>
+            <th>Avg result</th>
+            <th>Avg corrections</th>
+            <th>Avg actions</th>
+          </tr>
+        </thead>
+        <tbody id="by-role-body"></tbody>
+      </table>
     </div>
   </div>
 
@@ -152,9 +279,21 @@
     const gamesCountEl = document.getElementById("games-count");
     const avgCorrectionsEl = document.getElementById("avg-corrections");
     const avgActionsEl = document.getElementById("avg-actions");
+    const avgResultEuroleagueEl = document.getElementById("avg-result-euroleague");
+    const avgResultEurocupEl = document.getElementById("avg-result-eurocup");
+    const avgResultGeneralEl = document.getElementById("avg-result-general");
+    const avgCorrEuroleagueEl = document.getElementById("avg-corr-euroleague");
+    const avgCorrEurocupEl = document.getElementById("avg-corr-eurocup");
+    const avgCorrGeneralEl = document.getElementById("avg-corr-general");
     const resultTitleEl = document.getElementById("result-title");
     const labelResultEl = document.getElementById("label-result");
     const labelCorrectionsEl = document.getElementById("label-corrections");
+    const labelActionsEl = document.getElementById("label-actions");
+    const byTeamBlockEl = document.getElementById("by-team-block");
+    const byTeamBodyEl = document.getElementById("by-team-body");
+    const byRoleBlockEl = document.getElementById("by-role-block");
+    const byRoleBodyEl = document.getElementById("by-role-body");
+    const byRoleTitleEl = document.getElementById("by-role-title");
 
     const roleColumns = [
       "data_entry",
@@ -176,10 +315,82 @@
       const home = snapshot.home_team_label || snapshot.code_h || "?";
       const away = snapshot.away_team_label || snapshot.code_a || "?";
       resultTitleEl.textContent = `game_code=${snapshot.game_code} · ${home} vs ${away}`;
-      gamesCountEl.textContent = "Games: 1";
+      gamesCountEl.textContent = "1";
       avgResultEl.textContent = snapshot.result === null ? "No data" : snapshot.result.toFixed(2);
       avgCorrectionsEl.textContent = snapshot.total_corrections === null ? "No data" : snapshot.total_corrections.toFixed(2);
-      avgActionsEl.textContent = `Actions: ${snapshot.total_actions === null ? "No data" : snapshot.total_actions.toFixed(2)}`;
+      labelActionsEl.textContent = "Actions";
+      avgActionsEl.textContent = snapshot.total_actions === null ? "No data" : snapshot.total_actions.toFixed(2);
+      byTeamBlockEl.style.display = "none";
+      byTeamBodyEl.innerHTML = "";
+      byRoleBlockEl.style.display = "none";
+      byRoleBodyEl.innerHTML = "";
+    }
+
+    function buildParamsFromFilters() {
+      const params = new URLSearchParams();
+      roleColumns.forEach((role) => {
+        const val = getFilterValue(role);
+        if (val) params.set(role, val);
+      });
+      const anyUsc = (document.getElementById("filter-any_usc")?.value || "").trim();
+      if (anyUsc) params.set("any_usc", anyUsc);
+      return params;
+    }
+
+    function renderByTeam(items) {
+      if (!items || !items.length) {
+        byTeamBodyEl.innerHTML = "";
+        byTeamBlockEl.style.display = "none";
+        return;
+      }
+      byTeamBodyEl.innerHTML = "";
+      items.forEach((row) => {
+        const tr = document.createElement("tr");
+        const teamLabel = row.home_team_name ? `${row.home_team_name} (${row.home_team_code})` : (row.home_team_code || "-");
+        const avgResult = row.avg_result === null ? "No data" : row.avg_result.toFixed(2);
+        const avgCorr = row.avg_corrections === null ? "No data" : row.avg_corrections.toFixed(2);
+        const avgActions = row.avg_actions === null ? "No data" : row.avg_actions.toFixed(2);
+        tr.innerHTML = `<td>${teamLabel}</td><td>${row.games_count}</td><td>${avgResult}</td><td>${avgCorr}</td><td>${avgActions}</td>`;
+        byTeamBodyEl.appendChild(tr);
+      });
+      byTeamBlockEl.style.display = "block";
+    }
+
+    function renderByRole(uscName, items) {
+      if (!items || !items.length) {
+        byRoleBodyEl.innerHTML = "";
+        byRoleBlockEl.style.display = "none";
+        return;
+      }
+      byRoleTitleEl.textContent = `${uscName} breakdown by role`;
+      byRoleBodyEl.innerHTML = "";
+      items.forEach((row) => {
+        const tr = document.createElement("tr");
+        const avgResult = row.avg_result === null ? "No data" : row.avg_result.toFixed(2);
+        const avgCorr = row.avg_corrections === null ? "No data" : row.avg_corrections.toFixed(2);
+        const avgActions = row.avg_actions === null ? "No data" : row.avg_actions.toFixed(2);
+        tr.innerHTML = `<td>${row.role}</td><td>${row.games_count}</td><td>${avgResult}</td><td>${avgCorr}</td><td>${avgActions}</td>`;
+        byRoleBodyEl.appendChild(tr);
+      });
+      byRoleBlockEl.style.display = "block";
+    }
+
+    function renderSplitAverages(data) {
+      avgResultEuroleagueEl.textContent = data.avg_result_euroleague === null ? "No data" : data.avg_result_euroleague.toFixed(2);
+      avgResultEurocupEl.textContent = data.avg_result_eurocup === null ? "No data" : data.avg_result_eurocup.toFixed(2);
+      avgResultGeneralEl.textContent = data.avg_result_general === null ? "No data" : data.avg_result_general.toFixed(2);
+      avgCorrEuroleagueEl.textContent = data.avg_corrections_euroleague === null ? "No data" : data.avg_corrections_euroleague.toFixed(2);
+      avgCorrEurocupEl.textContent = data.avg_corrections_eurocup === null ? "No data" : data.avg_corrections_eurocup.toFixed(2);
+      avgCorrGeneralEl.textContent = data.avg_corrections_general === null ? "No data" : data.avg_corrections_general.toFixed(2);
+    }
+
+    async function loadDefaultSplitAverages() {
+      const res = await fetch("/api/uscs_global_split_averages");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Could not load default averages.");
+      }
+      renderSplitAverages(data);
     }
 
     async function loadAllUscOptions() {
@@ -216,13 +427,7 @@
 
     async function calculateAverage() {
       errorEl.style.display = "none";
-      const params = new URLSearchParams();
-      roleColumns.forEach((role) => {
-        const val = getFilterValue(role);
-        if (val) params.set(role, val);
-      });
-      const anyUsc = (document.getElementById("filter-any_usc")?.value || "").trim();
-      if (anyUsc) params.set("any_usc", anyUsc);
+      const params = buildParamsFromFilters();
 
       if (!params.toString()) {
         errorEl.textContent = "At least one USC filter is required.";
@@ -245,12 +450,33 @@
         .concat(data.any_usc ? [`any_role=${data.any_usc}`] : [])
         .join(" · ");
       resultTitleEl.textContent = filterSummary || "USC filter";
-      gamesCountEl.textContent = `Games: ${data.games_count}`;
+      gamesCountEl.textContent = `${data.games_count}`;
       labelResultEl.textContent = "Average result";
       labelCorrectionsEl.textContent = "Average corrections";
+      labelActionsEl.textContent = "Average actions";
       avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
       avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : data.avg_total_corrections.toFixed(2);
-      avgActionsEl.textContent = `Average actions: ${data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2)}`;
+      avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2);
+
+      const byTeamRes = await fetch(`/api/uscs_result_by_home_team?${params.toString()}`);
+      const byTeamData = await byTeamRes.json();
+      if (!byTeamRes.ok) {
+        throw new Error(byTeamData.error || "Could not load results by home team.");
+      }
+      renderByTeam(byTeamData.items || []);
+
+      const anyUsc = (document.getElementById("filter-any_usc")?.value || "").trim();
+      if (anyUsc) {
+        const byRoleRes = await fetch(`/api/usc_any_role_breakdown?usc_name=${encodeURIComponent(anyUsc)}`);
+        const byRoleData = await byRoleRes.json();
+        if (!byRoleRes.ok) {
+          throw new Error(byRoleData.error || "Could not load USC role breakdown.");
+        }
+        renderByRole(anyUsc, byRoleData.items || []);
+      } else {
+        byRoleBlockEl.style.display = "none";
+        byRoleBodyEl.innerHTML = "";
+      }
     }
 
     calculateBtn.addEventListener("click", () => {
@@ -297,12 +523,17 @@
       const gameCodeEl = document.getElementById("filter-game_code");
       if (gameCodeEl) gameCodeEl.value = "";
       avgResultEl.textContent = "-";
-      gamesCountEl.textContent = "Games: -";
+      gamesCountEl.textContent = "-";
       labelResultEl.textContent = "Average result";
       labelCorrectionsEl.textContent = "Average corrections";
+      labelActionsEl.textContent = "Average actions";
       avgCorrectionsEl.textContent = "-";
-      avgActionsEl.textContent = "Average actions: -";
+      avgActionsEl.textContent = "-";
       resultTitleEl.textContent = "Select one or more USC role filters to compute the metric.";
+      byTeamBlockEl.style.display = "none";
+      byTeamBodyEl.innerHTML = "";
+      byRoleBlockEl.style.display = "none";
+      byRoleBodyEl.innerHTML = "";
       errorEl.style.display = "none";
       loadAllUscOptions().catch((err) => {
         errorEl.textContent = err.message || "Unexpected error";
@@ -310,7 +541,7 @@
       });
     });
 
-    loadAllUscOptions().catch((err) => {
+    Promise.all([loadAllUscOptions(), loadDefaultSplitAverages()]).catch((err) => {
       errorEl.textContent = err.message || "Unexpected error";
       errorEl.style.display = "block";
     });

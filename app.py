@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import json
+from io import BytesIO
 from pdfGeneratorHelper import html_to_pdf, generate_pdf_from_json
 from correctionToReport import runCorrectionsProcessor
+from openpyxl import Workbook
 import os
 import base64
 import sys
@@ -194,6 +196,8 @@ def api_corrections_paginated():
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) AS total" + from_clause + where_clause, params)
     total = cur.fetchone()["total"]
+    cur.execute("SELECT COUNT(DISTINCT C.game_code) AS total_games" + from_clause + where_clause, params)
+    total_games = cur.fetchone()["total_games"]
 
     # Denominator for percent calculation:
     # - If no USC filter selected: total corrections overall
@@ -231,6 +235,7 @@ def api_corrections_paginated():
     return jsonify({
         "items": rows,
         "total": total,
+        "total_games": total_games,
         "denom_total": denom_total,
         "percent_of_total": percent_of_total,
         "percent_scope": "home_team_with_selected_uscs" if usc_selected else "all_corrections",
@@ -238,6 +243,118 @@ def api_corrections_paginated():
         "per_page": per_page,
         "total_pages": total_pages,
     })
+
+
+@app.route("/api/corrections_export.xlsx")
+def api_corrections_export_excel():
+    """Export filtered corrections grouped by game_code for charts (.xlsx)."""
+    filters = {}
+    for col in FILTERABLE_CORRECTION_COLUMNS:
+        val = request.args.get(col, "").strip()
+        if val:
+            filters[col] = val
+
+    game_filters = {}
+    game_filter_names = [
+        "home_team", "away_team",
+        "data_entry", "caller_1", "caller_2", "timer",
+        "shot_clock_operator", "irs_operator",
+        "arrival_time", "checklist_on_time", "communication",
+        "corrections_speed", "rescouted",
+    ]
+    for key in game_filter_names:
+        val = request.args.get(key, "").strip()
+        if val:
+            game_filters[key] = val
+
+    competition = request.args.get("competition", "").strip()
+    season = request.args.get("season", "").strip()
+    join_game = bool(game_filters)
+
+    # Export is only available when home_team is selected.
+    if "home_team" not in game_filters:
+        return jsonify({"error": "home_team is required for export"}), 400
+
+    where_parts = []
+    params = []
+
+    for col, val in filters.items():
+        where_parts.append(f"C.{col} = ?")
+        params.append(val)
+
+    if join_game:
+        if "home_team" in game_filters:
+            where_parts.append("G.code_h = ?")
+            params.append(game_filters["home_team"])
+        if "away_team" in game_filters:
+            where_parts.append("G.code_a = ?")
+            params.append(game_filters["away_team"])
+        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+            if field in game_filters:
+                where_parts.append(f"G.{field} = ?")
+                params.append(game_filters[field])
+        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+            if field in game_filters:
+                where_parts.append(f"G.{field} = ?")
+                params.append(game_filters[field])
+
+    if competition:
+        where_parts.append("C.game_code LIKE ?")
+        params.append(f"{competition}%")
+    if season:
+        season_year = season.split("-")[0].strip()
+        if season_year:
+            where_parts.append("C.game_code LIKE ?")
+            params.append(f"%{season_year}%")
+
+    where_clause = " WHERE " + " AND ".join(where_parts) if where_parts else ""
+    from_clause = " FROM Correction C"
+    if join_game:
+        from_clause += " JOIN Game G ON C.game_code = G.game_code"
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT C.game_code, C.type_c, COUNT(*) AS errors_count"
+        + from_clause
+        + where_clause
+        + " GROUP BY C.game_code, C.type_c ORDER BY C.game_code ASC, C.type_c ASC",
+        params,
+    )
+    grouped_rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+
+    type_columns = sorted({(r.get("type_c") or "").strip() for r in grouped_rows if (r.get("type_c") or "").strip()})
+    by_game = {}
+    for r in grouped_rows:
+        game_code = r.get("game_code", "")
+        type_c = (r.get("type_c") or "").strip()
+        count = int(r.get("errors_count") or 0)
+        if game_code not in by_game:
+            by_game[game_code] = {"game_code": game_code, "errors_count": 0}
+        by_game[game_code]["errors_count"] += count
+        if type_c:
+            by_game[game_code][type_c] = count
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Errors by game"
+    headers = ["game_code", "errors_count"] + type_columns
+    ws.append(headers)
+    for game_code in sorted(by_game.keys()):
+        row = by_game[game_code]
+        ws.append([row.get("game_code", ""), row.get("errors_count", 0)] + [row.get(col, 0) for col in type_columns])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="errors_by_game.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
 
 @app.route("/api/team_codes")
@@ -385,9 +502,6 @@ def api_uscs_result_average():
             role_filters[col] = val
     any_usc = request.args.get("any_usc", "").strip()
 
-    if not role_filters and not any_usc:
-        return jsonify({"error": "at least one USC filter is required"}), 400
-
     where_parts = []
     params = []
     for col, val in role_filters.items():
@@ -398,7 +512,7 @@ def api_uscs_result_average():
         where_parts.append(f"({any_role_where})")
         params.extend([any_usc] * len(USC_ROLE_COLUMNS))
 
-    where_clause = " AND ".join(where_parts)
+    where_clause = " AND ".join(where_parts) if where_parts else "1=1"
 
     conn = get_db()
     conn.row_factory = sqlite3.Row
@@ -408,10 +522,15 @@ def api_uscs_result_average():
             COUNT(*) AS games_count,
             AVG(result) AS avg_result,
             AVG(total_corrections) AS avg_total_corrections,
-            AVG(total_actions) AS avg_total_actions
+            AVG(total_actions) AS avg_total_actions,
+            AVG(CASE WHEN game_code LIKE 'E%' THEN result END) AS avg_result_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN result END) AS avg_result_eurocup,
+            AVG(result) AS avg_result_general,
+            AVG(CASE WHEN game_code LIKE 'E%' THEN total_corrections END) AS avg_corrections_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN total_corrections END) AS avg_corrections_eurocup,
+            AVG(total_corrections) AS avg_corrections_general
         FROM Game
         WHERE {where_clause}
-          AND result IS NOT NULL
     """
     cur.execute(query, params)
     row = cur.fetchone()
@@ -421,6 +540,12 @@ def api_uscs_result_average():
     avg_result = float(row["avg_result"]) if row["avg_result"] is not None else None
     avg_total_corrections = float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None
     avg_total_actions = float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None
+    avg_result_euroleague = float(row["avg_result_euroleague"]) if row["avg_result_euroleague"] is not None else None
+    avg_result_eurocup = float(row["avg_result_eurocup"]) if row["avg_result_eurocup"] is not None else None
+    avg_result_general = float(row["avg_result_general"]) if row["avg_result_general"] is not None else None
+    avg_corrections_euroleague = float(row["avg_corrections_euroleague"]) if row["avg_corrections_euroleague"] is not None else None
+    avg_corrections_eurocup = float(row["avg_corrections_eurocup"]) if row["avg_corrections_eurocup"] is not None else None
+    avg_corrections_general = float(row["avg_corrections_general"]) if row["avg_corrections_general"] is not None else None
 
     return jsonify({
         "filters": role_filters,
@@ -429,6 +554,142 @@ def api_uscs_result_average():
         "avg_result": avg_result,
         "avg_total_corrections": avg_total_corrections,
         "avg_total_actions": avg_total_actions,
+        "avg_result_euroleague": avg_result_euroleague,
+        "avg_result_eurocup": avg_result_eurocup,
+        "avg_result_general": avg_result_general,
+        "avg_corrections_euroleague": avg_corrections_euroleague,
+        "avg_corrections_eurocup": avg_corrections_eurocup,
+        "avg_corrections_general": avg_corrections_general,
+    })
+
+
+@app.route("/api/uscs_result_by_home_team")
+def api_uscs_result_by_home_team():
+    """Return USC filtered averages grouped by Game.code_h (read-only)."""
+    role_filters = {}
+    for col in USC_ROLE_COLUMNS:
+        val = request.args.get(col, "").strip()
+        if val:
+            role_filters[col] = val
+    any_usc = request.args.get("any_usc", "").strip()
+
+    if not role_filters and not any_usc:
+        return jsonify({"error": "at least one USC filter is required"}), 400
+
+    where_parts = []
+    params = []
+    for col, val in role_filters.items():
+        where_parts.append(f"g.{col} = ?")
+        params.append(val)
+    if any_usc:
+        any_role_where = " OR ".join([f"g.{col} = ?" for col in USC_ROLE_COLUMNS])
+        where_parts.append(f"({any_role_where})")
+        params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+    where_clause = " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        SELECT
+            g.code_h AS home_team_code,
+            t.team_name AS home_team_name,
+            COUNT(*) AS games_count,
+            AVG(g.result) AS avg_result,
+            AVG(g.total_corrections) AS avg_corrections,
+            AVG(g.total_actions) AS avg_actions
+        FROM Game g
+        LEFT JOIN Team t ON g.code_h = t.team_code
+        WHERE {where_clause}
+        GROUP BY g.code_h, t.team_name
+        ORDER BY games_count DESC, g.code_h ASC
+        """
+        ,
+        params,
+    )
+    rows = []
+    for r in cur.fetchall():
+        rows.append({
+            "home_team_code": r["home_team_code"] or "",
+            "home_team_name": r["home_team_name"] or "",
+            "games_count": int(r["games_count"] or 0),
+            "avg_result": float(r["avg_result"]) if r["avg_result"] is not None else None,
+            "avg_corrections": float(r["avg_corrections"]) if r["avg_corrections"] is not None else None,
+            "avg_actions": float(r["avg_actions"]) if r["avg_actions"] is not None else None,
+        })
+    conn.close()
+
+    return jsonify({"items": rows})
+
+
+@app.route("/api/usc_any_role_breakdown")
+def api_usc_any_role_breakdown():
+    """Return per-role breakdown for one USC selected in any role (read-only)."""
+    usc_name = request.args.get("usc_name", "").strip()
+    if not usc_name:
+        return jsonify({"error": "usc_name is required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    items = []
+    for role in USC_ROLE_COLUMNS:
+        query = f"""
+            SELECT
+                COUNT(*) AS games_count,
+                AVG(result) AS avg_result,
+                AVG(total_corrections) AS avg_corrections,
+                AVG(total_actions) AS avg_actions
+            FROM Game
+            WHERE {role} = ?
+        """
+        cur.execute(query, (usc_name,))
+        row = cur.fetchone()
+        games_count = int(row["games_count"] or 0)
+        if games_count == 0:
+            continue
+        items.append({
+            "role": role,
+            "games_count": games_count,
+            "avg_result": float(row["avg_result"]) if row["avg_result"] is not None else None,
+            "avg_corrections": float(row["avg_corrections"]) if row["avg_corrections"] is not None else None,
+            "avg_actions": float(row["avg_actions"]) if row["avg_actions"] is not None else None,
+        })
+
+    conn.close()
+    return jsonify({"usc_name": usc_name, "items": items})
+
+
+@app.route("/api/uscs_global_split_averages")
+def api_uscs_global_split_averages():
+    """Return fixed global split averages (independent from any filter)."""
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            AVG(CASE WHEN game_code LIKE 'E%' THEN result END) AS avg_result_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN result END) AS avg_result_eurocup,
+            AVG(result) AS avg_result_general,
+            AVG(CASE WHEN game_code LIKE 'E%' THEN total_corrections END) AS avg_corrections_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN total_corrections END) AS avg_corrections_eurocup,
+            AVG(total_corrections) AS avg_corrections_general
+        FROM Game
+        """
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    return jsonify({
+        "avg_result_euroleague": float(row["avg_result_euroleague"]) if row["avg_result_euroleague"] is not None else None,
+        "avg_result_eurocup": float(row["avg_result_eurocup"]) if row["avg_result_eurocup"] is not None else None,
+        "avg_result_general": float(row["avg_result_general"]) if row["avg_result_general"] is not None else None,
+        "avg_corrections_euroleague": float(row["avg_corrections_euroleague"]) if row["avg_corrections_euroleague"] is not None else None,
+        "avg_corrections_eurocup": float(row["avg_corrections_eurocup"]) if row["avg_corrections_eurocup"] is not None else None,
+        "avg_corrections_general": float(row["avg_corrections_general"]) if row["avg_corrections_general"] is not None else None,
     })
 
 
