@@ -215,7 +215,7 @@ def process_folder():
                 continue
 
             file_path = os.path.join(folder_path, file)
-
+            print(game_code)
             process_excel(conn, file_path, game_code, empty_reports_list)
 
             game_codes_to_import.remove(game_code)
