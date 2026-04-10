@@ -111,9 +111,9 @@ def get_game_codes_to_import_manual_report():
                         (
                         (year = 2025)
                         OR
-                        (year = 2026 AND month < 3)
+                        (year = 2026 AND month < 4)
                         OR
-                        (year = 2026 AND month = 3 AND day <= 27)
+                        (year = 2026 AND month = 4 AND day <= 3)
                         )
                         AND is_processed = 0;
     """)
