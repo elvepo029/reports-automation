@@ -52,6 +52,45 @@
     }
     .actions { margin-top: 12px; display: flex; gap: 8px; }
     .actions { flex-wrap: wrap; }
+    .filter-mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      background: #f8faff;
+    }
+    .filter-mode-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5b6470;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .filter-mode-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+    }
+    .filter-mode-option {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0A1F44;
+      margin: 0;
+    }
+    .filter-mode-option input { width: auto; margin: 0; }
+    .global-actions { margin: 10px 0 0; }
+    .mode-panel { margin-top: 12px; }
+    .mode-panel.is-disabled {
+      opacity: 0.55;
+      pointer-events: none;
+    }
     .multi-role-block {
       margin-top: 12px;
       padding: 10px;
@@ -91,6 +130,7 @@
       width: auto;
       margin: 0;
     }
+    #multi-role-mode-panel .multi-role-block { margin-top: 0; }
     button {
       background: #1B5DBF;
       color: white;
@@ -290,70 +330,22 @@
   <h2>USCs analysis</h2>
 
   <div class="panel">
-    <div class="filters">
-      <div>
-        <label for="filter-game_code">game_code</label>
-        <div class="filter-field">
-          <input type="text" id="filter-game_code" placeholder="Ex: E2025_130">
-          <button type="button" class="filter-clear" data-target="filter-game_code">Clear</button>
-        </div>
+    <div class="filter-mode-bar">
+      <div class="filter-mode-label">Filter mode</div>
+      <div class="filter-mode-options">
+        <label class="filter-mode-option">
+          <input type="radio" name="filter_mode" id="filter-mode-standard" value="standard" checked>
+          Standard filters
+        </label>
+        <label class="filter-mode-option">
+          <input type="radio" name="filter_mode" id="filter-mode-multi" value="multi_role">
+          USC + selected roles
+        </label>
       </div>
-      <div>
-        <label for="filter-team">team</label>
-        <div class="filter-field">
-          <input type="text" id="filter-team" list="datalist_team_codes" placeholder="All teams">
-          <button type="button" class="filter-clear" data-target="filter-team">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-data_entry">data_entry</label>
-        <div class="filter-field">
-          <input type="text" id="filter-data_entry" list="datalist_data_entry" placeholder="All data entries">
-          <button type="button" class="filter-clear" data-target="filter-data_entry">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-caller_1">caller_1</label>
-        <div class="filter-field">
-          <input type="text" id="filter-caller_1" list="datalist_caller_1" placeholder="All caller 1">
-          <button type="button" class="filter-clear" data-target="filter-caller_1">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-caller_2">caller_2</label>
-        <div class="filter-field">
-          <input type="text" id="filter-caller_2" list="datalist_caller_2" placeholder="All caller 2">
-          <button type="button" class="filter-clear" data-target="filter-caller_2">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-timer">timer</label>
-        <div class="filter-field">
-          <input type="text" id="filter-timer" list="datalist_timer" placeholder="All timers">
-          <button type="button" class="filter-clear" data-target="filter-timer">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-shot_clock_operator">shot_clock_operator</label>
-        <div class="filter-field">
-          <input type="text" id="filter-shot_clock_operator" list="datalist_shot_clock_operator" placeholder="All shot clock operators">
-          <button type="button" class="filter-clear" data-target="filter-shot_clock_operator">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-irs_operator">irs_operator</label>
-        <div class="filter-field">
-          <input type="text" id="filter-irs_operator" list="datalist_irs_operator" placeholder="All IRS operators">
-          <button type="button" class="filter-clear" data-target="filter-irs_operator">Clear</button>
-        </div>
-      </div>
-      <div>
-        <label for="filter-any_usc">usc (any role)</label>
-        <div class="filter-field">
-          <input type="text" id="filter-any_usc" list="datalist_any_usc" placeholder="Any role">
-          <button type="button" class="filter-clear" data-target="filter-any_usc">Clear</button>
-        </div>
-      </div>
+    </div>
+
+    <div class="global-actions">
+      <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
     </div>
 
     <datalist id="datalist_team_codes"></datalist>
@@ -365,36 +357,105 @@
     <datalist id="datalist_irs_operator"></datalist>
     <datalist id="datalist_any_usc"></datalist>
 
-    <div class="actions">
-      <button id="calculate-btn" type="button">Calculate average result</button>
-      <button id="load-game-btn" type="button">Load game</button>
-      <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
-    </div>
-
-    <div class="multi-role-block">
-      <p class="multi-role-title">USC across selected roles (select 2+ roles)</p>
-      <div class="multi-role-grid">
+    <div id="standard-mode-panel" class="mode-panel">
+      <div class="filters">
         <div>
-          <label for="filter-selected-usc">usc</label>
+          <label for="filter-game_code">game_code</label>
           <div class="filter-field">
-            <input type="text" id="filter-selected-usc" list="datalist_any_usc" placeholder="Select USC name">
-            <button type="button" class="filter-clear" data-target="filter-selected-usc">Clear</button>
+            <input type="text" id="filter-game_code" placeholder="Ex: E2025_130">
+            <button type="button" class="filter-clear" data-target="filter-game_code">Clear</button>
           </div>
         </div>
         <div>
-          <label>roles</label>
-          <div class="multi-role-checks" id="selected-roles-container">
-            <label class="multi-role-check"><input type="checkbox" value="data_entry">data_entry</label>
-            <label class="multi-role-check"><input type="checkbox" value="caller_1">caller_1</label>
-            <label class="multi-role-check"><input type="checkbox" value="caller_2">caller_2</label>
-            <label class="multi-role-check"><input type="checkbox" value="timer">timer</label>
-            <label class="multi-role-check"><input type="checkbox" value="shot_clock_operator">shot_clock_operator</label>
-            <label class="multi-role-check"><input type="checkbox" value="irs_operator">irs_operator</label>
+          <label for="filter-team">team</label>
+          <div class="filter-field">
+            <input type="text" id="filter-team" list="datalist_team_codes" placeholder="All teams">
+            <button type="button" class="filter-clear" data-target="filter-team">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-data_entry">data_entry</label>
+          <div class="filter-field">
+            <input type="text" id="filter-data_entry" list="datalist_data_entry" placeholder="All data entries">
+            <button type="button" class="filter-clear" data-target="filter-data_entry">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-caller_1">caller_1</label>
+          <div class="filter-field">
+            <input type="text" id="filter-caller_1" list="datalist_caller_1" placeholder="All caller 1">
+            <button type="button" class="filter-clear" data-target="filter-caller_1">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-caller_2">caller_2</label>
+          <div class="filter-field">
+            <input type="text" id="filter-caller_2" list="datalist_caller_2" placeholder="All caller 2">
+            <button type="button" class="filter-clear" data-target="filter-caller_2">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-timer">timer</label>
+          <div class="filter-field">
+            <input type="text" id="filter-timer" list="datalist_timer" placeholder="All timers">
+            <button type="button" class="filter-clear" data-target="filter-timer">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-shot_clock_operator">shot_clock_operator</label>
+          <div class="filter-field">
+            <input type="text" id="filter-shot_clock_operator" list="datalist_shot_clock_operator" placeholder="All shot clock operators">
+            <button type="button" class="filter-clear" data-target="filter-shot_clock_operator">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-irs_operator">irs_operator</label>
+          <div class="filter-field">
+            <input type="text" id="filter-irs_operator" list="datalist_irs_operator" placeholder="All IRS operators">
+            <button type="button" class="filter-clear" data-target="filter-irs_operator">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label for="filter-any_usc">usc (any role)</label>
+          <div class="filter-field">
+            <input type="text" id="filter-any_usc" list="datalist_any_usc" placeholder="Any role">
+            <button type="button" class="filter-clear" data-target="filter-any_usc">Clear</button>
           </div>
         </div>
       </div>
-      <div class="actions" style="margin-top:10px;">
-        <button id="calculate-selected-roles-btn" type="button">Calculate selected roles</button>
+
+      <div class="actions">
+        <button id="calculate-btn" type="button">Calculate average result</button>
+        <button id="load-game-btn" type="button">Load game</button>
+      </div>
+    </div>
+
+    <div id="multi-role-mode-panel" class="mode-panel">
+      <div class="multi-role-block">
+        <p class="multi-role-title">USC across selected roles (select 2+ roles)</p>
+        <div class="multi-role-grid">
+          <div>
+            <label for="filter-selected-usc">usc</label>
+            <div class="filter-field">
+              <input type="text" id="filter-selected-usc" list="datalist_any_usc" placeholder="Select USC name">
+              <button type="button" class="filter-clear" data-target="filter-selected-usc">Clear</button>
+            </div>
+          </div>
+          <div>
+            <label>roles</label>
+            <div class="multi-role-checks" id="selected-roles-container">
+              <label class="multi-role-check"><input type="checkbox" value="data_entry">data_entry</label>
+              <label class="multi-role-check"><input type="checkbox" value="caller_1">caller_1</label>
+              <label class="multi-role-check"><input type="checkbox" value="caller_2">caller_2</label>
+              <label class="multi-role-check"><input type="checkbox" value="timer">timer</label>
+              <label class="multi-role-check"><input type="checkbox" value="shot_clock_operator">shot_clock_operator</label>
+              <label class="multi-role-check"><input type="checkbox" value="irs_operator">irs_operator</label>
+            </div>
+          </div>
+        </div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="calculate-selected-roles-btn" type="button">Calculate selected roles</button>
+        </div>
       </div>
     </div>
 
@@ -517,6 +578,8 @@
     const teamCombosPanelEl = document.getElementById("team-combos-panel");
     const teamCombosTitleEl = document.getElementById("team-combos-title");
     const teamCombosBodyEl = document.getElementById("team-combos-body");
+    const standardModePanelEl = document.getElementById("standard-mode-panel");
+    const multiRoleModePanelEl = document.getElementById("multi-role-mode-panel");
 
     const roleColumns = [
       "data_entry",
@@ -526,6 +589,33 @@
       "shot_clock_operator",
       "irs_operator",
     ];
+
+    function getFilterMode() {
+      const checked = document.querySelector("input[name='filter_mode']:checked");
+      return checked ? checked.value : "standard";
+    }
+
+    function setModePanelDisabled(panelEl, disabled) {
+      if (!panelEl) return;
+      panelEl.classList.toggle("is-disabled", disabled);
+      panelEl.querySelectorAll("input, button, select, textarea").forEach((el) => {
+        el.disabled = disabled;
+      });
+    }
+
+    function applyFilterMode() {
+      if (getFilterMode() === "multi_role") {
+        setModePanelDisabled(standardModePanelEl, true);
+        setModePanelDisabled(multiRoleModePanelEl, false);
+      } else {
+        setModePanelDisabled(standardModePanelEl, false);
+        setModePanelDisabled(multiRoleModePanelEl, true);
+      }
+    }
+
+    document.querySelectorAll("input[name='filter_mode']").forEach((radio) => {
+      radio.addEventListener("change", () => applyFilterMode());
+    });
 
     function getFilterValue(role) {
       const el = document.getElementById(`filter-${role}`);
@@ -591,13 +681,17 @@
       byTeamBlockEl.style.display = "block";
     }
 
-    function renderByRole(uscName, items) {
+    function renderByRole(uscName, items, selectedRoles) {
       if (!items || !items.length) {
         byRoleBodyEl.innerHTML = "";
         byRoleBlockEl.style.display = "none";
         return;
       }
-      byRoleTitleEl.textContent = `${uscName} breakdown by role`;
+      const rolesHint =
+        Array.isArray(selectedRoles) && selectedRoles.length
+          ? ` (${selectedRoles.join(", ")})`
+          : "";
+      byRoleTitleEl.textContent = `${uscName} breakdown by role${rolesHint}`;
       byRoleBodyEl.innerHTML = "";
       items.forEach((row) => {
         const tr = document.createElement("tr");
@@ -764,6 +858,11 @@
 
     async function calculateAverage() {
       errorEl.style.display = "none";
+      if (getFilterMode() !== "standard") {
+        errorEl.textContent = "Switch to Standard filters mode to use these filters.";
+        errorEl.style.display = "block";
+        return;
+      }
       const params = buildParamsFromFilters();
 
       if (!params.toString()) {
@@ -795,6 +894,7 @@
       avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
       avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : data.avg_total_corrections.toFixed(2);
       avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2);
+      renderSplitAverages(data);
 
       const byTeamRes = await fetch(`/api/uscs_result_by_home_team?${params.toString()}`);
       const byTeamData = await byTeamRes.json();
@@ -826,6 +926,10 @@
     if (calculateSelectedRolesBtn) {
       calculateSelectedRolesBtn.addEventListener("click", async () => {
         errorEl.style.display = "none";
+        if (getFilterMode() !== "multi_role") {
+          showErrorMessage("Switch to USC + selected roles mode to use this block.");
+          return;
+        }
         const usc = (document.getElementById("filter-selected-usc")?.value || "").trim();
         const roles = getSelectedRoles();
         if (!usc) {
@@ -854,10 +958,24 @@
           avgResultEl.textContent = data.avg_result === null ? "No data" : Number(data.avg_result).toFixed(2);
           avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : Number(data.avg_total_corrections).toFixed(2);
           avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : Number(data.avg_total_actions).toFixed(2);
-          byTeamBlockEl.style.display = "none";
-          byTeamBodyEl.innerHTML = "";
-          byRoleBlockEl.style.display = "none";
-          byRoleBodyEl.innerHTML = "";
+          renderSplitAverages(data);
+
+          const breakdownParams = new URLSearchParams();
+          breakdownParams.set("usc_name", usc);
+          breakdownParams.set("roles", roles.join(","));
+          const byTeamRes = await fetch(`/api/uscs_result_by_home_team?${breakdownParams.toString()}`);
+          const byTeamData = await byTeamRes.json();
+          if (!byTeamRes.ok) {
+            throw new Error(byTeamData.error || "Could not load results by home team.");
+          }
+          renderByTeam(byTeamData.items || []);
+
+          const byRoleRes = await fetch(`/api/usc_any_role_breakdown?${breakdownParams.toString()}`);
+          const byRoleData = await byRoleRes.json();
+          if (!byRoleRes.ok) {
+            throw new Error(byRoleData.error || "Could not load USC role breakdown.");
+          }
+          renderByRole(usc, byRoleData.items || [], data.roles || roles);
         } catch (err) {
           showErrorMessage(err.message || "Unexpected error");
         }
@@ -866,6 +984,9 @@
 
     loadGameBtn.addEventListener("click", async () => {
       errorEl.style.display = "none";
+      const stdRadio = document.getElementById("filter-mode-standard");
+      if (stdRadio) stdRadio.checked = true;
+      applyFilterMode();
       const gameCode = (document.getElementById("filter-game_code")?.value || "").trim();
       if (!gameCode) {
         errorEl.textContent = "game_code is required.";
@@ -892,6 +1013,9 @@
 
 
     clearBtn.addEventListener("click", () => {
+      const stdRadio = document.getElementById("filter-mode-standard");
+      if (stdRadio) stdRadio.checked = true;
+      applyFilterMode();
       roleColumns.forEach((role) => {
         const el = document.getElementById(`filter-${role}`);
         if (el) el.value = "";
@@ -922,6 +1046,10 @@
       byRoleBlockEl.style.display = "none";
       byRoleBodyEl.innerHTML = "";
       errorEl.style.display = "none";
+      loadDefaultSplitAverages().catch((err) => {
+        errorEl.textContent = err.message || "Unexpected error";
+        errorEl.style.display = "block";
+      });
       loadAllUscOptions().catch((err) => {
         errorEl.textContent = err.message || "Unexpected error";
         errorEl.style.display = "block";
@@ -952,6 +1080,7 @@
     const teamFilterEl = document.getElementById("filter-team");
     if (teamFilterEl) {
       teamFilterEl.addEventListener("change", () => {
+        if (getFilterMode() !== "standard") return;
         loadTeamGlobalAverages().catch((err) => {
           errorEl.textContent = err.message || "Unexpected error";
           errorEl.style.display = "block";
@@ -962,6 +1091,8 @@
         });
       });
     }
+
+    applyFilterMode();
 
     Promise.all([loadAllUscOptions(), loadTeamCodes(), loadDefaultSplitAverages()]).catch((err) => {
       errorEl.textContent = err.message || "Unexpected error";

@@ -765,7 +765,13 @@ def api_usc_selected_roles_average():
             COUNT(*) AS games_count,
             AVG(result) AS avg_result,
             AVG(total_corrections) AS avg_total_corrections,
-            AVG(total_actions) AS avg_total_actions
+            AVG(total_actions) AS avg_total_actions,
+            AVG(CASE WHEN game_code LIKE 'E%' THEN result END) AS avg_result_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN result END) AS avg_result_eurocup,
+            AVG(result) AS avg_result_general,
+            AVG(CASE WHEN game_code LIKE 'E%' THEN total_corrections END) AS avg_corrections_euroleague,
+            AVG(CASE WHEN game_code LIKE 'U%' THEN total_corrections END) AS avg_corrections_eurocup,
+            AVG(total_corrections) AS avg_corrections_general
         FROM Game
         WHERE is_processed = 1
           AND ({role_where})
@@ -782,6 +788,12 @@ def api_usc_selected_roles_average():
         "avg_result": float(row["avg_result"]) if row["avg_result"] is not None else None,
         "avg_total_corrections": float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None,
         "avg_total_actions": float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None,
+        "avg_result_euroleague": float(row["avg_result_euroleague"]) if row["avg_result_euroleague"] is not None else None,
+        "avg_result_eurocup": float(row["avg_result_eurocup"]) if row["avg_result_eurocup"] is not None else None,
+        "avg_result_general": float(row["avg_result_general"]) if row["avg_result_general"] is not None else None,
+        "avg_corrections_euroleague": float(row["avg_corrections_euroleague"]) if row["avg_corrections_euroleague"] is not None else None,
+        "avg_corrections_eurocup": float(row["avg_corrections_eurocup"]) if row["avg_corrections_eurocup"] is not None else None,
+        "avg_corrections_general": float(row["avg_corrections_general"]) if row["avg_corrections_general"] is not None else None,
     })
 
 
@@ -795,8 +807,22 @@ def api_uscs_result_by_home_team():
             role_filters[col] = val
     any_usc = request.args.get("any_usc", "").strip()
     team = request.args.get("team", "").strip()
+    usc_name = request.args.get("usc_name", "").strip()
+    roles_raw = request.args.get("roles", "").strip()
 
-    if not role_filters and not any_usc and not team:
+    roles_mode = False
+    roles: list[str] = []
+    if usc_name and roles_raw:
+        roles = [r.strip() for r in roles_raw.split(",") if r.strip()]
+        roles = [r for r in roles if r in USC_ROLE_COLUMNS]
+        seen: set[str] = set()
+        roles = [r for r in roles if not (r in seen or seen.add(r))]
+        roles_mode = len(roles) >= 2
+
+    if roles_mode:
+        role_filters = {}
+        any_usc = ""
+    elif not role_filters and not any_usc and not team:
         return jsonify({"error": "at least one USC filter or team is required"}), 400
 
     where_parts = []
@@ -808,6 +834,10 @@ def api_uscs_result_by_home_team():
         any_role_where = " OR ".join([f"g.{col} = ?" for col in USC_ROLE_COLUMNS])
         where_parts.append(f"({any_role_where})")
         params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+    if roles_mode:
+        role_where = " OR ".join([f"g.{r} = ?" for r in roles])
+        where_parts.append(f"({role_where})")
+        params.extend([usc_name] * len(roles))
     if team:
         # Team filter is home team only (Game.code_h)
         where_parts.append("g.code_h = ?")
@@ -859,12 +889,23 @@ def api_usc_any_role_breakdown():
     if not usc_name:
         return jsonify({"error": "usc_name is required"}), 400
 
+    roles_raw = request.args.get("roles", "").strip()
+    roles: list[str] = []
+    if roles_raw:
+        roles = [r.strip() for r in roles_raw.split(",") if r.strip()]
+        roles = [r for r in roles if r in USC_ROLE_COLUMNS]
+        seen: set[str] = set()
+        roles = [r for r in roles if not (r in seen or seen.add(r))]
+        if len(roles) < 2:
+            return jsonify({"error": "at least 2 valid roles are required"}), 400
+
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
     items = []
-    for role in USC_ROLE_COLUMNS:
+    role_iter = roles if roles else list(USC_ROLE_COLUMNS)
+    for role in role_iter:
         query = f"""
             SELECT
                 COUNT(*) AS games_count,
