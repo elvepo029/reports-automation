@@ -894,7 +894,6 @@
       avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
       avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : data.avg_total_corrections.toFixed(2);
       avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2);
-      renderSplitAverages(data);
 
       const byTeamRes = await fetch(`/api/uscs_result_by_home_team?${params.toString()}`);
       const byTeamData = await byTeamRes.json();
@@ -958,7 +957,6 @@
           avgResultEl.textContent = data.avg_result === null ? "No data" : Number(data.avg_result).toFixed(2);
           avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : Number(data.avg_total_corrections).toFixed(2);
           avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : Number(data.avg_total_actions).toFixed(2);
-          renderSplitAverages(data);
 
           const breakdownParams = new URLSearchParams();
           breakdownParams.set("usc_name", usc);
