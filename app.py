@@ -139,10 +139,14 @@ def api_corrections_paginated():
     competition = request.args.get("competition", "").strip()
     season = request.args.get("season", "").strip()
 
-    join_game = bool(game_filters)
+    # Always join Game so we can enforce Game.is_processed = 1
+    join_game = True
 
     where_parts = []
     params = []
+
+    # Base constraint: only processed games
+    where_parts.append("G.is_processed = 1")
 
     # Correction filters
     if filters:
@@ -151,24 +155,23 @@ def api_corrections_paginated():
             params.append(val)
 
     # Game filters
-    if join_game:
-        # home/away team_code
-        if "home_team" in game_filters:
-            where_parts.append("G.code_h = ?")
-            params.append(game_filters["home_team"])
-        if "away_team" in game_filters:
-            where_parts.append("G.code_a = ?")
-            params.append(game_filters["away_team"])
-        # USCs
-        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
-            if field in game_filters:
-                where_parts.append(f"G.{field} = ?")
-                params.append(game_filters[field])
-        # logistics
-        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
-            if field in game_filters:
-                where_parts.append(f"G.{field} = ?")
-                params.append(game_filters[field])
+    # home/away team_code
+    if "home_team" in game_filters:
+        where_parts.append("G.code_h = ?")
+        params.append(game_filters["home_team"])
+    if "away_team" in game_filters:
+        where_parts.append("G.code_a = ?")
+        params.append(game_filters["away_team"])
+    # USCs
+    for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+        if field in game_filters:
+            where_parts.append(f"G.{field} = ?")
+            params.append(game_filters[field])
+    # logistics
+    for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+        if field in game_filters:
+            where_parts.append(f"G.{field} = ?")
+            params.append(game_filters[field])
 
     # virtual filters (competition, season)
     if competition:
@@ -207,19 +210,19 @@ def api_corrections_paginated():
 
     denom_total = 0
     if not usc_selected:
-        cur.execute("SELECT COUNT(*) AS total FROM Correction")
+        cur.execute("SELECT COUNT(*) AS total FROM Correction C JOIN Game G ON C.game_code = G.game_code WHERE G.is_processed = 1")
         denom_total = cur.fetchone()["total"]
     else:
         home_team_code = game_filters.get("home_team", "").strip()
         if home_team_code:
             cur.execute(
-                "SELECT COUNT(*) AS total FROM Correction C JOIN Game G ON C.game_code = G.game_code WHERE G.code_h = ?",
+                "SELECT COUNT(*) AS total FROM Correction C JOIN Game G ON C.game_code = G.game_code WHERE G.is_processed = 1 AND G.code_h = ?",
                 (home_team_code,),
             )
             denom_total = cur.fetchone()["total"]
         else:
             # fallback: if no home_team selected, use overall total
-            cur.execute("SELECT COUNT(*) AS total FROM Correction")
+            cur.execute("SELECT COUNT(*) AS total FROM Correction C JOIN Game G ON C.game_code = G.game_code WHERE G.is_processed = 1")
             denom_total = cur.fetchone()["total"]
 
     percent_of_total = (float(total) / float(denom_total) * 100.0) if denom_total else 0.0
@@ -248,6 +251,9 @@ def api_corrections_paginated():
 @app.route("/api/corrections_export.xlsx")
 def api_corrections_export_excel():
     """Export filtered corrections grouped by game_code for charts (.xlsx)."""
+    breakdown = request.args.get("breakdown", "type_c").strip().lower()
+    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager"):
+        return jsonify({"error": "invalid breakdown"}), 400
     filters = {}
     for col in FILTERABLE_CORRECTION_COLUMNS:
         val = request.args.get(col, "").strip()
@@ -269,34 +275,33 @@ def api_corrections_export_excel():
 
     competition = request.args.get("competition", "").strip()
     season = request.args.get("season", "").strip()
-    join_game = bool(game_filters)
-
-    # Export is only available when home_team is selected.
-    if "home_team" not in game_filters:
-        return jsonify({"error": "home_team is required for export"}), 400
+    # Always join Game so we can enforce Game.is_processed = 1
+    join_game = True
 
     where_parts = []
     params = []
+
+    # Base constraint: only processed games
+    where_parts.append("G.is_processed = 1")
 
     for col, val in filters.items():
         where_parts.append(f"C.{col} = ?")
         params.append(val)
 
-    if join_game:
-        if "home_team" in game_filters:
-            where_parts.append("G.code_h = ?")
-            params.append(game_filters["home_team"])
-        if "away_team" in game_filters:
-            where_parts.append("G.code_a = ?")
-            params.append(game_filters["away_team"])
-        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
-            if field in game_filters:
-                where_parts.append(f"G.{field} = ?")
-                params.append(game_filters[field])
-        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
-            if field in game_filters:
-                where_parts.append(f"G.{field} = ?")
-                params.append(game_filters[field])
+    if "home_team" in game_filters:
+        where_parts.append("G.code_h = ?")
+        params.append(game_filters["home_team"])
+    if "away_team" in game_filters:
+        where_parts.append("G.code_a = ?")
+        params.append(game_filters["away_team"])
+    for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+        if field in game_filters:
+            where_parts.append(f"G.{field} = ?")
+            params.append(game_filters[field])
+    for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+        if field in game_filters:
+            where_parts.append(f"G.{field} = ?")
+            params.append(game_filters[field])
 
     if competition:
         where_parts.append("C.game_code LIKE ?")
@@ -315,21 +320,56 @@ def api_corrections_export_excel():
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
+    if breakdown == "type_c":
+        group_select_col = "C.type_c"
+    elif breakdown == "b_ss":
+        group_select_col = "C.b_ss"
+    elif breakdown == "category":
+        group_select_col = "C.category"
+    elif breakdown == "live_game_manager":
+        group_select_col = "C.live_game_manager"
+    else:
+        group_select_col = "C.team"
     cur.execute(
-        "SELECT C.game_code, C.type_c, COUNT(*) AS errors_count"
+        "SELECT C.game_code, "
+        + group_select_col
+        + " AS breakdown_value, COUNT(*) AS errors_count"
         + from_clause
         + where_clause
-        + " GROUP BY C.game_code, C.type_c ORDER BY C.game_code ASC, C.type_c ASC",
+        + " GROUP BY C.game_code, "
+        + group_select_col
+        + " ORDER BY C.game_code ASC, "
+        + group_select_col
+        + " ASC",
         params,
     )
     grouped_rows = [dict(r) for r in cur.fetchall()]
-    conn.close()
 
-    type_columns = sorted({(r.get("type_c") or "").strip() for r in grouped_rows if (r.get("type_c") or "").strip()})
+    def resolve_team_label(team_code: str) -> str:
+        code = (team_code or "").strip()
+        if not code:
+            return ""
+        cur.execute(
+            "SELECT team_name FROM Team WHERE team_code = ? LIMIT 1",
+            (code,),
+        )
+        team_row = cur.fetchone()
+        if team_row and team_row["team_name"]:
+            return str(team_row["team_name"]).strip()
+        return code
+
+    selected_home_team_code = game_filters.get("home_team", "").strip()
+    selected_home_team_name = resolve_team_label(selected_home_team_code)
+
+    type_columns = sorted({
+        (r.get("breakdown_value") or "").strip()
+        for r in grouped_rows
+        if (r.get("breakdown_value") or "").strip()
+    })
     by_game = {}
     for r in grouped_rows:
         game_code = r.get("game_code", "")
-        type_c = (r.get("type_c") or "").strip()
+        type_c = (r.get("breakdown_value") or "").strip()
         count = int(r.get("errors_count") or 0)
         if game_code not in by_game:
             by_game[game_code] = {"game_code": game_code, "errors_count": 0}
@@ -340,11 +380,72 @@ def api_corrections_export_excel():
     wb = Workbook()
     ws = wb.active
     ws.title = "Errors by game"
-    headers = ["game_code", "errors_count"] + type_columns
+    headers = ["GAME_CODE", "NUM CORRECTIONS"] + type_columns
     ws.append(headers)
     for game_code in sorted(by_game.keys()):
         row = by_game[game_code]
         ws.append([row.get("game_code", ""), row.get("errors_count", 0)] + [row.get(col, 0) for col in type_columns])
+
+    total_num_corrections = 0
+    totals_by_type = {col: 0 for col in type_columns}
+    for row in by_game.values():
+        total_num_corrections += int(row.get("errors_count", 0) or 0)
+        for col in type_columns:
+            totals_by_type[col] += int(row.get(col, 0) or 0)
+    ws.append(["TOTAL", total_num_corrections] + [totals_by_type[col] for col in type_columns])
+
+    def sanitize_filename_part(value: str) -> str:
+        cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in (value or "").strip())
+        cleaned = "_".join([p for p in cleaned.split("_") if p])
+        return cleaned[:40]
+
+    def add_named_part(parts: list[str], filter_name: str, selected_value: str) -> None:
+        value_part = sanitize_filename_part(selected_value)
+        name_part = sanitize_filename_part(filter_name)
+        if value_part and name_part:
+            parts.append(f"{value_part}_as_{name_part}")
+
+    filename_parts = []
+
+    if selected_home_team_name:
+        add_named_part(filename_parts, "home_team", selected_home_team_name)
+
+    away_team_code = game_filters.get("away_team", "").strip()
+    if away_team_code:
+        away_team_name = resolve_team_label(away_team_code)
+        away_label = away_team_name or away_team_code
+        add_named_part(filename_parts, "away_team", away_label)
+
+    if competition:
+        add_named_part(filename_parts, "competition", competition)
+    if season:
+        add_named_part(filename_parts, "season", season)
+
+    for col in FILTERABLE_CORRECTION_COLUMNS:
+        val = filters.get(col, "").strip()
+        if val:
+            add_named_part(filename_parts, col, val)
+
+    for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator",
+                  "arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+        val = game_filters.get(field, "").strip()
+        if val:
+            add_named_part(filename_parts, field, val)
+
+    base_name = "_".join(filename_parts) if filename_parts else "all_corrections"
+    base_name = base_name[:180].rstrip("_")
+    if breakdown == "type_c":
+        suffix = "corrections_by_type_breakdown"
+    elif breakdown == "b_ss":
+        suffix = "boxscore_scoresheet_breakdown"
+    elif breakdown == "category":
+        suffix = "corrections_by_category_breakdown"
+    elif breakdown == "live_game_manager":
+        suffix = "corrections_by_live_game_manager_breakdown"
+    else:
+        suffix = "corrections_by_team_breakdown"
+    download_name = f"{base_name}_{suffix}.xlsx"
+    conn.close()
 
     output = BytesIO()
     wb.save(output)
@@ -352,7 +453,7 @@ def api_corrections_export_excel():
     return send_file(
         output,
         as_attachment=True,
-        download_name="errors_by_game.xlsx",
+        download_name=download_name,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
@@ -431,12 +532,12 @@ def api_usc_role_options():
     if role == "any":
         name_set = set()
         for col in USC_ROLE_COLUMNS:
-            query = f"SELECT DISTINCT {col} FROM Game WHERE {col} IS NOT NULL AND {col} != ''"
+            query = f"SELECT DISTINCT {col} FROM Game WHERE is_processed = 1 AND {col} IS NOT NULL AND {col} != ''"
             cur.execute(query)
             name_set.update(row[0] for row in cur.fetchall())
         names = sorted(name_set)
     else:
-        query = f"SELECT DISTINCT {role} FROM Game WHERE {role} IS NOT NULL AND {role} != '' ORDER BY {role}"
+        query = f"SELECT DISTINCT {role} FROM Game WHERE is_processed = 1 AND {role} IS NOT NULL AND {role} != '' ORDER BY {role}"
         cur.execute(query)
         names = [row[0] for row in cur.fetchall()]
     conn.close()
@@ -465,7 +566,8 @@ def api_usc_role_result_average():
                 COUNT(*) AS games_count,
                 AVG(result) AS avg_result
             FROM Game
-            WHERE ({any_role_where})
+            WHERE is_processed = 1
+              AND ({any_role_where})
               AND result IS NOT NULL
         """
         cur.execute(query, params)
@@ -475,7 +577,8 @@ def api_usc_role_result_average():
                 COUNT(*) AS games_count,
                 AVG(result) AS avg_result
             FROM Game
-            WHERE {role} = ?
+            WHERE is_processed = 1
+              AND {role} = ?
               AND result IS NOT NULL
         """
         cur.execute(query, (usc_name,))
@@ -501,6 +604,7 @@ def api_uscs_result_average():
         if val:
             role_filters[col] = val
     any_usc = request.args.get("any_usc", "").strip()
+    team = request.args.get("team", "").strip()
 
     where_parts = []
     params = []
@@ -511,6 +615,12 @@ def api_uscs_result_average():
         any_role_where = " OR ".join([f"{col} = ?" for col in USC_ROLE_COLUMNS])
         where_parts.append(f"({any_role_where})")
         params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+    if team:
+        # Team filter is home team only (Game.code_h)
+        where_parts.append("code_h = ?")
+        params.append(team)
+    # Base constraint: only processed games
+    where_parts.append("is_processed = 1")
 
     where_clause = " AND ".join(where_parts) if where_parts else "1=1"
 
@@ -550,6 +660,7 @@ def api_uscs_result_average():
     return jsonify({
         "filters": role_filters,
         "any_usc": any_usc,
+        "team": team,
         "games_count": games_count,
         "avg_result": avg_result,
         "avg_total_corrections": avg_total_corrections,
@@ -572,9 +683,10 @@ def api_uscs_result_by_home_team():
         if val:
             role_filters[col] = val
     any_usc = request.args.get("any_usc", "").strip()
+    team = request.args.get("team", "").strip()
 
-    if not role_filters and not any_usc:
-        return jsonify({"error": "at least one USC filter is required"}), 400
+    if not role_filters and not any_usc and not team:
+        return jsonify({"error": "at least one USC filter or team is required"}), 400
 
     where_parts = []
     params = []
@@ -585,6 +697,12 @@ def api_uscs_result_by_home_team():
         any_role_where = " OR ".join([f"g.{col} = ?" for col in USC_ROLE_COLUMNS])
         where_parts.append(f"({any_role_where})")
         params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+    if team:
+        # Team filter is home team only (Game.code_h)
+        where_parts.append("g.code_h = ?")
+        params.append(team)
+    # Base constraint: only processed games
+    where_parts.append("g.is_processed = 1")
     where_clause = " AND ".join(where_parts)
 
     conn = get_db()
@@ -643,7 +761,8 @@ def api_usc_any_role_breakdown():
                 AVG(total_corrections) AS avg_corrections,
                 AVG(total_actions) AS avg_actions
             FROM Game
-            WHERE {role} = ?
+            WHERE is_processed = 1
+              AND {role} = ?
         """
         cur.execute(query, (usc_name,))
         row = cur.fetchone()
@@ -678,6 +797,7 @@ def api_uscs_global_split_averages():
             AVG(CASE WHEN game_code LIKE 'U%' THEN total_corrections END) AS avg_corrections_eurocup,
             AVG(total_corrections) AS avg_corrections_general
         FROM Game
+        WHERE is_processed = 1
         """
     )
     row = cur.fetchone()
@@ -691,6 +811,56 @@ def api_uscs_global_split_averages():
         "avg_corrections_eurocup": float(row["avg_corrections_eurocup"]) if row["avg_corrections_eurocup"] is not None else None,
         "avg_corrections_general": float(row["avg_corrections_general"]) if row["avg_corrections_general"] is not None else None,
     })
+
+
+@app.route("/api/uscs_combinations_by_team")
+def api_uscs_combinations_by_team():
+    """Return USC role combinations stats for a selected home team (code_h)."""
+    team = request.args.get("team", "").strip()
+    if not team:
+        return jsonify({"error": "team is required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            data_entry,
+            caller_1,
+            caller_2,
+            timer,
+            shot_clock_operator,
+            irs_operator,
+            COUNT(*) AS games_count,
+            AVG(result) AS avg_result,
+            AVG(total_corrections) AS avg_corrections,
+            AVG(total_actions) AS avg_actions
+        FROM Game
+        WHERE is_processed = 1
+          AND code_h = ?
+        GROUP BY
+            data_entry, caller_1, caller_2, timer, shot_clock_operator, irs_operator
+        ORDER BY games_count DESC
+        """,
+        (team,),
+    )
+    items = []
+    for r in cur.fetchall():
+        items.append({
+            "data_entry": (r["data_entry"] or "").strip(),
+            "caller_1": (r["caller_1"] or "").strip(),
+            "caller_2": (r["caller_2"] or "").strip(),
+            "timer": (r["timer"] or "").strip(),
+            "shot_clock_operator": (r["shot_clock_operator"] or "").strip(),
+            "irs_operator": (r["irs_operator"] or "").strip(),
+            "games_count": int(r["games_count"] or 0),
+            "avg_result": float(r["avg_result"]) if r["avg_result"] is not None else None,
+            "avg_corrections": float(r["avg_corrections"]) if r["avg_corrections"] is not None else None,
+            "avg_actions": float(r["avg_actions"]) if r["avg_actions"] is not None else None,
+        })
+    conn.close()
+    return jsonify({"team": team, "items": items})
 
 
 @app.route("/api/game_uscs_snapshot")
@@ -723,7 +893,7 @@ def api_game_uscs_snapshot():
         FROM Game g
         LEFT JOIN Team th ON g.code_h = th.team_code
         LEFT JOIN Team ta ON g.code_a = ta.team_code
-        WHERE g.game_code = ?
+        WHERE g.is_processed = 1 AND g.game_code = ?
         LIMIT 1
         """,
         (game_code,),
@@ -786,7 +956,7 @@ def api_logistics_counts():
 
     # helper to build WHERE for Game table, excluding a specific field
     def build_where(exclude_field: str):
-        parts = []
+        parts = ["is_processed = 1"]
         params_local = []
         # home/away codes
         if "home_team" in game_filters and exclude_field != "home_team":

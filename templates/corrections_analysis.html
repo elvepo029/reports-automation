@@ -74,6 +74,71 @@
       color: #6b7280;
     }
     .table-wrap { overflow-x: auto; }
+    .results-actions {
+      margin: 0 0 12px 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .results-actions button {
+      background: #1B5DBF;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .results-actions button:hover:not(:disabled) { background: #3A7DD3; }
+    .results-actions button:disabled { background: #999; cursor: not-allowed; }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      max-width: 460px;
+      width: 100%;
+      padding: 16px 18px;
+    }
+    .modal-title {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #0A1F44;
+    }
+    .modal-text {
+      margin: 0;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .modal-actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .modal-actions button {
+      background: #1B5DBF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+    .modal-actions button:hover {
+      background: #3A7DD3;
+    }
     table {
       border-collapse: separate;
       border-spacing: 6px;
@@ -218,9 +283,6 @@
     <div class="filter-field">
       <input type="text" id="filter-home_team" list="datalist_team_codes" placeholder="All home teams">
       <button type="button" class="filter-clear" data-col="home_team">Clear</button>
-    </div>
-    <div style="margin-top: 6px;">
-      <button type="button" id="export-corrections-excel">Export selected home_team results</button>
     </div>
   </div>
 
@@ -414,6 +476,13 @@
   <span id="filter-percent-text" style="margin-left: 12px;"></span>
   <span id="filter-games-text" style="margin-left: 12px;"></span>
 </p>
+<div class="results-actions" id="results-actions" style="display:none;">
+  <button type="button" id="export-corrections-excel">Export corrections types results</button>
+  <button type="button" id="export-bss-excel">Export boxscore/scoresheet results</button>
+  <button type="button" id="export-team-excel">Export corrections by team results</button>
+  <button type="button" id="export-category-excel">Export corrections by category results</button>
+  <button type="button" id="export-lgm-excel">Export corrections by live game manager results</button>
+</div>
 
 <!-- Datalists for game/logistics filters (options + free text) -->
 <datalist id="datalist_team_codes"></datalist>
@@ -536,6 +605,16 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="export-warning-modal" style="display:none;">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="export-warning-title">
+    <h3 class="modal-title" id="export-warning-title">No corrections found</h3>
+    <p class="modal-text">There are no corrections matching the selected options. Adjust the filters and try again.</p>
+    <div class="modal-actions">
+      <button type="button" id="close-export-warning">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const PER_PAGE = 10;
 const displayColumns = [
@@ -578,6 +657,14 @@ function showTable(show) {
 function showFilterCount(show) {
   const el = document.getElementById("filter-count");
   el.style.display = show ? "block" : "none";
+  const actionsEl = document.getElementById("results-actions");
+  if (actionsEl) actionsEl.style.display = show ? "block" : "none";
+}
+
+function showExportWarningModal(show) {
+  const modal = document.getElementById("export-warning-modal");
+  if (!modal) return;
+  modal.style.display = show ? "flex" : "none";
 }
 
 function getFilterParams() {
@@ -914,15 +1001,86 @@ if (clearCorrectionsBtn) {
 const exportBtn = document.getElementById("export-corrections-excel");
 if (exportBtn) {
   exportBtn.addEventListener("click", () => {
-    const homeTeam = (document.getElementById("filter-home_team")?.value || "").trim();
-    if (!homeTeam) {
-      showError("Select home_team to export Excel.");
+    if (!Number(total)) {
+      showExportWarningModal(true);
       return;
     }
     const params = getFilterParams();
     params.delete("page");
     params.delete("per_page");
     window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportBssBtn = document.getElementById("export-bss-excel");
+if (exportBssBtn) {
+  exportBssBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "b_ss");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportTeamBtn = document.getElementById("export-team-excel");
+if (exportTeamBtn) {
+  exportTeamBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "team");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportCategoryBtn = document.getElementById("export-category-excel");
+if (exportCategoryBtn) {
+  exportCategoryBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "category");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportLgmBtn = document.getElementById("export-lgm-excel");
+if (exportLgmBtn) {
+  exportLgmBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "live_game_manager");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const closeExportWarningBtn = document.getElementById("close-export-warning");
+if (closeExportWarningBtn) {
+  closeExportWarningBtn.addEventListener("click", () => showExportWarningModal(false));
+}
+
+const exportWarningModal = document.getElementById("export-warning-modal");
+if (exportWarningModal) {
+  exportWarningModal.addEventListener("click", (event) => {
+    if (event.target === exportWarningModal) showExportWarningModal(false);
   });
 }
 
