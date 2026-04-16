@@ -80,6 +80,66 @@ def index():
     return render_template("home.html")
 
 
+@app.route("/export/correction_all.xlsx")
+def export_correction_all_excel():
+    """Export all rows from Correction table to Excel."""
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Correction")
+    rows = cur.fetchall()
+    headers = [col[0] for col in cur.description] if cur.description else []
+    conn.close()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Correction"
+    if headers:
+        ws.append(headers)
+    for row in rows:
+        ws.append([row[h] for h in headers])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="all_correction_rows.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
+@app.route("/export/game_processed.xlsx")
+def export_game_processed_excel():
+    """Export all processed rows from Game table (is_processed = 1) to Excel."""
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Game WHERE is_processed = 1")
+    rows = cur.fetchall()
+    headers = [col[0] for col in cur.description] if cur.description else []
+    conn.close()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Game processed"
+    if headers:
+        ws.append(headers)
+    for row in rows:
+        ws.append([row[h] for h in headers])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="game_is_processed_1_rows.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
 @app.route("/report-generator")
 def report_generator():
     return render_template("report_generator.html")

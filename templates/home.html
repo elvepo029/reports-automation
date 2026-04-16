@@ -49,6 +49,28 @@
       font-size: 12px;
       color: #6b7280;
     }
+    .export-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .export-btn {
+      background: #1B5DBF;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid #1B5DBF;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .export-btn:hover {
+      background: #3A7DD3;
+      box-shadow: 0 2px 10px rgba(27, 93, 191, 0.25);
+    }
   </style>
 </head>
 <body>
@@ -57,6 +79,10 @@
     <a class="nav-card" href="/report-generator">Report generator</a>
     <a class="nav-card" href="/corrections-analysis">Corrections analysis</a>
     <a class="nav-card" href="/uscs-analysis">USCs analysis</a>
+  </div>
+  <div class="export-actions">
+    <a class="export-btn" href="/export/correction_all.xlsx">Export all Correction data</a>
+    <a class="export-btn" href="/export/game_processed.xlsx">Export processed Game data</a>
   </div>
   <footer class="app-version-footer">Version {{ app_version }}</footer>
 </body>
