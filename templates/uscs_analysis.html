@@ -52,6 +52,45 @@
     }
     .actions { margin-top: 12px; display: flex; gap: 8px; }
     .actions { flex-wrap: wrap; }
+    .multi-role-block {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      background: #f8faff;
+    }
+    .multi-role-title {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0A1F44;
+    }
+    .multi-role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px 12px;
+      align-items: start;
+    }
+    .multi-role-checks {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px 10px;
+      margin-top: 4px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .multi-role-check {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #0A1F44;
+      white-space: nowrap;
+    }
+    .multi-role-check input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
     button {
       background: #1B5DBF;
       color: white;
@@ -332,6 +371,33 @@
       <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
     </div>
 
+    <div class="multi-role-block">
+      <p class="multi-role-title">USC across selected roles (select 2+ roles)</p>
+      <div class="multi-role-grid">
+        <div>
+          <label for="filter-selected-usc">usc</label>
+          <div class="filter-field">
+            <input type="text" id="filter-selected-usc" list="datalist_any_usc" placeholder="Select USC name">
+            <button type="button" class="filter-clear" data-target="filter-selected-usc">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label>roles</label>
+          <div class="multi-role-checks" id="selected-roles-container">
+            <label class="multi-role-check"><input type="checkbox" value="data_entry">data_entry</label>
+            <label class="multi-role-check"><input type="checkbox" value="caller_1">caller_1</label>
+            <label class="multi-role-check"><input type="checkbox" value="caller_2">caller_2</label>
+            <label class="multi-role-check"><input type="checkbox" value="timer">timer</label>
+            <label class="multi-role-check"><input type="checkbox" value="shot_clock_operator">shot_clock_operator</label>
+            <label class="multi-role-check"><input type="checkbox" value="irs_operator">irs_operator</label>
+          </div>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px;">
+        <button id="calculate-selected-roles-btn" type="button">Calculate selected roles</button>
+      </div>
+    </div>
+
     <div id="error" class="error"></div>
 
     <div class="result-card">
@@ -427,6 +493,7 @@
     const calculateBtn = document.getElementById("calculate-btn");
     const loadGameBtn = document.getElementById("load-game-btn");
     const clearBtn = document.getElementById("clear-btn");
+    const calculateSelectedRolesBtn = document.getElementById("calculate-selected-roles-btn");
     const errorEl = document.getElementById("error");
     const avgResultEl = document.getElementById("avg-result");
     const gamesCountEl = document.getElementById("games-count");
@@ -463,6 +530,11 @@
     function getFilterValue(role) {
       const el = document.getElementById(`filter-${role}`);
       return (el?.value || "").trim();
+    }
+
+    function getSelectedRoles() {
+      const nodes = document.querySelectorAll("#selected-roles-container input[type='checkbox']:checked");
+      return Array.from(nodes).map((n) => n.value);
     }
 
     function setGameValues(snapshot) {
@@ -751,6 +823,47 @@
       });
     });
 
+    if (calculateSelectedRolesBtn) {
+      calculateSelectedRolesBtn.addEventListener("click", async () => {
+        errorEl.style.display = "none";
+        const usc = (document.getElementById("filter-selected-usc")?.value || "").trim();
+        const roles = getSelectedRoles();
+        if (!usc) {
+          showErrorMessage("USC is required.");
+          return;
+        }
+        if (roles.length < 2) {
+          showErrorMessage("Select at least 2 roles.");
+          return;
+        }
+        try {
+          const params = new URLSearchParams();
+          params.set("usc_name", usc);
+          params.set("roles", roles.join(","));
+          const res = await fetch(`/api/usc_selected_roles_average?${params.toString()}`);
+          const data = await res.json();
+          if (!res.ok) {
+            showErrorMessage(data.error || "Could not compute selected roles average.");
+            return;
+          }
+          resultTitleEl.textContent = `usc=${data.usc_name} · roles=${(data.roles || []).join(", ")}`;
+          gamesCountEl.textContent = `${data.games_count}`;
+          labelResultEl.textContent = "Average result";
+          labelCorrectionsEl.textContent = "Average corrections";
+          labelActionsEl.textContent = "Average actions";
+          avgResultEl.textContent = data.avg_result === null ? "No data" : Number(data.avg_result).toFixed(2);
+          avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : Number(data.avg_total_corrections).toFixed(2);
+          avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : Number(data.avg_total_actions).toFixed(2);
+          byTeamBlockEl.style.display = "none";
+          byTeamBodyEl.innerHTML = "";
+          byRoleBlockEl.style.display = "none";
+          byRoleBodyEl.innerHTML = "";
+        } catch (err) {
+          showErrorMessage(err.message || "Unexpected error");
+        }
+      });
+    }
+
     loadGameBtn.addEventListener("click", async () => {
       errorEl.style.display = "none";
       const gameCode = (document.getElementById("filter-game_code")?.value || "").trim();
@@ -789,6 +902,11 @@
       if (gameCodeEl) gameCodeEl.value = "";
       const teamEl = document.getElementById("filter-team");
       if (teamEl) teamEl.value = "";
+      const selectedUscEl = document.getElementById("filter-selected-usc");
+      if (selectedUscEl) selectedUscEl.value = "";
+      document.querySelectorAll("#selected-roles-container input[type='checkbox']").forEach((cb) => {
+        cb.checked = false;
+      });
       if (teamCombosPanelEl) teamCombosPanelEl.style.display = "none";
       if (teamCombosBodyEl) teamCombosBodyEl.innerHTML = "";
       avgResultEl.textContent = "-";

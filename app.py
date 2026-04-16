@@ -734,6 +734,57 @@ def api_uscs_result_average():
     })
 
 
+@app.route("/api/usc_selected_roles_average")
+def api_usc_selected_roles_average():
+    """Return averages for one USC across selected roles (OR across roles), processed games only."""
+    usc_name = request.args.get("usc_name", "").strip()
+    roles_raw = request.args.get("roles", "").strip()
+
+    if not usc_name:
+        return jsonify({"error": "usc_name is required"}), 400
+    if not roles_raw:
+        return jsonify({"error": "roles is required"}), 400
+
+    roles = [r.strip() for r in roles_raw.split(",") if r.strip()]
+    roles = [r for r in roles if r in USC_ROLE_COLUMNS]
+    # keep order and uniqueness
+    seen = set()
+    roles = [r for r in roles if not (r in seen or seen.add(r))]
+
+    if len(roles) < 2:
+        return jsonify({"error": "at least 2 valid roles are required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    role_where = " OR ".join([f"{r} = ?" for r in roles])
+    params = [usc_name] * len(roles)
+    cur.execute(
+        f"""
+        SELECT
+            COUNT(*) AS games_count,
+            AVG(result) AS avg_result,
+            AVG(total_corrections) AS avg_total_corrections,
+            AVG(total_actions) AS avg_total_actions
+        FROM Game
+        WHERE is_processed = 1
+          AND ({role_where})
+        """,
+        params,
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    return jsonify({
+        "usc_name": usc_name,
+        "roles": roles,
+        "games_count": int(row["games_count"] or 0),
+        "avg_result": float(row["avg_result"]) if row["avg_result"] is not None else None,
+        "avg_total_corrections": float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None,
+        "avg_total_actions": float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None,
+    })
+
+
 @app.route("/api/uscs_result_by_home_team")
 def api_uscs_result_by_home_team():
     """Return USC filtered averages grouped by Game.code_h (read-only)."""
