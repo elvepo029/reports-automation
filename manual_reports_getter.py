@@ -105,17 +105,21 @@ def get_game_codes_to_import_manual_report():
     cursor = conn.cursor()
 
     cursor.execute("""
-                    SELECT game_code
-                    FROM GAME
-                    WHERE 
-                        (
-                        (year = 2025)
-                        OR
-                        (year = 2026 AND month < 4)
-                        OR
-                        (year = 2026 AND month = 4 AND day <= 21)
-                        )
-                        AND is_processed = 0;
+        SELECT game_code
+        FROM GAME
+        WHERE 
+            (
+                (year = 2025)
+                OR
+                (year = 2026 AND month < 4)
+                OR
+                (year = 2026 AND month = 4 AND day <= 21)
+            )
+            AND 
+            (
+                is_processed = 0
+                OR game_code IN ('E2025_310', 'E2025_303')
+            );
     """)
     
     codes = {row[0] for row in  cursor.fetchall()}
