@@ -118,7 +118,6 @@ def get_game_codes_to_import_manual_report():
             AND 
             (
                 is_processed = 0
-                OR game_code IN ('E2025_310', 'E2025_303')
             );
     """)
     
