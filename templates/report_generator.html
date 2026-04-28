@@ -886,7 +886,12 @@ function saveRow(rowData, tr) {
     .then(r => r.json())
     .then(res => {
       const status = document.getElementById("status");
-      if (res.status === "ok") { status.innerText = "Row saved successfully ✅"; setTimeout(() => status.innerText = "", 2000); }
+      if (res.status === "ok") {
+        status.innerText = "Row saved successfully ✅";
+        setTimeout(() => status.innerText = "", 2000);
+        // Recalculate provisional result after correction changes.
+        scheduleLiveResultUpdate();
+      }
       else { status.innerText = "Error while saving ❌"; }
     });
 }
@@ -904,6 +909,7 @@ function deleteRow(rowid) {
     if (res.status === "ok") {
       alert("Correction deleted successfully");
       loadData(); // reload table
+      scheduleLiveResultUpdate();
     } else {
       alert("Error deleting correction");
     }
@@ -945,6 +951,7 @@ function addCorrectionFromRow(rowData) {
   .then(res => {
     if (res.status === "ok") {
       loadData(); // refresca taula i neteja la fila
+      scheduleLiveResultUpdate();
     } else {
       alert("Error adding correction");
     }
