@@ -1529,7 +1529,8 @@ def generate_report(game_code, lgm):
             total_actions = ?,
             total_corrections = ?,
             lgm_comment = ?,
-            result = ?
+            result = ?,
+            is_processed = 1
         WHERE game_code = ?
         """,
         (
