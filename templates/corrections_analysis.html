@@ -269,6 +269,13 @@
       <button type="button" class="filter-clear" data-col="season">Clear</button>
     </div>
   </div>
+  <div class="filter-container filter-container-group">
+    <label for="filter-group">group</label>
+    <div class="filter-field">
+      <input type="text" id="filter-group" class="filter-group" list="datalist_group" placeholder="A or B (Eurocup)">
+      <button type="button" class="filter-clear" data-col="group">Clear</button>
+    </div>
+  </div>
   <div class="filter-container filter-container-game_code">
     <label for="filter-game_code">game_code</label>
     <div class="filter-field">
@@ -479,6 +486,7 @@
 <div class="results-actions" id="results-actions" style="display:none;">
   <button type="button" id="export-corrections-excel">Export corrections types results</button>
   <button type="button" id="export-bss-excel">Export boxscore/scoresheet results</button>
+  <button type="button" id="export-quarter-excel">Export corrections by quarter results</button>
   <button type="button" id="export-team-excel">Export corrections by team results</button>
   <button type="button" id="export-category-excel">Export corrections by category results</button>
   <button type="button" id="export-lgm-excel">Export corrections by live game manager results</button>
@@ -520,6 +528,10 @@
 </datalist>
 <datalist id="datalist_season">
   <option value="2025-2026"></option>
+</datalist>
+<datalist id="datalist_group">
+  <option value="A"></option>
+  <option value="B"></option>
 </datalist>
 <datalist id="datalist_live_game_manager"></datalist>
 
@@ -627,6 +639,7 @@ const filterableColumns = [
 ];
 // filters that live in the Game table (home/away, USCs, logistics)
 const gameFilterColumns = [
+  "group",
   "home_team", "away_team",
   "data_entry", "caller_1", "caller_2", "timer",
   "shot_clock_operator", "irs_operator",
@@ -634,7 +647,7 @@ const gameFilterColumns = [
   "corrections_speed", "rescouted"
 ];
 const extraFilterColumns = ["competition", "season"];
-const gameTopFilterColumns = ["competition", "season", "game_code"];
+const gameTopFilterColumns = ["competition", "season", "group", "game_code"];
 
 let currentPage = 1;
 let totalPages = 0;
@@ -833,6 +846,31 @@ function clearFilter(col) {
   }
 }
 
+function normalizeGroupValue(rawValue) {
+  const value = (rawValue || "").trim().toUpperCase();
+  return (value === "A" || value === "B") ? value : "";
+}
+
+function syncGroupFilterState() {
+  const competitionEl = document.getElementById("filter-competition");
+  const groupEl = document.getElementById("filter-group");
+  const groupClearBtn = document.querySelector('.filter-clear[data-col="group"]');
+  if (!competitionEl || !groupEl) return;
+
+  const competition = (competitionEl.value || "").trim().toUpperCase();
+  if (competition !== "U") {
+    groupEl.value = "";
+    groupEl.disabled = true;
+    if (groupClearBtn) groupClearBtn.disabled = true;
+    selectedFilterOrder = selectedFilterOrder.filter(c => c !== "group");
+    return;
+  }
+
+  groupEl.disabled = false;
+  if (groupClearBtn) groupClearBtn.disabled = false;
+  groupEl.value = normalizeGroupValue(groupEl.value);
+}
+
 function loadFilterLiveGameManagers() {
   const datalist = document.getElementById("datalist_live_game_manager");
   if (!datalist) return;
@@ -960,6 +998,7 @@ extraFilterColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
     input.addEventListener("change", () => {
+      if (col === "competition") syncGroupFilterState();
       trackFilterSelection(col);
       fetchPage(1);
     });
@@ -971,6 +1010,9 @@ gameFilterColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
     input.addEventListener("change", () => {
+      if (col === "group") {
+        input.value = normalizeGroupValue(input.value);
+      }
       trackFilterSelection(col);
       fetchPage(1);
       updateLogisticsCounts();
@@ -983,6 +1025,7 @@ if (clearGameBtn) {
   clearGameBtn.addEventListener("click", () => {
     [...gameTopFilterColumns, ...gameFilterColumns].forEach(col => clearFilter(col));
     selectedFilterOrder = selectedFilterOrder.filter(col => ![...gameTopFilterColumns, ...gameFilterColumns].includes(col));
+    syncGroupFilterState();
     fetchPage(1);
     updateLogisticsCounts();
   });
@@ -1023,6 +1066,21 @@ if (exportBssBtn) {
     params.delete("page");
     params.delete("per_page");
     params.set("breakdown", "b_ss");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportQuarterBtn = document.getElementById("export-quarter-excel");
+if (exportQuarterBtn) {
+  exportQuarterBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "quarter");
     window.location.href = "/api/corrections_export.xlsx?" + params.toString();
   });
 }
@@ -1090,6 +1148,7 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
   btn.addEventListener("click", () => {
     clearFilter(col);
     selectedFilterOrder = selectedFilterOrder.filter(c => c !== col);
+    if (col === "competition") syncGroupFilterState();
     fetchPage(1);
   });
 });
@@ -1097,6 +1156,7 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
 loadFilterLiveGameManagers();
 loadTeamCodes();
 loadAllUscs();
+syncGroupFilterState();
 
 const homeTeamInput = document.getElementById("filter-home_team");
 if (homeTeamInput) {

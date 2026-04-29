@@ -177,6 +177,7 @@ def api_corrections_paginated():
     # filters on Game table
     game_filters = {}
     game_filter_names = [
+        "group",
         "home_team",
         "away_team",
         "data_entry",
@@ -222,6 +223,13 @@ def api_corrections_paginated():
     if "away_team" in game_filters:
         where_parts.append("G.code_a = ?")
         params.append(game_filters["away_team"])
+    if competition.upper() == "U" and "group" in game_filters:
+        group_value = game_filters["group"].upper()
+        if group_value in ("A", "B"):
+            where_parts.append(
+                "EXISTS (SELECT 1 FROM Team T WHERE T.team_code = G.code_h AND T.\"group\" = ?)"
+            )
+            params.append(group_value)
     # USCs
     for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
         if field in game_filters:
@@ -312,7 +320,7 @@ def api_corrections_paginated():
 def api_corrections_export_excel():
     """Export filtered corrections grouped by game_code for charts (.xlsx)."""
     breakdown = request.args.get("breakdown", "type_c").strip().lower()
-    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager"):
+    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager", "quarter"):
         return jsonify({"error": "invalid breakdown"}), 400
     filters = {}
     for col in FILTERABLE_CORRECTION_COLUMNS:
@@ -322,6 +330,7 @@ def api_corrections_export_excel():
 
     game_filters = {}
     game_filter_names = [
+        "group",
         "home_team", "away_team",
         "data_entry", "caller_1", "caller_2", "timer",
         "shot_clock_operator", "irs_operator",
@@ -354,6 +363,13 @@ def api_corrections_export_excel():
     if "away_team" in game_filters:
         where_parts.append("G.code_a = ?")
         params.append(game_filters["away_team"])
+    if competition.upper() == "U" and "group" in game_filters:
+        group_value = game_filters["group"].upper()
+        if group_value in ("A", "B"):
+            where_parts.append(
+                "EXISTS (SELECT 1 FROM Team T WHERE T.team_code = G.code_h AND T.\"group\" = ?)"
+            )
+            params.append(group_value)
     for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
         if field in game_filters:
             where_parts.append(f"G.{field} = ?")
@@ -388,6 +404,8 @@ def api_corrections_export_excel():
         group_select_col = "C.category"
     elif breakdown == "live_game_manager":
         group_select_col = "C.live_game_manager"
+    elif breakdown == "quarter":
+        group_select_col = "C.quarter"
     else:
         group_select_col = "C.team"
     cur.execute(
@@ -426,6 +444,13 @@ def api_corrections_export_excel():
         for r in grouped_rows
         if (r.get("breakdown_value") or "").strip()
     })
+    if breakdown == "quarter":
+        preferred_quarters = ["1", "2", "3", "4", "ET"]
+        quarter_rank = {q: idx for idx, q in enumerate(preferred_quarters)}
+        type_columns = sorted(
+            type_columns,
+            key=lambda q: (quarter_rank.get(q, len(preferred_quarters)), q),
+        )
     by_game = {}
     for r in grouped_rows:
         game_code = r.get("game_code", "")
@@ -502,6 +527,8 @@ def api_corrections_export_excel():
         suffix = "corrections_by_category_breakdown"
     elif breakdown == "live_game_manager":
         suffix = "corrections_by_live_game_manager_breakdown"
+    elif breakdown == "quarter":
+        suffix = "corrections_by_quarter_breakdown"
     else:
         suffix = "corrections_by_team_breakdown"
     download_name = f"{base_name}_{suffix}.xlsx"
@@ -1087,6 +1114,7 @@ def api_logistics_counts():
     # read game filters from query parameters
     game_filters = {}
     game_filter_names = [
+        "group",
         "home_team",
         "away_team",
         "data_entry",
@@ -1117,6 +1145,13 @@ def api_logistics_counts():
         if "away_team" in game_filters and exclude_field != "away_team":
             parts.append("code_a = ?")
             params_local.append(game_filters["away_team"])
+        if "group" in game_filters and exclude_field != "group":
+            group_value = game_filters["group"].upper()
+            if group_value in ("A", "B"):
+                parts.append(
+                    "EXISTS (SELECT 1 FROM Team T WHERE T.team_code = code_h AND T.\"group\" = ?)"
+                )
+                params_local.append(group_value)
         # USCs
         for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
             if field in game_filters and exclude_field != field:
