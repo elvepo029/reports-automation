@@ -489,6 +489,7 @@
   <button type="button" id="export-quarter-excel">Export corrections by quarter results</button>
   <button type="button" id="export-team-excel">Export corrections by team results</button>
   <button type="button" id="export-category-excel">Export corrections by category results</button>
+  <button type="button" id="export-type-category-excel">Export type_c/category tables</button>
   <button type="button" id="export-lgm-excel">Export corrections by live game manager results</button>
 </div>
 
@@ -1126,6 +1127,21 @@ if (exportLgmBtn) {
     params.delete("page");
     params.delete("per_page");
     params.set("breakdown", "live_game_manager");
+    window.location.href = "/api/corrections_export.xlsx?" + params.toString();
+  });
+}
+
+const exportTypeCategoryBtn = document.getElementById("export-type-category-excel");
+if (exportTypeCategoryBtn) {
+  exportTypeCategoryBtn.addEventListener("click", () => {
+    if (!Number(total)) {
+      showExportWarningModal(true);
+      return;
+    }
+    const params = getFilterParams();
+    params.delete("page");
+    params.delete("per_page");
+    params.set("breakdown", "type_c_category");
     window.location.href = "/api/corrections_export.xlsx?" + params.toString();
   });
 }

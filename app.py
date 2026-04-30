@@ -320,7 +320,7 @@ def api_corrections_paginated():
 def api_corrections_export_excel():
     """Export filtered corrections grouped by game_code for charts (.xlsx)."""
     breakdown = request.args.get("breakdown", "type_c").strip().lower()
-    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager", "quarter"):
+    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager", "quarter", "type_c_category"):
         return jsonify({"error": "invalid breakdown"}), 400
     filters = {}
     for col in FILTERABLE_CORRECTION_COLUMNS:
@@ -396,6 +396,108 @@ def api_corrections_export_excel():
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
+    if breakdown == "type_c_category":
+        cur.execute(
+            "SELECT C.type_c AS type_c, C.category AS category, COUNT(*) AS errors_count"
+            + from_clause
+            + where_clause
+            + " GROUP BY C.type_c, C.category"
+            + " ORDER BY C.type_c ASC, C.category ASC",
+            params,
+        )
+        grouped_type_category_rows = [dict(r) for r in cur.fetchall()]
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "TypeC x Category"
+
+        if grouped_type_category_rows:
+            by_type_c = {}
+            for r in grouped_type_category_rows:
+                type_c = (r.get("type_c") or "").strip() or "(EMPTY TYPE_C)"
+                category = (r.get("category") or "").strip() or "(EMPTY CATEGORY)"
+                count = int(r.get("errors_count") or 0)
+                if type_c not in by_type_c:
+                    by_type_c[type_c] = []
+                by_type_c[type_c].append((category, count))
+
+            for type_c in sorted(by_type_c.keys()):
+                ws.append([f"TYPE_C: {type_c}"])
+                ws.append(["CATEGORY", "NUM CORRECTIONS"])
+                for category, count in by_type_c[type_c]:
+                    ws.append([category, count])
+                ws.append([])
+        else:
+            ws.append(["No data"])
+
+        def sanitize_filename_part(value: str) -> str:
+            cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in (value or "").strip())
+            cleaned = "_".join([p for p in cleaned.split("_") if p])
+            return cleaned[:40]
+
+        def add_named_part(parts: list[str], filter_name: str, selected_value: str) -> None:
+            value_part = sanitize_filename_part(selected_value)
+            name_part = sanitize_filename_part(filter_name)
+            if value_part and name_part:
+                parts.append(f"{value_part}_as_{name_part}")
+
+        def resolve_team_label(team_code: str) -> str:
+            code = (team_code or "").strip()
+            if not code:
+                return ""
+            cur.execute(
+                "SELECT team_name FROM Team WHERE team_code = ? LIMIT 1",
+                (code,),
+            )
+            team_row = cur.fetchone()
+            if team_row and team_row["team_name"]:
+                return str(team_row["team_name"]).strip()
+            return code
+
+        selected_home_team_code = game_filters.get("home_team", "").strip()
+        selected_home_team_name = resolve_team_label(selected_home_team_code)
+        filename_parts = []
+
+        if selected_home_team_name:
+            add_named_part(filename_parts, "home_team", selected_home_team_name)
+
+        away_team_code = game_filters.get("away_team", "").strip()
+        if away_team_code:
+            away_team_name = resolve_team_label(away_team_code)
+            away_label = away_team_name or away_team_code
+            add_named_part(filename_parts, "away_team", away_label)
+
+        if competition:
+            add_named_part(filename_parts, "competition", competition)
+        if season:
+            add_named_part(filename_parts, "season", season)
+
+        for col in FILTERABLE_CORRECTION_COLUMNS:
+            val = filters.get(col, "").strip()
+            if val:
+                add_named_part(filename_parts, col, val)
+
+        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator",
+                      "arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+            val = game_filters.get(field, "").strip()
+            if val:
+                add_named_part(filename_parts, field, val)
+
+        base_name = "_".join(filename_parts) if filename_parts else "all_corrections"
+        base_name = base_name[:180].rstrip("_")
+        download_name = f"{base_name}_type_c_category_breakdown.xlsx"
+        conn.close()
+
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name=download_name,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
     if breakdown == "type_c":
         group_select_col = "C.type_c"
     elif breakdown == "b_ss":
@@ -994,7 +1096,7 @@ def api_uscs_global_split_averages():
 
 @app.route("/api/uscs_combinations_by_team")
 def api_uscs_combinations_by_team():
-    """Return USC role combinations stats for a selected home team (code_h)."""
+    """Return USC role combinations and per-game metrics for a selected home team (code_h)."""
     team = request.args.get("team", "").strip()
     if not team:
         return jsonify({"error": "team is required"}), 400
@@ -1038,8 +1140,36 @@ def api_uscs_combinations_by_team():
             "avg_corrections": float(r["avg_corrections"]) if r["avg_corrections"] is not None else None,
             "avg_actions": float(r["avg_actions"]) if r["avg_actions"] is not None else None,
         })
+    cur.execute(
+        """
+        SELECT
+            game_code,
+            result,
+            total_actions,
+            total_corrections
+        FROM Game
+        WHERE is_processed = 1
+          AND code_h = ?
+        ORDER BY
+            CASE
+                WHEN INSTR(game_code, '_') > 0
+                THEN CAST(SUBSTR(game_code, INSTR(game_code, '_') + 1) AS INTEGER)
+                ELSE NULL
+            END ASC,
+            game_code ASC
+        """,
+        (team,),
+    )
+    games = []
+    for r in cur.fetchall():
+        games.append({
+            "game_code": (r["game_code"] or "").strip(),
+            "result": float(r["result"]) if r["result"] is not None else None,
+            "total_actions": float(r["total_actions"]) if r["total_actions"] is not None else None,
+            "total_corrections": float(r["total_corrections"]) if r["total_corrections"] is not None else None,
+        })
     conn.close()
-    return jsonify({"team": team, "items": items})
+    return jsonify({"team": team, "items": items, "games": games})
 
 
 @app.route("/api/game_uscs_snapshot")

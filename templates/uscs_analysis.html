@@ -230,6 +230,32 @@
       font-size: 14px;
       color: #0A1F44;
     }
+    .games-breakdown-block {
+      background: #fff;
+      border: 1px solid #d8e6ff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .games-breakdown-block h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #0A1F44;
+    }
+    .games-breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .games-breakdown-table th, .games-breakdown-table td {
+      border-bottom: 1px solid #e7eef9;
+      padding: 6px 8px;
+      text-align: left;
+      font-size: 13px;
+    }
+    .games-breakdown-table th {
+      color: #0A1F44;
+      background: #f3f8ff;
+    }
     .combos-hint {
       margin: 0 0 10px 0;
       color: #5b6470;
@@ -543,6 +569,20 @@
   </div>
 
   <div class="panel combos-block" id="team-combos-panel" style="margin-top: 16px;">
+    <div class="games-breakdown-block" id="games-breakdown-block">
+      <h4>Results, game_actions and corrections by game_code</h4>
+      <table class="games-breakdown-table">
+        <thead>
+          <tr>
+            <th>game_code</th>
+            <th>result</th>
+            <th>game_actions</th>
+            <th>number of corrections</th>
+          </tr>
+        </thead>
+        <tbody id="games-breakdown-body"></tbody>
+      </table>
+    </div>
     <h3 id="team-combos-title">USC combinations for selected team</h3>
     <p class="combos-hint">Distinct role assignments seen in processed games where the selected team is the home team.</p>
     <div class="combos-list" id="team-combos-body"></div>
@@ -578,6 +618,8 @@
     const teamCombosPanelEl = document.getElementById("team-combos-panel");
     const teamCombosTitleEl = document.getElementById("team-combos-title");
     const teamCombosBodyEl = document.getElementById("team-combos-body");
+    const gamesBreakdownBlockEl = document.getElementById("games-breakdown-block");
+    const gamesBreakdownBodyEl = document.getElementById("games-breakdown-body");
     const standardModePanelEl = document.getElementById("standard-mode-panel");
     const multiRoleModePanelEl = document.getElementById("multi-role-mode-panel");
 
@@ -740,8 +782,28 @@
       renderTeamGlobalAverages(team, data);
     }
 
-    function renderTeamCombos(team, items) {
+    function renderGamesBreakdown(games) {
+      if (!gamesBreakdownBlockEl || !gamesBreakdownBodyEl) return;
+      if (!games || !games.length) {
+        gamesBreakdownBodyEl.innerHTML = `<tr><td colspan="4" class="muted">No processed games found for the selected team.</td></tr>`;
+        gamesBreakdownBlockEl.style.display = "block";
+        return;
+      }
+      gamesBreakdownBodyEl.innerHTML = "";
+      games.forEach((row) => {
+        const tr = document.createElement("tr");
+        const resultValue = row.result === null ? "-" : Number(row.result).toFixed(2);
+        const actionsValue = row.total_actions === null ? "-" : Number(row.total_actions).toFixed(0);
+        const correctionsValue = row.total_corrections === null ? "-" : Number(row.total_corrections).toFixed(0);
+        tr.innerHTML = `<td>${row.game_code || "-"}</td><td>${resultValue}</td><td>${actionsValue}</td><td>${correctionsValue}</td>`;
+        gamesBreakdownBodyEl.appendChild(tr);
+      });
+      gamesBreakdownBlockEl.style.display = "block";
+    }
+
+    function renderTeamCombos(team, items, games) {
       if (!teamCombosPanelEl || !teamCombosBodyEl || !team) return;
+      renderGamesBreakdown(games || []);
       if (!items || !items.length) {
         teamCombosTitleEl.textContent = `USC combinations for ${team}`;
         teamCombosBodyEl.innerHTML = `<div class="muted">No processed games found for the selected team.</div>`;
@@ -796,7 +858,7 @@
       if (!res.ok) {
         throw new Error(data.error || "Could not load USC combinations.");
       }
-      renderTeamCombos(team, data.items || []);
+      renderTeamCombos(team, data.items || [], data.games || []);
     }
 
     async function loadDefaultSplitAverages() {
@@ -1031,6 +1093,8 @@
       });
       if (teamCombosPanelEl) teamCombosPanelEl.style.display = "none";
       if (teamCombosBodyEl) teamCombosBodyEl.innerHTML = "";
+      if (gamesBreakdownBlockEl) gamesBreakdownBlockEl.style.display = "none";
+      if (gamesBreakdownBodyEl) gamesBreakdownBodyEl.innerHTML = "";
       avgResultEl.textContent = "-";
       gamesCountEl.textContent = "-";
       labelResultEl.textContent = "Average result";
@@ -1063,6 +1127,8 @@
         if (targetId === "filter-team") {
           if (teamCombosPanelEl) teamCombosPanelEl.style.display = "none";
           if (teamCombosBodyEl) teamCombosBodyEl.innerHTML = "";
+          if (gamesBreakdownBlockEl) gamesBreakdownBlockEl.style.display = "none";
+          if (gamesBreakdownBodyEl) gamesBreakdownBodyEl.innerHTML = "";
           avgResultEl.textContent = "-";
           gamesCountEl.textContent = "-";
           labelResultEl.textContent = "Average result";
