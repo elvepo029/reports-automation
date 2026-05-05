@@ -111,13 +111,13 @@ def get_game_codes_to_import_manual_report():
             (
                 (year = 2025)
                 OR
-                (year = 2026 AND month < 4)
+                (year = 2026 AND month < 5)
                 OR
-                (year = 2026 AND month = 4 AND day <= 24)
+                (year = 2026 AND month = 5 AND day <= 5)
             )
             AND 
             (
-                is_processed = 0
+                is_processed = 0 OR game_code = 'U2025_141'
             );
     """)
     
