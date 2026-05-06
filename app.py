@@ -160,6 +160,34 @@ FILTERABLE_CORRECTION_COLUMNS = (
     "b_ss", "team", "type_c", "category", "live_game_manager",
 )
 
+def apply_competition_phase_filters(where_parts, params, competition, phase):
+    normalized_competition = (competition or "").strip().upper()
+    normalized_phase = (phase or "").strip().lower()
+    if not normalized_competition:
+        return
+
+    where_parts.append("C.game_code LIKE ?")
+    params.append(f"{normalized_competition}%")
+
+    if normalized_phase == "regular season":
+        if normalized_competition == "U":
+            where_parts.append(
+                "C.game_code LIKE 'U2025_%' AND CAST(SUBSTR(C.game_code, INSTR(C.game_code, '_') + 1) AS INTEGER) BETWEEN 1 AND 180"
+            )
+        elif normalized_competition == "E":
+            where_parts.append(
+                "C.game_code LIKE 'E2025_%' AND CAST(SUBSTR(C.game_code, INSTR(C.game_code, '_') + 1) AS INTEGER) BETWEEN 1 AND 380"
+            )
+    elif normalized_phase == "postseason":
+        if normalized_competition == "U":
+            where_parts.append(
+                "NOT (C.game_code LIKE 'U2025_%' AND CAST(SUBSTR(C.game_code, INSTR(C.game_code, '_') + 1) AS INTEGER) BETWEEN 1 AND 180)"
+            )
+        elif normalized_competition == "E":
+            where_parts.append(
+                "NOT (C.game_code LIKE 'E2025_%' AND CAST(SUBSTR(C.game_code, INSTR(C.game_code, '_') + 1) AS INTEGER) BETWEEN 1 AND 380)"
+            )
+
 
 @app.route("/api/corrections")
 def api_corrections_paginated():
@@ -199,6 +227,7 @@ def api_corrections_paginated():
 
     competition = request.args.get("competition", "").strip()
     season = request.args.get("season", "").strip()
+    phase = request.args.get("phase", "").strip()
 
     # Always join Game so we can enforce Game.is_processed = 1
     join_game = True
@@ -241,11 +270,8 @@ def api_corrections_paginated():
             where_parts.append(f"G.{field} = ?")
             params.append(game_filters[field])
 
-    # virtual filters (competition, season)
-    if competition:
-        # game_code starts with competition letter, e.g. 'E' or 'U'
-        where_parts.append("C.game_code LIKE ?")
-        params.append(f"{competition}%")
+    # virtual filters (competition, phase, season)
+    apply_competition_phase_filters(where_parts, params, competition, phase)
 
     if season:
         # season is in format '2025-2026' → use the first part '2025'
@@ -344,6 +370,7 @@ def api_corrections_export_excel():
 
     competition = request.args.get("competition", "").strip()
     season = request.args.get("season", "").strip()
+    phase = request.args.get("phase", "").strip()
     # Always join Game so we can enforce Game.is_processed = 1
     join_game = True
 
@@ -379,9 +406,7 @@ def api_corrections_export_excel():
             where_parts.append(f"G.{field} = ?")
             params.append(game_filters[field])
 
-    if competition:
-        where_parts.append("C.game_code LIKE ?")
-        params.append(f"{competition}%")
+    apply_competition_phase_filters(where_parts, params, competition, phase)
     if season:
         season_year = season.split("-")[0].strip()
         if season_year:
@@ -471,6 +496,8 @@ def api_corrections_export_excel():
             add_named_part(filename_parts, "competition", competition)
         if season:
             add_named_part(filename_parts, "season", season)
+        if phase:
+            add_named_part(filename_parts, "phase", phase)
 
         for col in FILTERABLE_CORRECTION_COLUMNS:
             val = filters.get(col, "").strip()
@@ -607,6 +634,8 @@ def api_corrections_export_excel():
         add_named_part(filename_parts, "competition", competition)
     if season:
         add_named_part(filename_parts, "season", season)
+    if phase:
+        add_named_part(filename_parts, "phase", phase)
 
     for col in FILTERABLE_CORRECTION_COLUMNS:
         val = filters.get(col, "").strip()

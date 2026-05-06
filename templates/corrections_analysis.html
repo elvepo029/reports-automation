@@ -269,6 +269,13 @@
       <button type="button" class="filter-clear" data-col="season">Clear</button>
     </div>
   </div>
+  <div class="filter-container filter-container-phase">
+    <label for="filter-phase">phase</label>
+    <div class="filter-field">
+      <input type="text" id="filter-phase" class="filter-phase" list="datalist_phase" placeholder="Regular season or postseason">
+      <button type="button" class="filter-clear" data-col="phase">Clear</button>
+    </div>
+  </div>
   <div class="filter-container filter-container-group">
     <label for="filter-group">group</label>
     <div class="filter-field">
@@ -530,6 +537,10 @@
 <datalist id="datalist_season">
   <option value="2025-2026"></option>
 </datalist>
+<datalist id="datalist_phase">
+  <option value="regular season"></option>
+  <option value="postseason"></option>
+</datalist>
 <datalist id="datalist_group">
   <option value="A"></option>
   <option value="B"></option>
@@ -647,8 +658,8 @@ const gameFilterColumns = [
   "arrival_time", "checklist_on_time", "communication",
   "corrections_speed", "rescouted"
 ];
-const extraFilterColumns = ["competition", "season"];
-const gameTopFilterColumns = ["competition", "season", "group", "game_code"];
+const extraFilterColumns = ["competition", "season", "phase"];
+const gameTopFilterColumns = ["competition", "season", "phase", "group", "game_code"];
 
 let currentPage = 1;
 let totalPages = 0;
@@ -702,6 +713,10 @@ function getFilterParams() {
   const seasonEl = document.getElementById("filter-season");
   if (seasonEl && seasonEl.value) {
     params.set("season", seasonEl.value);
+  }
+  const phaseEl = document.getElementById("filter-phase");
+  if (phaseEl && phaseEl.value) {
+    params.set("phase", phaseEl.value);
   }
   return params;
 }
@@ -852,6 +867,32 @@ function normalizeGroupValue(rawValue) {
   return (value === "A" || value === "B") ? value : "";
 }
 
+function normalizePhaseValue(rawValue) {
+  const normalized = (rawValue || "").trim().toLowerCase();
+  if (normalized === "regular season" || normalized === "postseason") return normalized;
+  return "";
+}
+
+function syncPhaseFilterState() {
+  const competitionEl = document.getElementById("filter-competition");
+  const phaseEl = document.getElementById("filter-phase");
+  const phaseClearBtn = document.querySelector('.filter-clear[data-col="phase"]');
+  if (!competitionEl || !phaseEl) return;
+
+  const competition = (competitionEl.value || "").trim().toUpperCase();
+  if (!competition) {
+    phaseEl.value = "";
+    phaseEl.disabled = true;
+    if (phaseClearBtn) phaseClearBtn.disabled = true;
+    selectedFilterOrder = selectedFilterOrder.filter(c => c !== "phase");
+    return;
+  }
+
+  phaseEl.disabled = false;
+  if (phaseClearBtn) phaseClearBtn.disabled = false;
+  phaseEl.value = normalizePhaseValue(phaseEl.value);
+}
+
 function syncGroupFilterState() {
   const competitionEl = document.getElementById("filter-competition");
   const groupEl = document.getElementById("filter-group");
@@ -999,7 +1040,13 @@ extraFilterColumns.forEach(col => {
   const input = document.getElementById("filter-" + col);
   if (input) {
     input.addEventListener("change", () => {
-      if (col === "competition") syncGroupFilterState();
+      if (col === "competition") {
+        syncPhaseFilterState();
+        syncGroupFilterState();
+      }
+      if (col === "phase") {
+        input.value = normalizePhaseValue(input.value);
+      }
       trackFilterSelection(col);
       fetchPage(1);
     });
@@ -1026,6 +1073,7 @@ if (clearGameBtn) {
   clearGameBtn.addEventListener("click", () => {
     [...gameTopFilterColumns, ...gameFilterColumns].forEach(col => clearFilter(col));
     selectedFilterOrder = selectedFilterOrder.filter(col => ![...gameTopFilterColumns, ...gameFilterColumns].includes(col));
+    syncPhaseFilterState();
     syncGroupFilterState();
     fetchPage(1);
     updateLogisticsCounts();
@@ -1164,7 +1212,10 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
   btn.addEventListener("click", () => {
     clearFilter(col);
     selectedFilterOrder = selectedFilterOrder.filter(c => c !== col);
-    if (col === "competition") syncGroupFilterState();
+    if (col === "competition") {
+      syncPhaseFilterState();
+      syncGroupFilterState();
+    }
     fetchPage(1);
   });
 });
@@ -1172,6 +1223,7 @@ document.querySelectorAll(".filter-clear").forEach(btn => {
 loadFilterLiveGameManagers();
 loadTeamCodes();
 loadAllUscs();
+syncPhaseFilterState();
 syncGroupFilterState();
 
 const homeTeamInput = document.getElementById("filter-home_team");
