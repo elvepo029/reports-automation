@@ -9,6 +9,8 @@ import os
 import base64
 import sys
 
+from migrations import ensure_correction_drop_live_game_manager
+
 if sys.platform == "win32":
     os.add_dll_directory(r"C:\msys64\ucrt64\bin")
 
@@ -32,8 +34,11 @@ def inject_app_version():
 DB = "dades_staging.db" #PROVES
 #DB = "dades_prod.db" #PRODUCCIó
 
+
 def get_db():
-    return sqlite3.connect(DB)
+    conn = sqlite3.connect(DB)
+    ensure_correction_drop_live_game_manager(conn)
+    return conn
 
 
 def get_logo_data_uri():
@@ -67,6 +72,7 @@ def ensure_game_logistics_columns(conn):
         ("total_corrections", "INTEGER"),
         ("lgm_comment", "TEXT"),
         ("result", "REAL"),
+        ("live_game_manager", "TEXT"),
     ]
 
     for col_name, col_type in needed_columns:
@@ -97,7 +103,14 @@ def uscs_analysis():
 
 FILTERABLE_CORRECTION_COLUMNS = (
     "game_code", "time", "quarter", "points_h", "points_a", "action_num",
-    "b_ss", "team", "type_c", "category", "live_game_manager",
+    "b_ss", "team", "type_c", "category",
+)
+
+# live_game_manager és camp de Game; no incloem C.live_game_manager per evitar duplicar el nom.
+CORRECTION_ROW_SELECT = (
+    "C.rowid, C.game_code, C.time, C.quarter, C.points_h, C.points_a, C.action_num, "
+    "C.b_ss, C.team, C.type_c, C.category, C.thread_name, C.correction, "
+    "G.live_game_manager AS live_game_manager"
 )
 
 
@@ -130,6 +143,7 @@ def api_corrections_paginated():
         "communication",
         "corrections_speed",
         "rescouted",
+        "live_game_manager",
     ]
     for key in game_filter_names:
         val = request.args.get(key, "").strip()
@@ -172,6 +186,10 @@ def api_corrections_paginated():
         if field in game_filters:
             where_parts.append(f"G.{field} = ?")
             params.append(game_filters[field])
+    # live game manager (ara és camp de Game, no de Correction)
+    if "live_game_manager" in game_filters:
+        where_parts.append("G.live_game_manager = ?")
+        params.append(game_filters["live_game_manager"])
 
     # virtual filters (competition, season)
     if competition:
@@ -229,7 +247,7 @@ def api_corrections_paginated():
     offset = (page - 1) * per_page
     select_params = params + [per_page, offset]
     cur.execute(
-        "SELECT C.rowid, C.*" + from_clause + where_clause + " ORDER BY C.rowid DESC LIMIT ? OFFSET ?",
+        "SELECT " + CORRECTION_ROW_SELECT + from_clause + where_clause + " ORDER BY C.rowid DESC LIMIT ? OFFSET ?",
         select_params,
     )
     rows = [dict(r) for r in cur.fetchall()]
@@ -267,6 +285,7 @@ def api_corrections_export_excel():
         "shot_clock_operator", "irs_operator",
         "arrival_time", "checklist_on_time", "communication",
         "corrections_speed", "rescouted",
+        "live_game_manager",
     ]
     for key in game_filter_names:
         val = request.args.get(key, "").strip()
@@ -302,6 +321,10 @@ def api_corrections_export_excel():
         if field in game_filters:
             where_parts.append(f"G.{field} = ?")
             params.append(game_filters[field])
+    # live game manager (ara és camp de Game, no de Correction)
+    if "live_game_manager" in game_filters:
+        where_parts.append("G.live_game_manager = ?")
+        params.append(game_filters["live_game_manager"])
 
     if competition:
         where_parts.append("C.game_code LIKE ?")
@@ -327,7 +350,7 @@ def api_corrections_export_excel():
     elif breakdown == "category":
         group_select_col = "C.category"
     elif breakdown == "live_game_manager":
-        group_select_col = "C.live_game_manager"
+        group_select_col = "G.live_game_manager"
     else:
         group_select_col = "C.team"
     cur.execute(
@@ -366,6 +389,14 @@ def api_corrections_export_excel():
         for r in grouped_rows
         if (r.get("breakdown_value") or "").strip()
     })
+
+    # Per al breakdown per LGM volem totes les columnes encara que un LGM
+    # no tingui cap correcció (apareixerà amb 0 a cada partit).
+    if breakdown == "live_game_manager":
+        cur.execute("SELECT name FROM Lgm WHERE name IS NOT NULL AND name != ''")
+        all_lgm_names = {(row["name"] or "").strip() for row in cur.fetchall()}
+        all_lgm_names.discard("")
+        type_columns = sorted(set(type_columns) | all_lgm_names)
     by_game = {}
     for r in grouped_rows:
         game_code = r.get("game_code", "")
@@ -376,6 +407,51 @@ def api_corrections_export_excel():
         by_game[game_code]["errors_count"] += count
         if type_c:
             by_game[game_code][type_c] = count
+
+    # Per al breakdown per LGM, incloem també els partits que coincideixen amb
+    # els filtres de Game però que tenen 0 correccions (no apareixen a la consulta
+    # principal perquè surt de Correction). Cada partit té un únic LGM, així que
+    # la seva fila quedarà amb 0 correccions a totes les columnes.
+    if breakdown == "live_game_manager":
+        game_where_parts = ["g.is_processed = 1"]
+        game_params: list = []
+        if "game_code" in filters:
+            game_where_parts.append("g.game_code = ?")
+            game_params.append(filters["game_code"])
+        if "home_team" in game_filters:
+            game_where_parts.append("g.code_h = ?")
+            game_params.append(game_filters["home_team"])
+        if "away_team" in game_filters:
+            game_where_parts.append("g.code_a = ?")
+            game_params.append(game_filters["away_team"])
+        for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator"):
+            if field in game_filters:
+                game_where_parts.append(f"g.{field} = ?")
+                game_params.append(game_filters[field])
+        for field in ("arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+            if field in game_filters:
+                game_where_parts.append(f"g.{field} = ?")
+                game_params.append(game_filters[field])
+        if "live_game_manager" in game_filters:
+            game_where_parts.append("g.live_game_manager = ?")
+            game_params.append(game_filters["live_game_manager"])
+        if competition:
+            game_where_parts.append("g.game_code LIKE ?")
+            game_params.append(f"{competition}%")
+        if season:
+            season_year = season.split("-")[0].strip()
+            if season_year:
+                game_where_parts.append("g.game_code LIKE ?")
+                game_params.append(f"%{season_year}%")
+
+        cur.execute(
+            "SELECT g.game_code FROM Game g WHERE " + " AND ".join(game_where_parts),
+            game_params,
+        )
+        for row in cur.fetchall():
+            gc = row["game_code"]
+            if gc not in by_game:
+                by_game[gc] = {"game_code": gc, "errors_count": 0}
 
     wb = Workbook()
     ws = wb.active
@@ -427,7 +503,8 @@ def api_corrections_export_excel():
             add_named_part(filename_parts, col, val)
 
     for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator",
-                  "arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted"):
+                  "arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted",
+                  "live_game_manager"):
         val = game_filters.get(field, "").strip()
         if val:
             add_named_part(filename_parts, field, val)
@@ -1022,7 +1099,18 @@ def get_corrections(game_code):
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute("SELECT rowid, * FROM Correction WHERE game_code = ?", (game_code,))
+    # live_game_manager ve de Game (JOIN), no de Correction.
+    cur.execute(
+        """
+        SELECT """
+        + CORRECTION_ROW_SELECT
+        + """
+        FROM Correction C
+        LEFT JOIN Game G ON C.game_code = G.game_code
+        WHERE C.game_code = ?
+        """,
+        (game_code,),
+    )
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return jsonify(rows)
@@ -1054,13 +1142,13 @@ def add_correction():
     cur.execute("""
         INSERT INTO Correction
         (time, quarter, points_h, points_a, action_num, b_ss,
-         team, type_c, category, game_code, thread_name, correction, live_game_manager)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         team, type_c, category, game_code, thread_name, correction)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["time"], data["quarter"], data["points_h"], data["points_a"],
         data["action_num"], data["b_ss"], data["team"], data["type_c"],
         data["category"], data["game_code"], "Correcció Manual",
-        "Correcció Manual", data["live_game_manager"]
+        "Correcció Manual"
     ))
     conn.commit()
     conn.close()
@@ -1110,7 +1198,7 @@ def game_report_data(game_code):
         """
         SELECT data_entry, caller_1, caller_2, timer, shot_clock_operator, irs_operator,
                arrival_time, checklist_on_time, communication, corrections_speed, rescouted,
-               total_actions, lgm_comment
+               total_actions, lgm_comment, live_game_manager
         FROM Game WHERE game_code = ?
         """,
         (game_code,),
@@ -1139,6 +1227,7 @@ def game_report_data(game_code):
             "rescouted": nz(row["rescouted"]),
             "total_actions": "" if ta is None else ta,
             "lgm_comment": nz(row["lgm_comment"]),
+            "live_game_manager": nz(row["live_game_manager"]),
         }
     )
 
@@ -1185,7 +1274,7 @@ def get_live_game_managers():
 # ----------------- Dades Report -----------------
 @app.route("/generate_report/<game_code>/<lgm>")
 def generate_report(game_code, lgm):
-    conn = sqlite3.connect(DB)
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
@@ -1359,47 +1448,52 @@ def generate_report(game_code, lgm):
 
     resultat_final = round(total_points + percent_corrections + logistic_points, 1)
 
-    # Guardar USCs, Logistics i mètriques del report a la taula Game (persistència)
-    cur.execute(
-        """
-        UPDATE Game
-        SET data_entry = ?,
-            caller_1 = ?,
-            caller_2 = ?,
-            timer = ?,
-            shot_clock_operator = ?,
-            irs_operator = ?,
-            arrival_time = ?,
-            checklist_on_time = ?,
-            communication = ?,
-            corrections_speed = ?,
-            rescouted = ?,
-            total_actions = ?,
-            total_corrections = ?,
-            lgm_comment = ?,
-            result = ?
-        WHERE game_code = ?
-        """,
-        (
-            data_entry,
-            caller_1,
-            caller_2,
-            timer,
-            shot_clock,
-            irs_operator,
-            arrival_time,
-            checklist_on_time,
-            communication,
-            corrections_speed,
-            rescouted,
-            num_accions,
-            total_corrections,
-            comentari,
-            resultat_final,
-            game_code,
-        ),
-    )
-    conn.commit()
+    # Només persistim a Game quan es genera el PDF final (premuda "Generate Report").
+    # En mode preview (format=json) NO s'escriu res a la BD.
+    is_preview = request.args.get("format") == "json"
+    if not is_preview:
+        cur.execute(
+            """
+            UPDATE Game
+            SET data_entry = ?,
+                caller_1 = ?,
+                caller_2 = ?,
+                timer = ?,
+                shot_clock_operator = ?,
+                irs_operator = ?,
+                arrival_time = ?,
+                checklist_on_time = ?,
+                communication = ?,
+                corrections_speed = ?,
+                rescouted = ?,
+                total_actions = ?,
+                total_corrections = ?,
+                lgm_comment = ?,
+                result = ?,
+                live_game_manager = ?
+            WHERE game_code = ?
+            """,
+            (
+                data_entry,
+                caller_1,
+                caller_2,
+                timer,
+                shot_clock,
+                irs_operator,
+                arrival_time,
+                checklist_on_time,
+                communication,
+                corrections_speed,
+                rescouted,
+                num_accions,
+                total_corrections,
+                comentari,
+                resultat_final,
+                lgm,
+                game_code,
+            ),
+        )
+        conn.commit()
 
     # Creació de json amb dades necessàries per omplir el report
     if "E" in game_code: 

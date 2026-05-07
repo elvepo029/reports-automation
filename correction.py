@@ -14,4 +14,3 @@ class Correction:
     category: str = ""
     thread_name: str = ""
     correction: str = ""
-    live_game_manager: str = ""

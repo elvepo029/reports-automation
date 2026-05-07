@@ -571,6 +571,12 @@ function fillReportFormFromServer(reportData) {
     tv.value = reportData.lgm_comment || "";
     tv.dispatchEvent(new Event("input", { bubbles: true }));
   }
+  // Només sobreescriure el desplegable si hi ha LGM guardat al partit;
+  // si no, mantenim la selecció que l'usuari havia fet abans de Load.
+  const savedLgm = (reportData.live_game_manager || "").trim();
+  if (savedLgm) {
+    setInput("live_game_manager_select", savedLgm);
+  }
 }
 
 function loadData() {
@@ -592,11 +598,12 @@ function loadData() {
   Promise.all([pCorr, pReport, pUscNames])
     .then(([data, reportData, names]) => {
       currentData = data;
-      renderTable(data, lgm);
-
       fillReportFormFromServer(reportData);
 
-      const canEdit = data.every(row => row.live_game_manager === lgm || row.live_game_manager === null);
+      const lgmEffective = (document.getElementById("live_game_manager_select").value || "").trim();
+      renderTable(data, lgmEffective);
+
+      const canEdit = data.every(row => row.live_game_manager === lgmEffective || row.live_game_manager === null);
 
       const reportInputs = [
         "data_entry",
@@ -815,8 +822,6 @@ function insertNewCorrectionRow(table, selectedLGM) {
       }
     });
 
-    newData.live_game_manager = selectedLGM;
-
     addCorrectionFromRow(newData);
   };
 
@@ -932,8 +937,7 @@ function addCorrectionFromRow(rowData) {
     type_c: rowData.type_c || "",
     category: rowData.category || "",
     thread_name: "Manual correction",
-    correction: "Manual correction",
-    live_game_manager: lgm
+    correction: "Manual correction"
   };
 
   fetch("/add_correction", {

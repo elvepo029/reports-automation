@@ -70,6 +70,8 @@ TO: turnover
 UF: unsportsmanlike foul
 """
 
+from migrations import ensure_correction_drop_live_game_manager
+
 DB = "dades_staging.db" #PROVES
 #DB = "dades_prod.db" #PRODUCCIó
 
@@ -92,11 +94,11 @@ def insertCorrection(cursor, correction):
    cursor.execute("""
         INSERT INTO Correction (
             game_code, time, quarter, points_h, points_a,
-            action_num, b_ss, team, type_c, category, thread_name, correction, live_game_manager
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            action_num, b_ss, team, type_c, category, thread_name, correction
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         correction.game_code, correction.time, correction.quarter, correction.points_h, correction.points_a, correction.action_num,
-        correction.b_ss, correction.team, correction.type_c, correction.category, correction.thread_name, correction.correction, correction.live_game_manager
+        correction.b_ss, correction.team, correction.type_c, correction.category, correction.thread_name, correction.correction
     ))
    
 def updateGame(cursor, game_code):
@@ -105,18 +107,9 @@ def updateGame(cursor, game_code):
         (game_code,)
     )
 
-def getLGMNameById(cursor, lgm_id):
-    cursor.execute("""
-        SELECT name
-        FROM Lgm
-        WHERE discord_id = ?
-    """, (lgm_id,))
-
-    row = cursor.fetchone()
-    return row[0] if row else None
-
 def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: str | None = None):
     conn = sqlite3.connect(DB)
+    ensure_correction_drop_live_game_manager(conn)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -167,7 +160,6 @@ def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: s
         for thread_name, thread in threads_corrections.items():
             action = thread["Action"]
             correction = thread["Correction"]
-            lgm = thread["Live_Game_Manager"]
             action_parts = action.split("    ")
             correction_parts = correction.split(" ")
             correction_instruction = correction_parts[0].lower()
@@ -185,8 +177,6 @@ def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: s
             elif 21 <= minute <= 30: quarter = "3"
             elif 31 <= minute <= 40: quarter = "4"
             else: quarter = "ET"
-
-            live_game_manager = getLGMNameById(cursor, lgm)
 
             if "(CR)" in thread_name:
                 correction_values = processCriteriaCorrections(action_abb, correction_instruction, pbp_name_h, pbp_name_a, action_parts, correction_parts)
@@ -226,7 +216,6 @@ def runCorrectionsProcessor(game_code_to_process: str, alternative_channel_id: s
                 correction_values.points_a = "0"
             correction_values.action_num = action_num
             correction_values.correction = correction
-            correction_values.live_game_manager = live_game_manager
 
             if "JB" in correction:
                 time = "09:59"

@@ -7,6 +7,8 @@ from dataclasses import asdict
 import sqlite3
 from datetime import time, datetime
 
+from migrations import ensure_correction_drop_live_game_manager
+
 DB = "dades_staging.db" #PROVES
 #DB = "dades_prod.db" #PRODUCCIó
 
@@ -180,8 +182,7 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
             type_c = type_map.get(cell(actual_correction_row, 11), cell(actual_correction_row, 11)), #type
             category = category_map.get(cell(actual_correction_row, 12), cell(actual_correction_row, 12)), #category
             thread_name = "Correcció Manual",
-            correction = "Correcció Manual",
-            live_game_manager = cell(13, 3)
+            correction = "Correcció Manual"
         )
         
         game_corrections_data.append(asdict(correction))
@@ -200,6 +201,7 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
 
 def process_folder():
     conn = sqlite3.connect(DB)
+    ensure_correction_drop_live_game_manager(conn)
     empty_reports_list = []
 
     folder_path = "./excels"
