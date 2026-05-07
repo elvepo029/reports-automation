@@ -7,8 +7,10 @@ from dataclasses import asdict
 import sqlite3
 from datetime import time, datetime
 
-#DB = "dades_staging.db" #PROVES
-DB = "dades_prod.db" #PRODUCCIó
+from migrations import ensure_correction_drop_live_game_manager
+
+DB = "dades_staging.db" #PROVES
+#DB = "dades_prod.db" #PRODUCCIó
 
 def update_game(conn, game_code, game_data):
     cursor = conn.cursor()
@@ -105,20 +107,17 @@ def get_game_codes_to_import_manual_report():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT game_code
-        FROM GAME
-        WHERE 
-            (
-                (year = 2025)
-                OR
-                (year = 2026 AND month < 5)
-                OR
-                (year = 2026 AND month = 5 AND day <= 5)
-            )
-            AND 
-            (
-                is_processed = 0 OR game_code = 'U2025_141'
-            );
+                    SELECT game_code
+                    FROM GAME
+                    WHERE 
+                        (
+                        (year = 2025)
+                        OR
+                        (year = 2026 AND month < 3)
+                        OR
+                        (year = 2026 AND month = 3 AND day <= 20)
+                        )
+                        AND is_processed = 0;
     """)
     
     codes = {row[0] for row in  cursor.fetchall()}
@@ -183,8 +182,7 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
             type_c = type_map.get(cell(actual_correction_row, 11), cell(actual_correction_row, 11)), #type
             category = category_map.get(cell(actual_correction_row, 12), cell(actual_correction_row, 12)), #category
             thread_name = "Correcció Manual",
-            correction = "Correcció Manual",
-            live_game_manager = cell(13, 3)
+            correction = "Correcció Manual"
         )
         
         game_corrections_data.append(asdict(correction))
@@ -203,11 +201,12 @@ def process_excel(conn, file_path, game_code, empty_reports_list):
 
 def process_folder():
     conn = sqlite3.connect(DB)
+    ensure_correction_drop_live_game_manager(conn)
     empty_reports_list = []
 
     folder_path = "./excels"
 
-    game_codes_to_import = get_game_codes_to_import_manual_report()
+    game_codes_to_import = get_game_codes_to_import_manual_report(DB)
 
     for file in os.listdir(folder_path):
         if file.endswith(".xlsx") or file.endswith(".xlsm"):
@@ -218,7 +217,7 @@ def process_folder():
                 continue
 
             file_path = os.path.join(folder_path, file)
-            print(game_code)
+
             process_excel(conn, file_path, game_code, empty_reports_list)
 
             game_codes_to_import.remove(game_code)
