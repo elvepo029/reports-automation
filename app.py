@@ -270,7 +270,7 @@ def api_corrections_paginated():
 def api_corrections_export_excel():
     """Export filtered corrections grouped by game_code for charts (.xlsx)."""
     breakdown = request.args.get("breakdown", "type_c").strip().lower()
-    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager"):
+    if breakdown not in ("type_c", "b_ss", "team", "category", "live_game_manager", "quarter", "type_c_category"):
         return jsonify({"error": "invalid breakdown"}), 400
     filters = {}
     for col in FILTERABLE_CORRECTION_COLUMNS:
@@ -351,6 +351,22 @@ def api_corrections_export_excel():
         group_select_col = "C.category"
     elif breakdown == "live_game_manager":
         group_select_col = "G.live_game_manager"
+    elif breakdown == "quarter":
+        group_select_col = "C.quarter"
+    elif breakdown == "type_c_category":
+        # Cas especial: generem dos pivots (per type_c i per category) en dues fulles.
+        # Es delega a un helper més avall.
+        return _export_type_c_category_workbook(
+            cur,
+            from_clause,
+            where_clause,
+            params,
+            game_filters=game_filters,
+            filters=filters,
+            competition=competition,
+            season=season,
+            conn=conn,
+        )
     else:
         group_select_col = "C.team"
     cur.execute(
@@ -397,6 +413,12 @@ def api_corrections_export_excel():
         all_lgm_names = {(row["name"] or "").strip() for row in cur.fetchall()}
         all_lgm_names.discard("")
         type_columns = sorted(set(type_columns) | all_lgm_names)
+
+    # Per al breakdown per quart volem sempre les columnes fixes 1, 2, 3, 4, ET.
+    if breakdown == "quarter":
+        fixed_quarter_columns = ["1", "2", "3", "4", "ET"]
+        existing = set(type_columns)
+        type_columns = fixed_quarter_columns + sorted(existing - set(fixed_quarter_columns))
     by_game = {}
     for r in grouped_rows:
         game_code = r.get("game_code", "")
@@ -519,6 +541,8 @@ def api_corrections_export_excel():
         suffix = "corrections_by_category_breakdown"
     elif breakdown == "live_game_manager":
         suffix = "corrections_by_live_game_manager_breakdown"
+    elif breakdown == "quarter":
+        suffix = "corrections_by_quarter_breakdown"
     else:
         suffix = "corrections_by_team_breakdown"
     download_name = f"{base_name}_{suffix}.xlsx"
@@ -1592,6 +1616,199 @@ def generate_report(game_code, lgm):
         download_name=f"REPORT_{game_round}_{game_number}_{code_h}_{code_a}_{competition_code}2025.pdf",
         mimetype="application/pdf"
     )
+
+def _build_breakdown_pivot(cur, group_col_sql: str, from_clause: str, where_clause: str, params: list):
+    """Retorna (type_columns, by_game) per un breakdown sobre Correction agrupat per game_code + columna."""
+    cur.execute(
+        "SELECT C.game_code, "
+        + group_col_sql
+        + " AS breakdown_value, COUNT(*) AS errors_count"
+        + from_clause
+        + where_clause
+        + " GROUP BY C.game_code, "
+        + group_col_sql
+        + " ORDER BY C.game_code ASC, "
+        + group_col_sql
+        + " ASC",
+        params,
+    )
+    grouped_rows = [dict(r) for r in cur.fetchall()]
+
+    type_columns = sorted({
+        (r.get("breakdown_value") or "").strip()
+        for r in grouped_rows
+        if (r.get("breakdown_value") or "").strip()
+    })
+
+    by_game: dict = {}
+    for r in grouped_rows:
+        game_code = r.get("game_code", "")
+        bucket = (r.get("breakdown_value") or "").strip()
+        count = int(r.get("errors_count") or 0)
+        if game_code not in by_game:
+            by_game[game_code] = {"game_code": game_code, "errors_count": 0}
+        by_game[game_code]["errors_count"] += count
+        if bucket:
+            by_game[game_code][bucket] = count
+
+    return type_columns, by_game
+
+
+def _write_breakdown_sheet(ws, type_columns: list, by_game: dict):
+    """Omple una fulla openpyxl amb capçalera + files per partit + fila TOTAL."""
+    headers = ["GAME_CODE", "NUM CORRECTIONS"] + list(type_columns)
+    ws.append(headers)
+    for game_code in sorted(by_game.keys()):
+        row = by_game[game_code]
+        ws.append(
+            [row.get("game_code", ""), row.get("errors_count", 0)]
+            + [row.get(col, 0) for col in type_columns]
+        )
+
+    total_num_corrections = 0
+    totals_by_type = {col: 0 for col in type_columns}
+    for row in by_game.values():
+        total_num_corrections += int(row.get("errors_count", 0) or 0)
+        for col in type_columns:
+            totals_by_type[col] += int(row.get(col, 0) or 0)
+    ws.append(["TOTAL", total_num_corrections] + [totals_by_type[col] for col in type_columns])
+
+
+def _export_type_c_category_workbook(cur, from_clause, where_clause, params, *, game_filters, filters, competition, season, conn):
+    """Genera un .xlsx amb dues fulles: una per type_c i una per category (mateix scope de filtres)."""
+    type_c_columns, by_game_type = _build_breakdown_pivot(cur, "C.type_c", from_clause, where_clause, params)
+    category_columns, by_game_cat = _build_breakdown_pivot(cur, "C.category", from_clause, where_clause, params)
+
+    wb = Workbook()
+    ws_type = wb.active
+    ws_type.title = "Type_c"
+    _write_breakdown_sheet(ws_type, type_c_columns, by_game_type)
+
+    ws_cat = wb.create_sheet(title="Category")
+    _write_breakdown_sheet(ws_cat, category_columns, by_game_cat)
+
+    def sanitize_filename_part(value: str) -> str:
+        cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in (value or "").strip())
+        cleaned = "_".join([p for p in cleaned.split("_") if p])
+        return cleaned[:40]
+
+    def add_named_part(parts: list[str], filter_name: str, selected_value: str) -> None:
+        value_part = sanitize_filename_part(selected_value)
+        name_part = sanitize_filename_part(filter_name)
+        if value_part and name_part:
+            parts.append(f"{value_part}_as_{name_part}")
+
+    filename_parts: list[str] = []
+    home_team_code = game_filters.get("home_team", "").strip()
+    if home_team_code:
+        cur.execute("SELECT team_name FROM Team WHERE team_code = ? LIMIT 1", (home_team_code,))
+        row = cur.fetchone()
+        home_label = (row["team_name"] if row and row["team_name"] else home_team_code).strip()
+        add_named_part(filename_parts, "home_team", home_label)
+    away_team_code = game_filters.get("away_team", "").strip()
+    if away_team_code:
+        cur.execute("SELECT team_name FROM Team WHERE team_code = ? LIMIT 1", (away_team_code,))
+        row = cur.fetchone()
+        away_label = (row["team_name"] if row and row["team_name"] else away_team_code).strip()
+        add_named_part(filename_parts, "away_team", away_label)
+    if competition:
+        add_named_part(filename_parts, "competition", competition)
+    if season:
+        add_named_part(filename_parts, "season", season)
+    for col in FILTERABLE_CORRECTION_COLUMNS:
+        val = filters.get(col, "").strip()
+        if val:
+            add_named_part(filename_parts, col, val)
+    for field in ("data_entry", "caller_1", "caller_2", "timer", "shot_clock_operator", "irs_operator",
+                  "arrival_time", "checklist_on_time", "communication", "corrections_speed", "rescouted",
+                  "live_game_manager"):
+        val = game_filters.get(field, "").strip()
+        if val:
+            add_named_part(filename_parts, field, val)
+
+    base_name = "_".join(filename_parts) if filename_parts else "all_corrections"
+    base_name = base_name[:180].rstrip("_")
+    download_name = f"{base_name}_type_c_category_tables.xlsx"
+
+    conn.close()
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=download_name,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
+# ----------------- Exports complets de taules -----------------
+def _export_table_to_xlsx(query: str, params: tuple, sheet_title: str, download_name: str):
+    """Helper genèric: executa una SELECT i retorna el resultat com a fitxer .xlsx."""
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(query, params)
+    rows = cur.fetchall()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = sheet_title[:31] if sheet_title else "Sheet1"
+
+    if rows:
+        headers = list(rows[0].keys())
+        ws.append(headers)
+        for row in rows:
+            ws.append([row[col] for col in headers])
+    elif cur.description:
+        ws.append([col[0] for col in cur.description])
+
+    conn.close()
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=download_name,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
+@app.route("/export/correction_all.xlsx")
+def export_correction_all():
+    """Exporta totes les files de la taula Correction (incloent live_game_manager des de Game)."""
+    query = """
+        SELECT
+            C.rowid AS rowid,
+            C.game_code,
+            C.time,
+            C.quarter,
+            C.points_h,
+            C.points_a,
+            C.action_num,
+            C.b_ss,
+            C.team,
+            C.type_c,
+            C.category,
+            C.thread_name,
+            C.correction,
+            G.live_game_manager AS live_game_manager
+        FROM Correction C
+        LEFT JOIN Game G ON C.game_code = G.game_code
+        ORDER BY C.game_code ASC, C.rowid ASC
+    """
+    return _export_table_to_xlsx(query, (), "Correction", "correction_all.xlsx")
+
+
+@app.route("/export/game_processed.xlsx")
+def export_game_processed():
+    """Exporta totes les files processades de la taula Game."""
+    query = "SELECT * FROM Game WHERE is_processed = 1 ORDER BY game_code ASC"
+    return _export_table_to_xlsx(query, (), "Game", "game_processed.xlsx")
+
 
 # ----------------- Execució -----------------
 if __name__ == "__main__":
