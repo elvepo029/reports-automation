@@ -31,8 +31,8 @@ def inject_app_version():
     return {"app_version": get_app_version()}
 
 
-DB = "dades_staging.db" #PROVES
-#DB = "dades_prod.db" #PRODUCCIó
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
 
 
 def get_db():

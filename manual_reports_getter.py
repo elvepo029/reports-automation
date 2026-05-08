@@ -9,8 +9,8 @@ from datetime import time, datetime
 
 from migrations import ensure_correction_drop_live_game_manager
 
-DB = "dades_staging.db" #PROVES
-#DB = "dades_prod.db" #PRODUCCIó
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
 
 def update_game(conn, game_code, game_data):
     cursor = conn.cursor()

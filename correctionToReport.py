@@ -72,8 +72,8 @@ UF: unsportsmanlike foul
 
 from migrations import ensure_correction_drop_live_game_manager
 
-DB = "dades_staging.db" #PROVES
-#DB = "dades_prod.db" #PRODUCCIó
+#DB = "dades_staging.db" #PROVES
+DB = "dades_prod.db" #PRODUCCIó
 
 def getActionAbbreviationByPbpName(pbp_name): 
     conn = sqlite3.connect(DB)
