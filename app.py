@@ -101,6 +101,11 @@ def uscs_analysis():
     return render_template("uscs_analysis.html")
 
 
+@app.route("/live-game-manager-analysis")
+def live_game_manager_analysis():
+    return render_template("live_game_manager_analysis.html")
+
+
 FILTERABLE_CORRECTION_COLUMNS = (
     "game_code", "time", "quarter", "points_h", "points_a", "action_num",
     "b_ss", "team", "type_c", "category",
@@ -911,6 +916,662 @@ def api_uscs_global_split_averages():
         "avg_corrections_euroleague": float(row["avg_corrections_euroleague"]) if row["avg_corrections_euroleague"] is not None else None,
         "avg_corrections_eurocup": float(row["avg_corrections_eurocup"]) if row["avg_corrections_eurocup"] is not None else None,
         "avg_corrections_general": float(row["avg_corrections_general"]) if row["avg_corrections_general"] is not None else None,
+    })
+
+
+@app.route("/api/live_game_managers")
+def api_live_game_managers():
+    """Return distinct live game manager names used in games."""
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    where_parts = [
+        "is_processed = 1",
+        "live_game_manager IS NOT NULL",
+        "live_game_manager != ''",
+    ]
+    params = []
+    if competition:
+        where_parts.append("game_code LIKE ?")
+        params.append(f"{competition}%")
+
+    cur.execute(
+        """
+        SELECT DISTINCT live_game_manager
+        FROM Game
+        WHERE """
+        + " AND ".join(where_parts)
+        + """
+        ORDER BY live_game_manager
+        """,
+        params,
+    )
+    names = [row[0] for row in cur.fetchall()]
+    conn.close()
+    return jsonify(names)
+
+
+@app.route("/api/live_game_manager_result_average")
+def api_live_game_manager_result_average():
+    """Return averages and games count for live game manager filters."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    where_parts = ["is_processed = 1"]
+    params = []
+    if game_code:
+        where_parts.append("game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        where_parts.append("live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        # Team filter is home team only (Game.code_h)
+        where_parts.append("code_h = ?")
+        params.append(team)
+    if competition:
+        where_parts.append("game_code LIKE ?")
+        params.append(f"{competition}%")
+
+    where_clause = " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        SELECT
+            COUNT(*) AS games_count,
+            AVG(result) AS avg_result,
+            AVG(total_corrections) AS avg_total_corrections,
+            AVG(total_actions) AS avg_total_actions
+        FROM Game
+        WHERE {where_clause}
+        """,
+        params,
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    return jsonify({
+        "game_code": game_code,
+        "live_game_manager": live_game_manager,
+        "team": team,
+        "competition": competition,
+        "games_count": int(row["games_count"] or 0),
+        "avg_result": float(row["avg_result"]) if row["avg_result"] is not None else None,
+        "avg_total_corrections": float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None,
+        "avg_total_actions": float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None,
+    })
+
+
+@app.route("/api/live_game_manager_result_by_home_team")
+def api_live_game_manager_result_by_home_team():
+    """Return LGM filtered averages grouped by Game.code_h."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    where_clause = " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        SELECT
+            g.code_h AS home_team_code,
+            t.team_name AS home_team_name,
+            COUNT(*) AS games_count,
+            AVG(g.result) AS avg_result,
+            AVG(g.total_corrections) AS avg_corrections,
+            AVG(g.total_actions) AS avg_actions
+        FROM Game g
+        LEFT JOIN Team t ON g.code_h = t.team_code
+        WHERE {where_clause}
+        GROUP BY g.code_h, t.team_name
+        ORDER BY games_count DESC, g.code_h ASC
+        """,
+        params,
+    )
+    items = []
+    for r in cur.fetchall():
+        items.append({
+            "home_team_code": r["home_team_code"] or "",
+            "home_team_name": r["home_team_name"] or "",
+            "games_count": int(r["games_count"] or 0),
+            "avg_result": float(r["avg_result"]) if r["avg_result"] is not None else None,
+            "avg_corrections": float(r["avg_corrections"]) if r["avg_corrections"] is not None else None,
+            "avg_actions": float(r["avg_actions"]) if r["avg_actions"] is not None else None,
+        })
+    conn.close()
+    return jsonify({"items": items})
+
+
+@app.route("/api/live_game_manager_result_by_category")
+def api_live_game_manager_result_by_category():
+    """Return LGM filtered metrics grouped by Correction.category."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    game_where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        game_where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        game_where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        game_where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        game_where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    game_where_clause = " AND ".join(game_where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        WITH filtered_games AS (
+            SELECT
+                g.game_code,
+                g.result
+            FROM Game g
+            WHERE {game_where_clause}
+        ),
+        correction_counts AS (
+            SELECT
+                c.category AS category,
+                COUNT(*) AS corrections_count,
+                COUNT(DISTINCT c.game_code) AS games_count
+            FROM Correction c
+            JOIN filtered_games fg ON fg.game_code = c.game_code
+            WHERE c.category IS NOT NULL
+              AND c.category != ''
+            GROUP BY c.category
+        ),
+        avg_result_by_category AS (
+            SELECT
+                t.category AS category,
+                AVG(t.result) AS avg_result
+            FROM (
+                SELECT DISTINCT
+                    c.category AS category,
+                    fg.game_code AS game_code,
+                    fg.result AS result
+                FROM Correction c
+                JOIN filtered_games fg ON fg.game_code = c.game_code
+                WHERE c.category IS NOT NULL
+                  AND c.category != ''
+            ) t
+            GROUP BY t.category
+        )
+        SELECT
+            cc.category AS category,
+            cc.corrections_count AS corrections_count,
+            cc.games_count AS games_count,
+            ar.avg_result AS avg_result
+        FROM correction_counts cc
+        LEFT JOIN avg_result_by_category ar ON ar.category = cc.category
+        ORDER BY cc.corrections_count DESC, cc.category ASC
+        """,
+        params,
+    )
+    items = []
+    for r in cur.fetchall():
+        items.append({
+            "category": r["category"] or "",
+            "corrections_count": int(r["corrections_count"] or 0),
+            "games_count": int(r["games_count"] or 0),
+            "avg_result": float(r["avg_result"]) if r["avg_result"] is not None else None,
+        })
+    conn.close()
+    return jsonify({"items": items})
+
+
+@app.route("/api/live_game_manager_result_by_type_c")
+def api_live_game_manager_result_by_type_c():
+    """Return LGM filtered metrics grouped by Correction.type_c."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    game_where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        game_where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        game_where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        game_where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        game_where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    game_where_clause = " AND ".join(game_where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        WITH filtered_games AS (
+            SELECT
+                g.game_code,
+                g.result
+            FROM Game g
+            WHERE {game_where_clause}
+        ),
+        correction_counts AS (
+            SELECT
+                c.type_c AS type_c,
+                COUNT(*) AS corrections_count,
+                COUNT(DISTINCT c.game_code) AS games_count
+            FROM Correction c
+            JOIN filtered_games fg ON fg.game_code = c.game_code
+            WHERE c.type_c IS NOT NULL
+              AND c.type_c != ''
+            GROUP BY c.type_c
+        ),
+        avg_result_by_type_c AS (
+            SELECT
+                t.type_c AS type_c,
+                AVG(t.result) AS avg_result
+            FROM (
+                SELECT DISTINCT
+                    c.type_c AS type_c,
+                    fg.game_code AS game_code,
+                    fg.result AS result
+                FROM Correction c
+                JOIN filtered_games fg ON fg.game_code = c.game_code
+                WHERE c.type_c IS NOT NULL
+                  AND c.type_c != ''
+            ) t
+            GROUP BY t.type_c
+        )
+        SELECT
+            cc.type_c AS type_c,
+            cc.corrections_count AS corrections_count,
+            cc.games_count AS games_count,
+            ar.avg_result AS avg_result
+        FROM correction_counts cc
+        LEFT JOIN avg_result_by_type_c ar ON ar.type_c = cc.type_c
+        ORDER BY cc.corrections_count DESC, cc.type_c ASC
+        """,
+        params,
+    )
+    items = []
+    for r in cur.fetchall():
+        items.append({
+            "type_c": r["type_c"] or "",
+            "corrections_count": int(r["corrections_count"] or 0),
+            "games_count": int(r["games_count"] or 0),
+            "avg_result": float(r["avg_result"]) if r["avg_result"] is not None else None,
+        })
+    conn.close()
+    return jsonify({"items": items})
+
+
+@app.route("/api/live_game_manager_type_c_category_matrix")
+def api_live_game_manager_type_c_category_matrix():
+    """Return correction counts grouped by type_c and category (matrix-ready)."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    game_where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        game_where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        game_where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        game_where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        game_where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    game_where_clause = " AND ".join(game_where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    competition_pair_totals = {}
+    totals_where_parts = ["g.is_processed = 1"]
+    totals_params = []
+    if competition:
+        totals_where_parts.append("g.game_code LIKE ?")
+        totals_params.append(f"{competition}%")
+
+    cur.execute(
+        """
+        SELECT
+            c.type_c AS type_c,
+            c.category AS category,
+            COUNT(*) AS total
+        FROM Correction c
+        JOIN Game g ON g.game_code = c.game_code
+        WHERE """
+        + " AND ".join(totals_where_parts)
+        + """
+          AND c.type_c IS NOT NULL AND c.type_c != ''
+          AND c.category IS NOT NULL AND c.category != ''
+        GROUP BY c.type_c, c.category
+        """,
+        totals_params,
+    )
+    for row in cur.fetchall():
+        key = f"{(row['type_c'] or '').strip()}||{(row['category'] or '').strip()}"
+        competition_pair_totals[key] = int(row["total"] or 0)
+
+    cur.execute(
+        f"""
+        WITH filtered_games AS (
+            SELECT g.game_code
+            FROM Game g
+            WHERE {game_where_clause}
+        )
+        SELECT
+            c.type_c AS type_c,
+            c.category AS category,
+            COUNT(*) AS corrections_count
+        FROM Correction c
+        JOIN filtered_games fg ON fg.game_code = c.game_code
+        WHERE c.type_c IS NOT NULL AND c.type_c != ''
+          AND c.category IS NOT NULL AND c.category != ''
+        GROUP BY c.type_c, c.category
+        ORDER BY c.type_c ASC, c.category ASC
+        """,
+        params,
+    )
+    rows = []
+    for r in cur.fetchall():
+        corrections_count = int(r["corrections_count"] or 0)
+        type_c = (r["type_c"] or "").strip()
+        category = (r["category"] or "").strip()
+        pair_key = f"{type_c}||{category}"
+        pair_total_in_competition = competition_pair_totals.get(pair_key, 0)
+        percentage_of_competition_pair_total = (
+            round(float(corrections_count) / float(pair_total_in_competition) * 100.0, 2)
+            if pair_total_in_competition
+            else None
+        )
+        rows.append({
+            "type_c": type_c,
+            "category": category,
+            "corrections_count": corrections_count,
+            "competition_pair_total": pair_total_in_competition,
+            "percentage_of_competition_pair_total": percentage_of_competition_pair_total,
+        })
+    conn.close()
+    return jsonify({
+        "competition": competition,
+        "items": rows,
+    })
+
+
+@app.route("/api/live_game_manager_export_home_team.xlsx")
+def api_live_game_manager_export_home_team():
+    """Export LGM analysis grouped by home team (.xlsx)."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    def sanitize_filename_part(value: str) -> str:
+        cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in (value or "").strip())
+        cleaned = "_".join([p for p in cleaned.split("_") if p])
+        return cleaned[:40]
+
+    def add_named_part(parts: list[str], filter_name: str, selected_value: str) -> None:
+        value_part = sanitize_filename_part(selected_value)
+        name_part = sanitize_filename_part(filter_name)
+        if value_part and name_part:
+            parts.append(f"{value_part}_as_{name_part}")
+
+    where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    where_clause = " AND ".join(where_parts)
+
+    query = f"""
+        SELECT
+            g.code_h AS home_team_code,
+            t.team_name AS home_team_name,
+            COUNT(*) AS games_count,
+            AVG(g.result) AS avg_result,
+            AVG(g.total_corrections) AS avg_corrections,
+            AVG(g.total_actions) AS avg_actions
+        FROM Game g
+        LEFT JOIN Team t ON g.code_h = t.team_code
+        WHERE {where_clause}
+        GROUP BY g.code_h, t.team_name
+        ORDER BY games_count DESC, g.code_h ASC
+    """
+
+    filename_parts: list[str] = []
+    if competition:
+        add_named_part(filename_parts, "competition", competition)
+    if game_code:
+        add_named_part(filename_parts, "game_code", game_code)
+    if live_game_manager:
+        add_named_part(filename_parts, "live_game_manager", live_game_manager)
+    if team:
+        add_named_part(filename_parts, "team", team)
+    base_name = "_".join(filename_parts) if filename_parts else "all_filters"
+    base_name = base_name[:180].rstrip("_")
+    download_name = f"{base_name}_live_game_manager_results_by_home_team.xlsx"
+
+    return _export_table_to_xlsx(
+        query,
+        tuple(params),
+        "Home team results",
+        download_name,
+    )
+
+
+@app.route("/api/live_game_manager_export_breakdown.xlsx")
+def api_live_game_manager_export_breakdown():
+    """Export LGM type_c-category breakdown (.xlsx)."""
+    game_code = request.args.get("game_code", "").strip()
+    live_game_manager = request.args.get("live_game_manager", "").strip()
+    team = request.args.get("team", "").strip()
+    competition = request.args.get("competition", "").strip().upper()
+    if competition and competition not in ("E", "U"):
+        return jsonify({"error": "invalid competition"}), 400
+
+    def sanitize_filename_part(value: str) -> str:
+        cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in (value or "").strip())
+        cleaned = "_".join([p for p in cleaned.split("_") if p])
+        return cleaned[:40]
+
+    def add_named_part(parts: list[str], filter_name: str, selected_value: str) -> None:
+        value_part = sanitize_filename_part(selected_value)
+        name_part = sanitize_filename_part(filter_name)
+        if value_part and name_part:
+            parts.append(f"{value_part}_as_{name_part}")
+
+    game_where_parts = ["g.is_processed = 1"]
+    params = []
+    if game_code:
+        game_where_parts.append("g.game_code = ?")
+        params.append(game_code)
+    if live_game_manager:
+        game_where_parts.append("g.live_game_manager = ?")
+        params.append(live_game_manager)
+    if team:
+        game_where_parts.append("g.code_h = ?")
+        params.append(team)
+    if competition:
+        game_where_parts.append("g.game_code LIKE ?")
+        params.append(f"{competition}%")
+    game_where_clause = " AND ".join(game_where_parts)
+
+    totals_where_parts = ["g.is_processed = 1"]
+    totals_params = []
+    if competition:
+        totals_where_parts.append("g.game_code LIKE ?")
+        totals_params.append(f"{competition}%")
+    totals_where_clause = " AND ".join(totals_where_parts)
+
+    query = f"""
+        WITH competition_pair_totals AS (
+            SELECT
+                c.type_c AS type_c,
+                c.category AS category,
+                COUNT(*) AS pair_total
+            FROM Correction c
+            JOIN Game g ON g.game_code = c.game_code
+            WHERE {totals_where_clause}
+              AND c.type_c IS NOT NULL AND c.type_c != ''
+              AND c.category IS NOT NULL AND c.category != ''
+            GROUP BY c.type_c, c.category
+        ),
+        filtered_games AS (
+            SELECT g.game_code
+            FROM Game g
+            WHERE {game_where_clause}
+        )
+        SELECT
+            c.type_c AS type_c,
+            c.category AS category,
+            COUNT(*) AS corrections_count,
+            COALESCE(cpt.pair_total, 0) AS competition_pair_total,
+            CASE
+                WHEN COALESCE(cpt.pair_total, 0) > 0
+                THEN ROUND(COUNT(*) * 100.0 / cpt.pair_total, 2)
+                ELSE NULL
+            END AS percentage_of_competition_pair_total
+        FROM Correction c
+        JOIN filtered_games fg ON fg.game_code = c.game_code
+        LEFT JOIN competition_pair_totals cpt ON cpt.type_c = c.type_c AND cpt.category = c.category
+        WHERE c.type_c IS NOT NULL AND c.type_c != ''
+          AND c.category IS NOT NULL AND c.category != ''
+        GROUP BY c.type_c, c.category, cpt.pair_total
+        ORDER BY c.type_c ASC, c.category ASC
+    """
+    all_params = tuple(totals_params + params)
+
+    filename_parts: list[str] = []
+    if competition:
+        add_named_part(filename_parts, "competition", competition)
+    if game_code:
+        add_named_part(filename_parts, "game_code", game_code)
+    if live_game_manager:
+        add_named_part(filename_parts, "live_game_manager", live_game_manager)
+    if team:
+        add_named_part(filename_parts, "team", team)
+    base_name = "_".join(filename_parts) if filename_parts else "all_filters"
+    base_name = base_name[:180].rstrip("_")
+    download_name = f"{base_name}_live_game_manager_results_by_type_c_category.xlsx"
+
+    return _export_table_to_xlsx(
+        query,
+        all_params,
+        "TypeC Category breakdown",
+        download_name,
+    )
+
+
+@app.route("/api/game_lgm_snapshot")
+def api_game_lgm_snapshot():
+    """Return live game manager and key metrics for one game_code (read-only)."""
+    game_code = request.args.get("game_code", "").strip()
+    if not game_code:
+        return jsonify({"error": "game_code is required"}), 400
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            g.game_code,
+            g.code_h,
+            g.code_a,
+            th.team_name AS home_team_name,
+            ta.team_name AS away_team_name,
+            g.live_game_manager,
+            g.result,
+            g.total_corrections,
+            g.total_actions
+        FROM Game g
+        LEFT JOIN Team th ON g.code_h = th.team_code
+        LEFT JOIN Team ta ON g.code_a = ta.team_code
+        WHERE g.is_processed = 1 AND g.game_code = ?
+        LIMIT 1
+        """,
+        (game_code,),
+    )
+    row = cur.fetchone()
+    conn.close()
+    if row is None:
+        return jsonify({"error": "game_code not found"}), 404
+
+    return jsonify({
+        "game_code": row["game_code"],
+        "code_h": row["code_h"] or "",
+        "code_a": row["code_a"] or "",
+        "home_team_name": row["home_team_name"] or "",
+        "away_team_name": row["away_team_name"] or "",
+        "live_game_manager": row["live_game_manager"] or "",
+        "result": float(row["result"]) if row["result"] is not None else None,
+        "total_corrections": float(row["total_corrections"]) if row["total_corrections"] is not None else None,
+        "total_actions": float(row["total_actions"]) if row["total_actions"] is not None else None,
     })
 
 

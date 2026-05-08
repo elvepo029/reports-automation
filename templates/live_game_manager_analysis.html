@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Live Game Manager analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 20px; color: #0A1F44; }
+    .top-links { display: flex; gap: 16px; margin-bottom: 12px; }
+    .top-links a { color: #1B5DBF; text-decoration: none; }
+    .top-links a:hover { text-decoration: underline; }
+    h2 { margin-top: 0; }
+    .panel { background: white; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 20px; align-items: end; }
+    label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: white;
+    }
+    .filter-field { display: flex; gap: 6px; align-items: center; }
+    .filter-clear, button {
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+    }
+    .filter-clear { background: #f0f2f5; color: #0A1F44; white-space: nowrap; }
+    .filter-clear:hover { background: #e2e8f0; }
+    button { background: #1B5DBF; color: white; border-color: #1B5DBF; }
+    button:hover { background: #3A7DD3; }
+    .ghost-btn { background: #e0e4ec; color: #0A1F44; border-color: #cbd5e1; }
+    .ghost-btn:hover { background: #d0d6e6; }
+    .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .result-card { margin-top: 16px; background: #f8faff; border: 1px solid #d8e6ff; border-radius: 8px; padding: 14px; }
+    .primary-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 14px; margin-bottom: 10px; }
+    .metric { font-size: 28px; font-weight: 700; color: #0A1F44; margin: 6px 0; }
+    .muted { color: #5b6470; font-size: 13px; }
+    .error { margin-top: 12px; color: #c00; display: none; }
+    .by-team-block { margin-top: 14px; background: #fff; border: 1px solid #d8e6ff; border-radius: 8px; padding: 10px; display: none; }
+    .by-team-block h3 { margin: 0 0 8px 0; font-size: 14px; }
+    .by-team-table { width: 100%; border-collapse: collapse; }
+    .by-team-table th, .by-team-table td { border-bottom: 1px solid #e7eef9; padding: 6px 8px; text-align: left; font-size: 13px; }
+    .by-team-table th { background: #f3f8ff; }
+    .by-breakdown-block { margin-top: 14px; background: #fff; border: 1px solid #d8e6ff; border-radius: 8px; padding: 10px; display: none; }
+    .by-breakdown-block h3 { margin: 0 0 8px 0; font-size: 14px; }
+    .matrix-hint { margin: 0 0 8px 0; font-size: 13px; color: #5b6470; }
+    .by-matrix-table { width: 100%; border-collapse: collapse; }
+    .by-matrix-table th, .by-matrix-table td { border-bottom: 1px solid #e7eef9; padding: 6px 8px; text-align: left; font-size: 13px; }
+    .by-matrix-table th { background: #f3f8ff; }
+    .app-version-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #e0e4ec; font-size: 12px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="top-links">
+    <a href="/">← Home</a>
+    <a href="/corrections-analysis">Corrections analysis</a>
+    <a href="/uscs-analysis">USCs analysis</a>
+  </div>
+
+  <h2>Live Game Manager analysis</h2>
+
+  <div class="panel">
+    <datalist id="datalist_team_codes"></datalist>
+    <datalist id="datalist_lgms"></datalist>
+    <datalist id="datalist_competition">
+      <option value="E"></option>
+      <option value="U"></option>
+    </datalist>
+
+    <div class="filters">
+      <div>
+        <label for="filter-competition">competition</label>
+        <div class="filter-field">
+          <input type="text" id="filter-competition" list="datalist_competition" placeholder="E or U">
+          <button type="button" class="filter-clear" data-target="filter-competition">Clear</button>
+        </div>
+      </div>
+      <div>
+        <label for="filter-game_code">game_code</label>
+        <div class="filter-field">
+          <input type="text" id="filter-game_code" placeholder="Ex: E2025_130">
+          <button type="button" class="filter-clear" data-target="filter-game_code">Clear</button>
+        </div>
+      </div>
+      <div>
+        <label for="filter-live_game_manager">live_game_manager</label>
+        <div class="filter-field">
+          <input type="text" id="filter-live_game_manager" list="datalist_lgms" placeholder="All live game managers">
+          <button type="button" class="filter-clear" data-target="filter-live_game_manager">Clear</button>
+        </div>
+      </div>
+      <div>
+        <label for="filter-team">team (home)</label>
+        <div class="filter-field">
+          <input type="text" id="filter-team" list="datalist_team_codes" placeholder="All teams">
+          <button type="button" class="filter-clear" data-target="filter-team">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="calculate-btn" type="button">Calculate average result</button>
+      <button id="load-game-btn" type="button">Load game</button>
+      <button id="export-home-team-btn" type="button">Export results by home team</button>
+      <button id="export-breakdown-btn" type="button">Export results by correction breakdown</button>
+      <button id="clear-btn" class="ghost-btn" type="button">Clear filters</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="result-card">
+      <div class="muted" id="result-title">Select one or more filters to compute the metric.</div>
+      <div class="primary-metrics">
+        <div>
+          <div class="muted">Average result</div>
+          <div class="metric" id="avg-result">-</div>
+        </div>
+        <div>
+          <div class="muted">Average corrections</div>
+          <div class="metric" id="avg-corrections">-</div>
+        </div>
+        <div>
+          <div class="muted">Games</div>
+          <div class="metric" id="games-count">-</div>
+        </div>
+        <div>
+          <div class="muted">Average actions</div>
+          <div class="metric" id="avg-actions">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="by-team-block" id="by-team-block">
+      <h3>Results by home team</h3>
+      <table class="by-team-table">
+        <thead>
+          <tr>
+            <th>Home team</th>
+            <th>Games</th>
+            <th>Avg result</th>
+            <th>Avg corrections</th>
+            <th>Avg actions</th>
+          </tr>
+        </thead>
+        <tbody id="by-team-body"></tbody>
+      </table>
+    </div>
+
+    <div class="by-breakdown-block" id="by-breakdown-block">
+      <h3>Results by Correction breakdown</h3>
+      <p class="matrix-hint">Number of corrections for each type_c within each category.</p>
+      <table class="by-matrix-table">
+        <thead id="by-matrix-head"></thead>
+        <tbody id="by-matrix-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="app-version-footer">Version {{ app_version }}</footer>
+
+  <script>
+    const errorEl = document.getElementById("error");
+    const resultTitleEl = document.getElementById("result-title");
+    const avgResultEl = document.getElementById("avg-result");
+    const avgCorrectionsEl = document.getElementById("avg-corrections");
+    const avgActionsEl = document.getElementById("avg-actions");
+    const gamesCountEl = document.getElementById("games-count");
+    const byTeamBlockEl = document.getElementById("by-team-block");
+    const byTeamBodyEl = document.getElementById("by-team-body");
+    const byBreakdownBlockEl = document.getElementById("by-breakdown-block");
+    const byMatrixHeadEl = document.getElementById("by-matrix-head");
+    const byMatrixBodyEl = document.getElementById("by-matrix-body");
+
+    function buildParams() {
+      const params = new URLSearchParams();
+      const competition = (document.getElementById("filter-competition")?.value || "").trim().toUpperCase();
+      const gameCode = (document.getElementById("filter-game_code")?.value || "").trim();
+      const lgm = (document.getElementById("filter-live_game_manager")?.value || "").trim();
+      const team = (document.getElementById("filter-team")?.value || "").trim();
+      if (competition) params.set("competition", competition);
+      if (gameCode) params.set("game_code", gameCode);
+      if (lgm) params.set("live_game_manager", lgm);
+      if (team) params.set("team", team);
+      return params;
+    }
+
+    function showError(msg) {
+      errorEl.textContent = msg || "Unexpected error";
+      errorEl.style.display = "block";
+    }
+
+    function renderByTeam(items) {
+      if (!items || !items.length) {
+        byTeamBodyEl.innerHTML = "";
+        byTeamBlockEl.style.display = "none";
+        return;
+      }
+      byTeamBodyEl.innerHTML = "";
+      items.forEach((row) => {
+        const tr = document.createElement("tr");
+        const teamLabel = row.home_team_name ? `${row.home_team_name} (${row.home_team_code})` : (row.home_team_code || "-");
+        tr.innerHTML = `<td>${teamLabel}</td><td>${row.games_count}</td><td>${row.avg_result === null ? "No data" : row.avg_result.toFixed(2)}</td><td>${row.avg_corrections === null ? "No data" : row.avg_corrections.toFixed(2)}</td><td>${row.avg_actions === null ? "No data" : row.avg_actions.toFixed(2)}</td>`;
+        byTeamBodyEl.appendChild(tr);
+      });
+      byTeamBlockEl.style.display = "block";
+    }
+
+    function formatCell(count, pct) {
+      if (!count || count <= 0) return `${count}`;
+      if (pct === null || pct === undefined) return `${count}`;
+      return `${count} (${Number(pct).toFixed(2)}%)`;
+    }
+
+    function renderTypeCCategoryMatrix(items, competition) {
+      if (!items || !items.length) {
+        byMatrixHeadEl.innerHTML = "";
+        byMatrixBodyEl.innerHTML = "";
+        const hintEl = document.querySelector(".matrix-hint");
+        if (hintEl) hintEl.textContent = "Number of corrections for each type_c within each category.";
+        return false;
+      }
+
+      const categories = Array.from(new Set(items.map((x) => (x.category || "").trim()).filter(Boolean))).sort();
+      const typeCs = Array.from(new Set(items.map((x) => (x.type_c || "").trim()).filter(Boolean))).sort();
+      const countsMap = {};
+      const pctMap = {};
+      items.forEach((row) => {
+        const typeC = (row.type_c || "").trim();
+        const category = (row.category || "").trim();
+        const key = `${typeC}||${category}`;
+        countsMap[key] = Number(row.corrections_count || 0);
+        pctMap[key] = row.percentage_of_competition_pair_total;
+      });
+
+      const hintEl = document.querySelector(".matrix-hint");
+      if (hintEl) {
+        if (competition) {
+          hintEl.textContent = `Each % is over the total of that same type_c-category in competition ${competition}.`;
+        } else {
+          hintEl.textContent = "Each % is over the global total of that same type_c-category (all processed games).";
+        }
+      }
+
+      byMatrixHeadEl.innerHTML = `<tr><th>type_c \\ category</th>${categories.map((c) => `<th>${c}</th>`).join("")}<th>Total</th></tr>`;
+      byMatrixBodyEl.innerHTML = "";
+
+      typeCs.forEach((typeC) => {
+        const tr = document.createElement("tr");
+        let rowTotal = 0;
+        const cells = categories.map((category) => {
+          const key = `${typeC}||${category}`;
+          const count = countsMap[key] || 0;
+          const pct = pctMap[key];
+          rowTotal += count;
+          return `<td>${formatCell(count, pct)}</td>`;
+        }).join("");
+        tr.innerHTML = `<td>${typeC}</td>${cells}<td><strong>${rowTotal}</strong></td>`;
+        byMatrixBodyEl.appendChild(tr);
+      });
+
+      const totalsByCategory = categories.map((category) => {
+        return typeCs.reduce((acc, typeC) => acc + (countsMap[`${typeC}||${category}`] || 0), 0);
+      });
+      const grandTotal = totalsByCategory.reduce((acc, v) => acc + v, 0);
+      const totalRow = document.createElement("tr");
+      totalRow.innerHTML = `<td><strong>Total</strong></td>${totalsByCategory.map((v) => `<td><strong>${v}</strong></td>`).join("")}<td><strong>${grandTotal}</strong></td>`;
+      byMatrixBodyEl.appendChild(totalRow);
+
+      return true;
+    }
+
+    async function calculateAverage() {
+      errorEl.style.display = "none";
+      const params = buildParams();
+      if (!params.toString()) {
+        showError("At least one filter is required.");
+        return;
+      }
+
+      const res = await fetch(`/api/live_game_manager_result_average?${params.toString()}`);
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || "Could not compute average.");
+        return;
+      }
+
+      const titleParts = [];
+      if (data.competition) titleParts.push(`competition=${data.competition}`);
+      if (data.game_code) titleParts.push(`game_code=${data.game_code}`);
+      if (data.live_game_manager) titleParts.push(`live_game_manager=${data.live_game_manager}`);
+      if (data.team) titleParts.push(`team=${data.team}`);
+      resultTitleEl.textContent = titleParts.join(" · ") || "Live game manager filter";
+      gamesCountEl.textContent = `${data.games_count}`;
+      avgResultEl.textContent = data.avg_result === null ? "No data" : data.avg_result.toFixed(2);
+      avgCorrectionsEl.textContent = data.avg_total_corrections === null ? "No data" : data.avg_total_corrections.toFixed(2);
+      avgActionsEl.textContent = data.avg_total_actions === null ? "No data" : data.avg_total_actions.toFixed(2);
+
+      const byTeamRes = await fetch(`/api/live_game_manager_result_by_home_team?${params.toString()}`);
+      const byTeamData = await byTeamRes.json();
+      if (!byTeamRes.ok) {
+        throw new Error(byTeamData.error || "Could not load results by home team.");
+      }
+      renderByTeam(byTeamData.items || []);
+
+      const matrixRes = await fetch(`/api/live_game_manager_type_c_category_matrix?${params.toString()}`);
+      const matrixData = await matrixRes.json();
+      if (!matrixRes.ok) {
+        throw new Error(matrixData.error || "Could not load type_c/category breakdown.");
+      }
+      const hasMatrix = renderTypeCCategoryMatrix(
+        matrixData.items || [],
+        matrixData.competition || "",
+      );
+      byBreakdownBlockEl.style.display = hasMatrix ? "block" : "none";
+    }
+
+    async function loadGame() {
+      errorEl.style.display = "none";
+      const gameCode = (document.getElementById("filter-game_code")?.value || "").trim();
+      if (!gameCode) {
+        showError("game_code is required.");
+        return;
+      }
+      const res = await fetch(`/api/game_lgm_snapshot?game_code=${encodeURIComponent(gameCode)}`);
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || "Could not load game.");
+        return;
+      }
+      document.getElementById("filter-live_game_manager").value = data.live_game_manager || "";
+      resultTitleEl.textContent = `game_code=${data.game_code}`;
+      gamesCountEl.textContent = "1";
+      avgResultEl.textContent = data.result === null ? "No data" : data.result.toFixed(2);
+      avgCorrectionsEl.textContent = data.total_corrections === null ? "No data" : data.total_corrections.toFixed(2);
+      avgActionsEl.textContent = data.total_actions === null ? "No data" : data.total_actions.toFixed(2);
+      byTeamBlockEl.style.display = "none";
+      byTeamBodyEl.innerHTML = "";
+      byBreakdownBlockEl.style.display = "none";
+      byMatrixHeadEl.innerHTML = "";
+      byMatrixBodyEl.innerHTML = "";
+    }
+
+    async function loadTeamCodes() {
+      const dl = document.getElementById("datalist_team_codes");
+      if (dl) dl.innerHTML = "";
+      const res = await fetch("/api/team_codes");
+      if (!res.ok) throw new Error("Could not load team codes");
+      const codes = await res.json();
+      if (!dl) return;
+      codes.forEach((code) => {
+        const option = document.createElement("option");
+        option.value = code;
+        dl.appendChild(option);
+      });
+    }
+
+    async function loadLgmOptions() {
+      const dl = document.getElementById("datalist_lgms");
+      if (dl) dl.innerHTML = "";
+      const competition = (document.getElementById("filter-competition")?.value || "").trim().toUpperCase();
+      const query = new URLSearchParams();
+      if (competition) query.set("competition", competition);
+      const url = query.toString() ? `/api/live_game_managers?${query.toString()}` : "/api/live_game_managers";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Could not load live game managers");
+      const names = await res.json();
+      if (!dl) return;
+      names.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        dl.appendChild(option);
+      });
+    }
+
+    document.getElementById("calculate-btn").addEventListener("click", () => {
+      calculateAverage().catch((err) => showError(err.message));
+    });
+
+    document.getElementById("load-game-btn").addEventListener("click", () => {
+      loadGame().catch((err) => showError(err.message));
+    });
+
+    document.getElementById("export-home-team-btn").addEventListener("click", () => {
+      const params = buildParams();
+      const url = `/api/live_game_manager_export_home_team.xlsx?${params.toString()}`;
+      window.location.href = url;
+    });
+
+    document.getElementById("export-breakdown-btn").addEventListener("click", () => {
+      const params = buildParams();
+      const url = `/api/live_game_manager_export_breakdown.xlsx?${params.toString()}`;
+      window.location.href = url;
+    });
+
+    document.getElementById("clear-btn").addEventListener("click", () => {
+      ["filter-competition", "filter-game_code", "filter-live_game_manager", "filter-team"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+      errorEl.style.display = "none";
+      resultTitleEl.textContent = "Select one or more filters to compute the metric.";
+      avgResultEl.textContent = "-";
+      avgCorrectionsEl.textContent = "-";
+      avgActionsEl.textContent = "-";
+      gamesCountEl.textContent = "-";
+      byTeamBodyEl.innerHTML = "";
+      byTeamBlockEl.style.display = "none";
+      byMatrixHeadEl.innerHTML = "";
+      byMatrixBodyEl.innerHTML = "";
+      byBreakdownBlockEl.style.display = "none";
+      loadLgmOptions().catch((err) => showError(err.message));
+    });
+
+    document.querySelectorAll(".filter-clear").forEach((btn) => {
+      const targetId = btn.getAttribute("data-target");
+      if (!targetId) return;
+      btn.addEventListener("click", () => {
+        const el = document.getElementById(targetId);
+        if (el) el.value = "";
+        if (targetId === "filter-competition") {
+          loadLgmOptions().catch((err) => showError(err.message));
+        }
+      });
+    });
+
+    const competitionFilterEl = document.getElementById("filter-competition");
+    if (competitionFilterEl) {
+      competitionFilterEl.addEventListener("change", () => {
+        loadLgmOptions().catch((err) => showError(err.message));
+      });
+    }
+
+    Promise.all([loadTeamCodes(), loadLgmOptions()]).catch((err) => showError(err.message));
+  </script>
+</body>
+</html>

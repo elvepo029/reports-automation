@@ -1,0 +1,622 @@
+º,GAMECODE,DATE,BCN TIME,HOME TEAM,AWAY TEAM,HOME PTS,AWAY PTS,STATUS,ROUND,COMPETITION,VENUE,CITY,REF 1,REF 2,REF 3,DATA STATUS
+Eloi,E2025_394,05/05/2026,18:00,Hapoel IBI Tel Aviv,Real Madrid,0,0,Confirmed,43,Euroleague,ARENA BOTEVGRAD,,"RADOVIC, SRETEN","LOTTERMOSER, ROBERT","RACYS, SAULIUS",OK
+Oscar,E2025_392,05/05/2026,19:45,AS Monaco,Olympiacos Piraeus,0,0,Confirmed,43,Euroleague,SALLE GASTON MEDECIN,Monaco,"PERUGA, CARLOS","HORDOV, TOMISLAV ","ALIAGA, JORDI",OK
+Oscar,E2025_393,06/05/2026,19:00,Zalgiris Kaunas,Fenerbahce Beko Istanbul,0,0,Confirmed,43,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PEREZ, EMILIO","DIFALLAH, MEHDI","SILVA, SERGIO",OK
+Xavi,E2025_395,6/5/2026,20:15,Panathinaikos AKTOR Athens,Valencia Basket,0,0,Confirmed,43,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"JAVOR, DAMIR","NEDOVIC, MILAN","SUKYS, ARTURAS",OK
+Héctor,E2025_396,07/05/2026,19:30,AS Monaco,Olympiacos Piraeus,0,0,Confirmed,44,Euroleague,SALLE GASTON MEDECIN,Monaco,,,,OK
+Oscar,E2025_398,7/5/2026,20:00,Hapoel IBI Tel Aviv,Real Madrid,0,0,Confirmed,44,Euroleague,ARENA BOTEVGRAD,,,,,OK
+Eloi,E2025_397,08/05/2026,19:00,Zalgiris Kaunas,Fenerbahce Beko Istanbul,0,0,Confirmed,44,Euroleague,ZALGIRIO ARENA,44287 Kaunas,,,,OK
+Héctor,E2025_399,8/5/2026,20:15,Panathinaikos AKTOR Athens,Valencia Basket,0,0,Confirmed,44,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,,,,OK
+Xavi,E2025_400,12/5/2026,0:00,Olympiacos Piraeus,AS Monaco,0,0,Planned,45,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,,,,OK
+Oscar,E2025_401,12/05/2026,0:00,Fenerbahce Beko Istanbul,Zalgiris Kaunas,0,0,Planned,45,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,,,,OK
+Héctor,E2025_402,12/05/2026,0:00,Real Madrid,Hapoel IBI Tel Aviv,0,0,Planned,45,Euroleague,MOVISTAR ARENA,Madrid,,,,OK
+Eloi,E2025_403,12/05/2026,0:00,Valencia Basket,Panathinaikos AKTOR Athens,0,0,Planned,45,Euroleague,ROIG ARENA,46013 Valencia,,,,OK
+Eloi,U2025_8,30/09/2025,18:00,Turk Telekom Ankara,ratiopharm ulm,93,96,Confirmed,1,Eurocup,ANKARA SPOR SALONU,Turkey,"ROSSI, MICHELE","VAN DEN BROECK, NICK","CALIC, STEFAN",OK
+Xavi,E2025_5,30/09/2025,18:00,Hapoel IBI Tel Aviv,FC Barcelona,103,87,Confirmed,1,Euroleague,ARENA 8888 SOFIA,,"PUKL,SASA","HORDOV, TOMISLAV ","BISSUEL, THOMAS",OK
+,E2025_4,30/09/2025,18:00,Dubai Basketball,Partizan Mozzart Bet Belgrade,89,76,Confirmed,1,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PEREZ, MIGUEL ANGEL","PASTUSIAK, PIOTR","BAENA, ALBERTO",OK
+Oriol,U2025_1,30/09/2025,19:00,Slask Wroclaw,Neptunas Klaipeda,95,85,Confirmed,1,Eurocup,CENTENNIAL HALL,Poland,"BALAK, AMIT","POROBIC, DRAGAN","GORDON, NOAM",OK
+Marc,U2025_4,30/09/2025,19:30,Veolia Towers Hamburg,Hapoel Midtown Jerusalem,85,100,Confirmed,1,Eurocup,INSELPARK ARENA,Germany,"FOUFIS, IOANNIS","HADZIC, DENIS","GRACIN, FRANKO",OK
+Mario,E2025_1,30/09/2025,19:45,Anadolu Efes Istanbul,Maccabi Rapyd Tel Aviv,85,78,Confirmed,1,Euroleague,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"JAVOR, DAMIR","ALIAGA, JORDI","GIOVANNETTI, GUIDO",OK
+OTRO,E2025_3,30/09/2025,20:00,Crvena Zvezda Meridianbet Belgrade,EA7 Emporio Armani Milan,82,92,Confirmed,1,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","PEREZ, EMILIO","SHEMMESH, SEFFI",OK
+Pablo,U2025_3,30/9/2025,20:00,Umana Reyer Venice,Aris Thessaloniki Betsson,81,85,Confirmed,1,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"CORTES, CARLOS","PEER, ADAR","PADROS, ARNAU",OK
+Eloi,E2025_6,30/9/2025,20:15,Panathinaikos AKTOR Athens,FC Bayern Munich,87,79,Confirmed,1,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"BELOSEVIC, ILIJA","NIKOLIC, UROS","BOUBERT, MAXIME",OK
+Xavi,E2025_2,30/9/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,Olympiacos Piraeus,96,102,Confirmed,1,Euroleague,BUESA ARENA,01013 Vitoria,"LOTTERMOSER, ROBERT","NEDOVIC, MILAN","KOWALSKI, MARCIN",OK
+Héctor,E2025_7,30/9/2025,20:45,Virtus Bologna,Real Madrid,74,68,Confirmed,1,Euroleague,PALADOZZA,40122 Bologna - Italy,"DIFALLAH, MEHDI","VILIUS, GYTIS","BITTNER, STEVE",OK
+Eloi,U2025_10,1/10/2025,18:00,Lietkabelis Panevezys,Besiktas GAIN Istanbul,85,79,Confirmed,1,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"ZAMOJSKI, JAKUB","PANTHER, ANNE","THEIS, CHRISTIAN",OK
+Héctor,U2025_2,1/10/2025,18:00,U-BT Cluj-Napoca,Bahcesehir College Istanbul,90,98,Confirmed,1,Eurocup,BT ARENA,Romania,"KARDUM, LUKA","JURAS, MARKO","PITSILKAS, VASSILIS",OK
+Marc,U2025_9,1/10/2025,18:30,Panionios Cosmorama Travel Athens,NINERS Chemnitz,89,86,Confirmed,1,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"PETEK, SASO","BAKI, KEREM","CELIK, HUSEYIN",OK
+Oriol,U2025_5,1/10/2025,18:30,Cedevita Olimpija Ljubljana,BAXI Manresa,76,69,Confirmed,1,Eurocup,ARENA STOZICE,1000 Ljubljana,"BISSANG, JOSEPH","LEZCANO, LEANDRO","TIGANIS, IOANNIS",OK
+Xavi,E2025_9,01/10/2025,19:30,AS Monaco,Zalgiris Kaunas,84,89,Confirmed,1,Euroleague,SALLE GASTON MEDECIN,Monaco,"MOGULKOC, EMIN","PEERANDI, RAIN","DRAGOJEVIC, IGOR",OK
+,E2025_8,01/10/2025,19:45,Fenerbahce Beko Istanbul,Paris Basketball,96,77,Confirmed,1,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"GARCIA, JUAN CARLOS","SUKYS, ARTURAS","SILVA, SERGIO",OK
+Eloi,U2025_7,01/10/2025,20:00,Dolomiti Energia Trento,Cosea JL Bourg-en-Bresse,48,79,Confirmed,1,Eurocup,BTS ARENA,Italy,"OBRKNEZEVIC, UROS ","CICI, GENTIAN","MAVISU, CAN",OK
+Héctor,E2025_10,01/10/2025,20:00,LDLC ASVEL Villeurbanne,Valencia Basket,77,80,Confirmed,1,Euroleague,ASTROBALLE,France,"RADOVIC, SRETEN","KOLJENSIC, MILOS ","RACYS, SAULIUS",OK
+Eloi,E2025_12,2/10/2025,20:30,Partizan Mozzart Bet Belgrade,EA7 Emporio Armani Milan,80,78,Confirmed,2,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"DIFALLAH, MEHDI","CORTES, CARLOS","KONSTANTINOVS, KRISTAPS",OK
+Mario,E2025_11,2/10/2025,20:30,FC Bayern Munich,Crvena Zvezda Meridianbet Belgrade,97,88,Confirmed,2,Euroleague,SAP GARDEN,80809 Munich - Germany,"LATISEVS, OLEGS","FOUFIS, IOANNIS","VYKLICKY, ROBERT",OK
+Xavi,U2025_6,02/10/2025,20:30,London Lions,Buducnost VOLI Podgorica,59,86,Confirmed,1,Eurocup,COPPER BOX ARENA,London,"THEPENIER, HUGUES","MAJKIC, MARIO ","MANUEL, SERGIO",OK
+Héctor,E2025_13,2/10/2025,20:45,Real Madrid,Olympiacos Piraeus,89,77,Confirmed,2,Euroleague,MOVISTAR ARENA,Madrid,"JAVOR, DAMIR","NIKOLIC, UROS","POROBIC, DRAGAN",OK
+Xavi,E2025_20,03/10/2025,19:00,Zalgiris Kaunas,Fenerbahce Beko Istanbul,84,81,Confirmed,2,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"BELOSEVIC, ILIJA","ZAMOJSKI, JAKUB","PANTHER, ANNE",OK
+Marc,E2025_14,3/10/2025,19:30,Anadolu Efes Istanbul,Hapoel IBI Tel Aviv,81,87,Confirmed,2,Euroleague,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"PERUGA, CARLOS","BISSANG, JOSEPH","KARDUM, LUKA",OK
+Oriol,E2025_16,03/10/2025,19:30,AS Monaco,Dubai Basketball,103,81,Confirmed,2,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","UDYANSKYY, EDUARD","TSAROUCHA, VASILIKI",OK
+Oriol,E2025_16,03/10/2025,19:30,AS Monaco,Dubai Basketball,103,81,Confirmed,2,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","UDYANSKYY, EDUARD","TSAROUCHA, VASILIKI",OK
+Héctor,E2025_17,03/10/2025,20:00,LDLC ASVEL Villeurbanne,Kosner Baskonia Vitoria-Gasteiz,102,95,Confirmed,2,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"MOGULKOC, EMIN","RYZHYK, BORYS","RADOJKOVIC, JOSIP ",OK
+Mario,E2025_18,03/10/2025,20:15,Panathinaikos AKTOR Athens,FC Barcelona,96,103,Confirmed,2,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"LOTTERMOSER, ROBERT","JOVCIC, MILIVOJE","PETEK, SASO",OK
+Eloi,E2025_19,3/10/2025,20:30,Valencia Basket,Virtus Bologna,103,94,Confirmed,2,Euroleague,ROIG ARENA,46013 Valencia,"PUKL,SASA","NEDOVIC, MILAN","SUKYS, ARTURAS",OK
+Xavi,E2025_15,3/10/2025,21:30,Maccabi Rapyd Tel Aviv,Paris Basketball,94,101,Confirmed,2,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"PEREZ, EMILIO","PASTUSIAK, PIOTR","TRAWICKI, TOMASZ",OK
+Oriol,U2025_15,7/10/2025,18:00,Neptunas Klaipeda,U-BT Cluj-Napoca,102,107,Confirmed,2,Eurocup,SVYTURIO ARENA,Lithuania,"BITTNER, STEVE","BISSUEL, THOMAS","TSAROUCHA, VASILIKI",OK
+Eloi,U2025_16,7/10/2025,19:00,Besiktas GAIN Istanbul,London Lions,99,73,Confirmed,2,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"FOUFIS, IOANNIS","KOLJENSIC, MILOS ","VAN DEN BROECK, NICK",OK
+Héctor,U2025_18,07/10/2025,19:00,ratiopharm ulm,Panionios Cosmorama Travel Athens,103,96,Confirmed,2,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"KOWALSKI, MARCIN","BOUBERT, MAXIME","POROBIC, DRAGAN",OK
+Xavi,U2025_14,08/10/2025,18:00,Bahcesehir College Istanbul,Umana Reyer Venice,93,74,Confirmed,2,Eurocup,SINAN ERDEM SPORTS HALL,,"JOVCIC, MILIVOJE","KONSTANTINOVS, KRISTAPS","THEIS, CHRISTIAN",OK
+Héctor,U2025_17,08/10/2025,19:00,NINERS Chemnitz,Lietkabelis Panevezys,86,67,Confirmed,2,Eurocup,MESSE CHEMNITZ,Germany,"DRAGOJEVIC, IGOR","UDYANSKYY, EDUARD","RADOJKOVIC, JOSIP ",OK
+Marc,U2025_13,8/10/2025,19:00,Aris Thessaloniki Betsson,Veolia Towers Hamburg,98,76,Confirmed,2,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"BAENA, ALBERTO","LEZCANO, LEANDRO","MANUEL, SERGIO",OK
+Oriol,U2025_19,8/10/2025,19:30,Cosea JL Bourg-en-Bresse,Turk Telekom Ankara,88,80,Confirmed,2,Eurocup,EKINOX,France,"TRAWICKI, TOMASZ","HADZIC, DENIS","JURAS, MARKO",OK
+Eloi,U2025_20,8/10/2025,20:00,Buducnost VOLI Podgorica,Dolomiti Energia Trento,96,107,Confirmed,2,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"VYKLICKY, ROBERT","SUKYS, ARTURAS","GORDON, NOAM",OK
+Mario,U2025_12,8/10/2025,20:00,Hapoel Midtown Jerusalem,Cedevita Olimpija Ljubljana,84,99,Confirmed,2,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"ZAMOJSKI, JAKUB","PASTUSIAK, PIOTR","SILVA, SERGIO",OK
+Mario,U2025_12,8/10/2025,20:00,Hapoel Midtown Jerusalem,Cedevita Olimpija Ljubljana,84,99,Confirmed,2,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"ZAMOJSKI, JAKUB","PASTUSIAK, PIOTR","SILVA, SERGIO",OK
+Pablo,E2025_21,8/10/2025,20:05,Hapoel IBI Tel Aviv,Maccabi Rapyd Tel Aviv,90,103,Confirmed,3,Euroleague,ARENA 8888 SOFIA,,"BELOSEVIC, ILIJA","NIKOLIC, UROS","ROSSI, MICHELE",OK
+Xavi,U2025_11,8/10/2025,20:45,BAXI Manresa,Slask Wroclaw,74,62,Confirmed,2,Eurocup,PAVELLO NOU CONGOST,Barcelona,"GIOVANNETTI, GUIDO","OBRKNEZEVIC, UROS ","PETEK, SASO",OK
+Héctor,E2025_23,9/10/2025,20:30,EA7 Emporio Armani Milan,AS Monaco,79,82,Confirmed,3,Euroleague,UNIPOL FORUM,20090 Assago,"LOTTERMOSER, ROBERT","NEDOVIC, MILAN","CALIC, STEFAN",OK
+Mario,E2025_22,9/10/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,Panathinaikos AKTOR Athens,84,86,Confirmed,3,Euroleague,BUESA ARENA,01013 Vitoria,"JAVOR, DAMIR","KARDUM, LUKA","CELIK, HUSEYIN",OK
+Xavi,E2025_26,09/10/2025,20:30,Partizan Mozzart Bet Belgrade,Anadolu Efes Istanbul,93,87,Confirmed,3,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, EMILIO","RACYS, SAULIUS","BALAK, AMIT",OK
+Oriol,E2025_24,09/10/2025,20:45,Paris Basketball,Virtus Bologna,90,79,Confirmed,3,Euroleague,ADIDAS ARENA,France,"HORDOV, TOMISLAV ","SHEMMESH, SEFFI","PEER, ADAR",OK
+Eloi,E2025_25,09/10/2025,21:00,Real Madrid,LDLC ASVEL Villeurbanne,85,72,Confirmed,3,Euroleague,MOVISTAR ARENA,Madrid,"PUKL,SASA","PEERANDI, RAIN","PITSILKAS, VASSILIS",OK
+Mario,E2025_30,10/10/2025,19:45,Fenerbahce Beko Istanbul,Crvena Zvezda Meridianbet Belgrade,81,86,Confirmed,3,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PEREZ, MIGUEL ANGEL","VILIUS, GYTIS","THEPENIER, HUGUES",OK
+Eloi,E2025_27,10/10/2025,20:15,Olympiacos Piraeus,Dubai Basketball,86,67,Confirmed,3,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"RADOVIC, SRETEN","CORTES, CARLOS","CICI, GENTIAN",OK
+Héctor,E2025_28,10/10/2025,20:30,FC Barcelona,Valencia Basket,108,102,Confirmed,3,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"RYZHYK, BORYS","LATISEVS, OLEGS","MAJKIC, MARIO ",OK
+Xavi,E2025_29,10/10/2025,20:30,FC Bayern Munich,Zalgiris Kaunas,70,98,Confirmed,3,Euroleague,SAP GARDEN,80809 Munich - Germany,"PERUGA, CARLOS","ALIAGA, JORDI","RADOJKOVIC, JOSIP ",OK
+Nerea,U2025_27,14/10/2025,18:00,Turk Telekom Ankara,Buducnost VOLI Podgorica,79,72,Confirmed,3,Eurocup,ANKARA SPOR SALONU,Turkey,"RACYS, SAULIUS","UDYANSKYY, EDUARD","BAENA, ALBERTO",OK
+Marc,U2025_24,14/10/2025,18:30,Cedevita Olimpija Ljubljana,Aris Thessaloniki Betsson,80,59,Confirmed,3,Eurocup,ARENA STOZICE,1000 Ljubljana,"ALIAGA, JORDI","CICI, GENTIAN","BAKI, KEREM",OK
+,E2025_35,14/10/2025,19:00,Maccabi Rapyd Tel Aviv,FC Barcelona,71,92,Confirmed,4,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"HORDOV, TOMISLAV ","KARDUM, LUKA","BITTNER, STEVE",OK
+Eloi,U2025_23,14/10/2025,19:30,Veolia Towers Hamburg,Bahcesehir College Istanbul,85,106,Confirmed,3,Eurocup,INSELPARK ARENA,Germany,"PETEK, SASO","CALIC, STEFAN","PADROS, ARNAU",OK
+Pablo,E2025_33,14/10/2025,19:45,Fenerbahce Beko Istanbul,Dubai Basketball,69,93,Confirmed,4,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"DIFALLAH, MEHDI","PEERANDI, RAIN","BISSUEL, THOMAS",OK
+Mario,E2025_31,14/10/2025,20:00,Crvena Zvezda Meridianbet Belgrade,Zalgiris Kaunas,88,79,Confirmed,4,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","KONSTANTINOVS, KRISTAPS","GIOVANNETTI, GUIDO",OK
+Héctor,E2025_34,14/10/2025,20:15,Olympiacos Piraeus,Anadolu Efes Istanbul,78,82,Confirmed,4,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"LATISEVS, OLEGS","ZAMOJSKI, JAKUB","BOUBERT, MAXIME",OK
+Oriol,E2025_32,14/10/2025,20:30,FC Bayern Munich,EA7 Emporio Armani Milan,64,53,Confirmed,4,Euroleague,SAP GARDEN,80809 Munich - Germany,"PEREZ, MIGUEL ANGEL","BISSANG, JOSEPH","LEZCANO, LEANDRO",OK
+Eloi,U2025_29,15/10/2025,18:00,Lietkabelis Panevezys,ratiopharm ulm,94,98,Confirmed,3,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"SILVA, SERGIO","CELIK, HUSEYIN","GRACIN, FRANKO",OK
+Xavi,U2025_28,15/10/2025,18:30,Panionios Cosmorama Travel Athens,Cosea JL Bourg-en-Bresse,56,66,Confirmed,3,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"BALAK, AMIT","MAJKIC, MARIO ","GORDON, NOAM",OK
+Héctor,U2025_21,15/10/2025,19:00,Slask Wroclaw,U-BT Cluj-Napoca,94,93,Confirmed,3,Eurocup,HALA ORBITA,Poland,"DRAGOJEVIC, IGOR","VAN DEN BROECK, NICK","MAVISU, CAN",OK
+Mario,U2025_30,15/10/2025,19:00,Besiktas GAIN Istanbul,NINERS Chemnitz,93,88,Confirmed,3,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"SUKYS, ARTURAS","THEPENIER, HUGUES","POROBIC, DRAGAN",OK
+Marc,U2025_22,15/10/2025,20:00,Umana Reyer Venice,Neptunas Klaipeda,89,69,Confirmed,3,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"SHEMMESH, SEFFI","RADOJKOVIC, JOSIP ","TIGANIS, IOANNIS",OK
+Nerea,E2025_36,15/10/2025,20:15,Panathinaikos AKTOR Athens,LDLC ASVEL Villeurbanne,91,85,Confirmed,4,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","PASTUSIAK, PIOTR","THEIS, CHRISTIAN",OK
+Pablo,E2025_40,15/10/2025,20:30,Virtus Bologna,AS Monaco,77,73,Confirmed,4,Euroleague,PALADOZZA,40122 Bologna - Italy,"PEREZ, EMILIO","VYKLICKY, ROBERT","OBRKNEZEVIC, UROS ",OK
+,E2025_39,15/10/2025,20:30,Valencia Basket,Hapoel IBI Tel Aviv,93,100,Confirmed,4,Euroleague,ROIG ARENA,46013 Valencia,"LOTTERMOSER, ROBERT","JOVCIC, MILIVOJE","PANTHER, ANNE",OK
+Héctor,U2025_25,15/10/2025,20:45,BAXI Manresa,Hapoel Midtown Jerusalem,101,94,Confirmed,3,Eurocup,PAVELLO NOU CONGOST,Barcelona,"PUKL,SASA","VILIUS, GYTIS","TSAROUCHA, VASILIKI",OK
+Xavi,E2025_38,15/10/2025,20:45,Real Madrid,Partizan Mozzart Bet Belgrade,93,86,Confirmed,4,Euroleague,MOVISTAR ARENA,Madrid,"MOGULKOC, EMIN","RYZHYK, BORYS","FOUFIS, IOANNIS",OK
+,E2025_37,15/10/2025,20:45,Paris Basketball,Kosner Baskonia Vitoria-Gasteiz,105,87,Confirmed,4,Euroleague,ADIDAS ARENA,France,"RADOVIC, SRETEN","KOLJENSIC, MILOS ","HADZIC, DENIS",OK
+,E2025_41,16/10/2025,18:00,Dubai Basketball,FC Barcelona,83,78,Confirmed,5,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"BELOSEVIC, ILIJA","NIKOLIC, UROS","ROSSI, MICHELE",OK
+Nerea,E2025_44,16/10/2025,19:00,Zalgiris Kaunas,EA7 Emporio Armani Milan,78,89,Confirmed,5,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"JAVOR, DAMIR","LATISEVS, OLEGS","BAENA, ALBERTO",OK
+Nerea,E2025_44,16/10/2025,19:00,Zalgiris Kaunas,EA7 Emporio Armani Milan,78,89,Confirmed,5,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"JAVOR, DAMIR","LATISEVS, OLEGS","BAENA, ALBERTO",OK
+,E2025_42,16/10/2025,19:45,Fenerbahce Beko Istanbul,FC Bayern Munich,88,73,Confirmed,5,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"NEDOVIC, MILAN","CORTES, CARLOS","MANUEL, SERGIO",OK
+Héctor,U2025_26,16/10/2025,20:30,London Lions,Dolomiti Energia Trento,87,71,Confirmed,3,Eurocup,COPPER BOX ARENA,London,"KONSTANTINOVS, KRISTAPS","PEER, ADAR","PITSILKAS, VASSILIS",OK
+,E2025_43,16/10/2025,21:00,Maccabi Rapyd Tel Aviv,Olympiacos Piraeus,94,95,Confirmed,5,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"GARCIA, JUAN CARLOS","ALIAGA, JORDI","PETEK, SASO",OK
+Oriol,E2025_48,17/10/2025,19:00,Crvena Zvezda Meridianbet Belgrade,Real Madrid,90,75,Confirmed,5,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"DIFALLAH, MEHDI","ZAMOJSKI, JAKUB","RACYS, SAULIUS",OK
+Eloi,E2025_46,17/10/2025,19:30,AS Monaco,Valencia Basket,90,84,Confirmed,5,Euroleague,SALLE GASTON MEDECIN,Monaco,"HORDOV, TOMISLAV ","SHEMMESH, SEFFI","KOWALSKI, MARCIN",OK
+Eloi,E2025_46,17/10/2025,19:30,AS Monaco,Valencia Basket,90,84,Confirmed,5,Euroleague,SALLE GASTON MEDECIN,Monaco,"HORDOV, TOMISLAV ","SHEMMESH, SEFFI","KOWALSKI, MARCIN",OK
+Mario,E2025_45,17/10/2025,19:30,Anadolu Efes Istanbul,Panathinaikos AKTOR Athens,81,95,Confirmed,5,Euroleague,BASKETBALL DEVELOPMENT CENTER,Istanbul,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","UDYANSKYY, EDUARD",OK
+Xavi,E2025_49,17/10/2025,20:00,LDLC ASVEL Villeurbanne,Virtus Bologna,83,90,Confirmed,5,Euroleague,ASTROBALLE,France,"RADOVIC, SRETEN","TRAWICKI, TOMASZ","POROBIC, DRAGAN",OK
+Héctor,E2025_50,17/10/2025,20:45,Paris Basketball,Hapoel IBI Tel Aviv,88,89,Confirmed,5,Euroleague,ADIDAS ARENA,France,"MOGULKOC, EMIN","SILVA, SERGIO","DRAGOJEVIC, IGOR",OK
+Héctor,E2025_50,17/10/2025,20:45,Paris Basketball,Hapoel IBI Tel Aviv,88,89,Confirmed,5,Euroleague,ADIDAS ARENA,France,"MOGULKOC, EMIN","SILVA, SERGIO","DRAGOJEVIC, IGOR",OK
+Nerea,E2025_47,17/10/2025,20:45,Kosner Baskonia Vitoria-Gasteiz,Partizan Mozzart Bet Belgrade,79,91,Confirmed,5,Euroleague,BUESA ARENA,01013 Vitoria,"PUKL,SASA","VILIUS, GYTIS","TSAROUCHA, VASILIKI",OK
+Xavi,U2025_34,21/10/2025,18:00,Neptunas Klaipeda,Veolia Towers Hamburg,97,88,Confirmed,4,Eurocup,SVYTURIO ARENA,Lithuania,"BISSANG, JOSEPH","KOWALSKI, MARCIN","GORDON, NOAM",OK
+Héctor,U2025_32,21/10/2025,19:00,Aris Thessaloniki Betsson,BAXI Manresa,79,86,Confirmed,4,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"RYZHYK, BORYS","KONSTANTINOVS, KRISTAPS","CALIC, STEFAN",OK
+Héctor,U2025_32,21/10/2025,19:00,Aris Thessaloniki Betsson,BAXI Manresa,79,86,Confirmed,4,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"RYZHYK, BORYS","KONSTANTINOVS, KRISTAPS","CALIC, STEFAN",OK
+Mario,U2025_37,21/10/2025,19:00,ratiopharm ulm,Besiktas GAIN Istanbul,99,101,Confirmed,4,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"RACYS, SAULIUS","BALAK, AMIT","PADROS, ARNAU",OK
+Eloi,U2025_31,21/10/2025,20:00,Hapoel Midtown Jerusalem,Slask Wroclaw,86,69,Confirmed,4,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"HORDOV, TOMISLAV ","PITSILKAS, VASSILIS","GRACIN, FRANKO",OK
+Eloi,U2025_31,21/10/2025,20:00,Hapoel Midtown Jerusalem,Slask Wroclaw,86,69,Confirmed,4,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"HORDOV, TOMISLAV ","PITSILKAS, VASSILIS","GRACIN, FRANKO",OK
+Mario,U2025_33,22/10/2025,18:00,Bahcesehir College Istanbul,Cedevita Olimpija Ljubljana,92,76,Confirmed,4,Eurocup,SINAN ERDEM SPORTS HALL,,"CORTES, CARLOS","ROSSI, MICHELE","LEZCANO, LEANDRO",OK
+Oriol,U2025_35,22/10/2025,18:00,U-BT Cluj-Napoca,Umana Reyer Venice,103,102,Confirmed,4,Eurocup,BT ARENA,Romania,"FOUFIS, IOANNIS","MANUEL, SERGIO","CELIK, HUSEYIN",OK
+Marc,U2025_39,22/10/2025,19:00,Buducnost VOLI Podgorica,Panionios Cosmorama Travel Athens,91,63,Confirmed,4,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"PANTHER, ANNE","PEER, ADAR","MAVISU, CAN",OK
+Xavi,U2025_36,22/10/2025,19:00,NINERS Chemnitz,London Lions,67,68,Confirmed,4,Eurocup,MESSE CHEMNITZ,Germany,"SHEMMESH, SEFFI","HADZIC, DENIS","TIGANIS, IOANNIS",OK
+Eloi,U2025_38,22/10/2025,19:30,Cosea JL Bourg-en-Bresse,Lietkabelis Panevezys,93,65,Confirmed,4,Eurocup,EKINOX,France,"JOVCIC, MILIVOJE","PETEK, SASO","BAKI, KEREM",OK
+Héctor,U2025_40,22/10/2025,20:00,Dolomiti Energia Trento,Turk Telekom Ankara,60,80,Confirmed,4,Eurocup,BTS ARENA,Italy,"KOLJENSIC, MILOS ","CICI, GENTIAN","POROBIC, DRAGAN",OK
+Nerea,E2025_51,22/10/2025,20:05,Maccabi Rapyd Tel Aviv,Real Madrid,92,91,Confirmed,6,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"JAVOR, DAMIR","NEDOVIC, MILAN","OBRKNEZEVIC, UROS ",OK
+Eloi,E2025_56,23/10/2025,19:30,LDLC ASVEL Villeurbanne,Dubai Basketball,85,79,Confirmed,6,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"MOGULKOC, EMIN","KARDUM, LUKA","TSAROUCHA, VASILIKI",OK
+Mario,E2025_55,23/10/2025,20:05,Hapoel IBI Tel Aviv,AS Monaco,85,77,Confirmed,6,Euroleague,ARENA 8888 SOFIA,,"PERUGA, CARLOS","PASTUSIAK, PIOTR","PEERANDI, RAIN",OK
+Nerea,E2025_53,23/10/2025,20:30,EA7 Emporio Armani Milan,Valencia Basket,100,103,Confirmed,6,Euroleague,UNIPOL FORUM,20090 Assago,"BELOSEVIC, ILIJA","VILIUS, GYTIS","SILVA, SERGIO",OK
+Xavi,E2025_54,23/10/2025,20:30,FC Barcelona,Zalgiris Kaunas,73,88,Confirmed,6,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"RADOVIC, SRETEN","ZAMOJSKI, JAKUB","BOUBERT, MAXIME",OK
+Héctor,E2025_52,23/10/2025,21:00,Crvena Zvezda Meridianbet Belgrade,Kosner Baskonia Vitoria-Gasteiz,90,72,Confirmed,6,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","BITTNER, STEVE",OK
+Héctor,E2025_52,23/10/2025,21:00,Crvena Zvezda Meridianbet Belgrade,Kosner Baskonia Vitoria-Gasteiz,90,72,Confirmed,6,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","BITTNER, STEVE",OK
+Héctor,E2025_57,24/10/2025,19:30,Anadolu Efes Istanbul,Fenerbahce Beko Istanbul,69,79,Confirmed,6,Euroleague,BASKETBALL DEVELOPMENT CENTER,Istanbul,"GARCIA, JUAN CARLOS","KOLJENSIC, MILOS ","BAENA, ALBERTO",OK
+Xavi,E2025_60,24/10/2025,20:00,Virtus Bologna,Panathinaikos AKTOR Athens,92,75,Confirmed,6,Euroleague,PALADOZZA,40122 Bologna - Italy,"PUKL,SASA","ALIAGA, JORDI","THEPENIER, HUGUES",OK
+Mario,E2025_59,24/10/2025,20:30,Partizan Mozzart Bet Belgrade,Paris Basketball,83,101,Confirmed,6,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","TRAWICKI, TOMASZ",OK
+Eloi,E2025_58,24/10/2025,20:45,FC Bayern Munich,Olympiacos Piraeus,71,96,Confirmed,6,Euroleague,SAP GARDEN,80809 Munich - Germany,"DIFALLAH, MEHDI","PEREZ, EMILIO","BISSUEL, THOMAS",OK
+Héctor,U2025_47,28/10/2025,18:30,Panionios Cosmorama Travel Athens,Dolomiti Energia Trento,87,91,Confirmed,5,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"PEERANDI, RAIN","HADZIC, DENIS","CELIK, HUSEYIN",OK
+Eloi,E2025_68,28/10/2025,19:00,Zalgiris Kaunas,Virtus Bologna,86,65,Confirmed,7,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PERUGA, CARLOS","PASTUSIAK, PIOTR","SILVA, SERGIO",OK
+Xavi,E2025_62,28/10/2025,19:00,Crvena Zvezda Meridianbet Belgrade,LDLC ASVEL Villeurbanne,79,65,Confirmed,7,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, EMILIO","SHEMMESH, SEFFI","KOWALSKI, MARCIN",OK
+Marc,U2025_42,28/10/2025,19:30,Veolia Towers Hamburg,U-BT Cluj-Napoca,76,95,Confirmed,5,Eurocup,INSELPARK ARENA,Germany,"KOLJENSIC, MILOS ","PITSILKAS, VASSILIS","TIGANIS, IOANNIS",OK
+Nerea,U2025_45,28/10/2025,20:00,Hapoel Midtown Jerusalem,Aris Thessaloniki Betsson,103,76,Confirmed,5,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"VYKLICKY, ROBERT","PETEK, SASO","THEIS, CHRISTIAN",OK
+Oriol,E2025_64,28/10/2025,20:00,FC Bayern Munich,Real Madrid,90,84,Confirmed,7,Euroleague,SAP GARDEN,80809 Munich - Germany,"BELOSEVIC, ILIJA","DRAGOJEVIC, IGOR","VILIUS, GYTIS",OK
+Mario,E2025_65,28/10/2025,20:15,Panathinaikos AKTOR Athens,Maccabi Rapyd Tel Aviv,99,85,Confirmed,7,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"RADOVIC, SRETEN","LATISEVS, OLEGS","CORTES, CARLOS",OK
+Héctor,E2025_61,28/10/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,Dubai Basketball,92,85,Confirmed,7,Euroleague,BUESA ARENA,01013 Vitoria,"HORDOV, TOMISLAV ","FOUFIS, IOANNIS","TRAWICKI, TOMASZ",OK
+Pablo,E2025_63,28/10/2025,20:30,FC Barcelona,EA7 Emporio Armani Milan,74,72,Confirmed,7,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"DIFALLAH, MEHDI","RYZHYK, BORYS","BISSUEL, THOMAS",OK
+Xavi,E2025_66,28/10/2025,20:45,Paris Basketball,Anadolu Efes Istanbul,80,90,Confirmed,7,Euroleague,ADIDAS ARENA,France,"JAVOR, DAMIR","KARDUM, LUKA","PANTHER, ANNE",OK
+Eloi,E2025_67,28/10/2025,21:00,Valencia Basket,Fenerbahce Beko Istanbul,94,79,Confirmed,7,Euroleague,ROIG ARENA,46013 Valencia,"PUKL,SASA","SUKYS, ARTURAS","UDYANSKYY, EDUARD",OK
+Marc,U2025_49,29/10/2025,17:00,Besiktas GAIN Istanbul,Cosea JL Bourg-en-Bresse,90,60,Confirmed,5,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"LOTTERMOSER, ROBERT","CICI, GENTIAN","CALIC, STEFAN",OK
+Héctor,U2025_48,29/10/2025,18:00,Lietkabelis Panevezys,Buducnost VOLI Podgorica,91,98,Confirmed,5,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"BALAK, AMIT","MAJKIC, MARIO ","VAN DEN BROECK, NICK",OK
+Nerea,U2025_41,29/10/2025,19:00,Slask Wroclaw,Umana Reyer Venice,92,104,Confirmed,5,Eurocup,HALA ORBITA,Poland,"THEPENIER, HUGUES","POROBIC, DRAGAN","GORDON, NOAM",OK
+Oriol,E2025_69,29/10/2025,19:00,Hapoel IBI Tel Aviv,Partizan Mozzart Bet Belgrade,97,84,Confirmed,7,Euroleague,ARENA 8888 SOFIA,,"GARCIA, JUAN CARLOS","ZAMOJSKI, JAKUB","MANUEL, SERGIO",OK
+Oriol,E2025_69,29/10/2025,19:00,Hapoel IBI Tel Aviv,Partizan Mozzart Bet Belgrade,97,84,Confirmed,7,Euroleague,ARENA 8888 SOFIA,,"GARCIA, JUAN CARLOS","ZAMOJSKI, JAKUB","MANUEL, SERGIO",OK
+Pablo,U2025_50,29/10/2025,19:00,NINERS Chemnitz,ratiopharm ulm,89,78,Confirmed,5,Eurocup,MESSE CHEMNITZ,Germany,"MOGULKOC, EMIN","PEER, ADAR","BAKI, KEREM",OK
+Xavi,U2025_43,29/10/2025,19:30,Cedevita Olimpija Ljubljana,Neptunas Klaipeda,91,94,Confirmed,5,Eurocup,ARENA STOZICE,1000 Ljubljana,"KONSTANTINOVS, KRISTAPS","BOUBERT, MAXIME","MAVISU, CAN",OK
+Mario,E2025_70,29/10/2025,20:15,Olympiacos Piraeus,AS Monaco,87,92,Confirmed,7,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"JOVCIC, MILIVOJE","RACYS, SAULIUS","BAENA, ALBERTO",OK
+Eloi,U2025_46,29/10/2025,20:30,London Lions,Turk Telekom Ankara,77,89,Confirmed,5,Eurocup,COPPER BOX ARENA,London,"ROSSI, MICHELE","LEZCANO, LEANDRO","GRACIN, FRANKO",OK
+Héctor,U2025_44,29/10/2025,20:45,BAXI Manresa,Bahcesehir College Istanbul,67,81,Confirmed,5,Eurocup,PAVELLO NOU CONGOST,Barcelona,"OBRKNEZEVIC, UROS ","BISSUEL, THOMAS","BITTNER, STEVE",OK
+Xavi,E2025_76,30/10/2025,19:00,Zalgiris Kaunas,LDLC ASVEL Villeurbanne,96,59,Confirmed,8,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"BELOSEVIC, ILIJA","KOLJENSIC, MILOS ","VYKLICKY, ROBERT",OK
+Eloi,E2025_73,30/10/2025,20:05,Maccabi Rapyd Tel Aviv,Crvena Zvezda Meridianbet Belgrade,92,99,Confirmed,8,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"PEREZ, MIGUEL ANGEL","VILIUS, GYTIS","SILVA, SERGIO",OK
+Héctor,E2025_75,30/10/2025,20:30,Valencia Basket,Dubai Basketball,80,78,Confirmed,8,Euroleague,ROIG ARENA,46013 Valencia,"RYZHYK, BORYS","DRAGOJEVIC, IGOR","RADOJKOVIC, JOSIP ",OK
+Mario,E2025_72,30/10/2025,20:30,FC Bayern Munich,Virtus Bologna,86,70,Confirmed,8,Euroleague,SAP GARDEN,80809 Munich - Germany,"JAVOR, DAMIR","BISSANG, JOSEPH","TSAROUCHA, VASILIKI",OK
+Oriol,E2025_71,30/10/2025,20:30,EA7 Emporio Armani Milan,Paris Basketball,86,77,Confirmed,8,Euroleague,UNIPOL FORUM,20090 Assago,"PERUGA, CARLOS","ALIAGA, JORDI","PEERANDI, RAIN",OK
+Nerea,E2025_74,30/10/2025,21:00,Real Madrid,Fenerbahce Beko Istanbul,84,58,Confirmed,8,Euroleague,MOVISTAR ARENA,Madrid,"HORDOV, TOMISLAV ","LATISEVS, OLEGS","PETEK, SASO",OK
+Nerea,E2025_77,31/10/2025,19:00,AS Monaco,Panathinaikos AKTOR Athens,92,84,Confirmed,8,Euroleague,SALLE GASTON MEDECIN,Monaco,"PEREZ, EMILIO","KARDUM, LUKA","BITTNER, STEVE",OK
+Xavi,E2025_79,31/10/2025,20:15,Olympiacos Piraeus,Hapoel IBI Tel Aviv,62,58,Confirmed,8,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"RADOVIC, SRETEN","CORTES, CARLOS","SUKYS, ARTURAS",OK
+Héctor,E2025_80,31/10/2025,20:30,Partizan Mozzart Bet Belgrade,FC Barcelona,76,78,Confirmed,8,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"MOGULKOC, EMIN","SHEMMESH, SEFFI","PEER, ADAR",OK
+,E2025_78,31/10/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,Anadolu Efes Istanbul,86,75,Confirmed,8,Euroleague,BUESA ARENA,01013 Vitoria,"DIFALLAH, MEHDI","KONSTANTINOVS, KRISTAPS","OBRKNEZEVIC, UROS ",OK
+Mario,U2025_60,4/11/2025,17:00,Turk Telekom Ankara,Panionios Cosmorama Travel Athens,95,67,Confirmed,6,Eurocup,ANKARA SPOR SALONU,Turkey,"PUKL,SASA","OBRKNEZEVIC, UROS ","MAJKIC, MARIO ",OK
+Héctor,U2025_58,04/11/2025,19:00,Buducnost VOLI Podgorica,Besiktas GAIN Istanbul,82,79,Confirmed,6,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"BISSANG, JOSEPH","LEZCANO, LEANDRO","THEIS, CHRISTIAN",OK
+Eloi,U2025_57,04/11/2025,19:30,Cosea JL Bourg-en-Bresse,NINERS Chemnitz,85,82,Confirmed,6,Eurocup,EKINOX,France,"KARDUM, LUKA","PITSILKAS, VASSILIS","MAVISU, CAN",OK
+Eloi,U2025_57,4/11/2025,19:30,Cosea JL Bourg-en-Bresse,NINERS Chemnitz,85,82,Confirmed,6,Eurocup,EKINOX,France,"KARDUM, LUKA","PITSILKAS, VASSILIS","MAVISU, CAN",OK
+Xavi,U2025_59,4/11/2025,20:00,Dolomiti Energia Trento,Lietkabelis Panevezys,78,74,Confirmed,6,Eurocup,BTS ARENA,Italy,"BITTNER, STEVE","GORDON, NOAM","GRACIN, FRANKO",OK
+Eloi,U2025_52,05/11/2025,18:00,Bahcesehir College Istanbul,Hapoel Midtown Jerusalem,82,90,Confirmed,6,Eurocup,ALEKSANDAR NIKOLIC HALL,Serbia,"PEREZ, EMILIO","DRAGOJEVIC, IGOR","CICI, GENTIAN",OK
+Héctor,U2025_53,05/11/2025,18:00,Neptunas Klaipeda,BAXI Manresa,100,87,Confirmed,6,Eurocup,SVYTURIO ARENA,Lithuania,"VYKLICKY, ROBERT","PANTHER, ANNE","TIGANIS, IOANNIS",OK
+Xavi,U2025_54,05/11/2025,18:00,U-BT Cluj-Napoca,Cedevita Olimpija Ljubljana,87,93,Confirmed,6,Eurocup,BT ARENA,Romania,"VILIUS, GYTIS","BALAK, AMIT","PADROS, ARNAU",OK
+Marc,U2025_56,05/11/2025,19:00,ratiopharm ulm,London Lions,87,86,Confirmed,6,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"THEPENIER, HUGUES","MANUEL, SERGIO","CELIK, HUSEYIN",OK
+Mario,U2025_51,05/11/2025,19:00,Aris Thessaloniki Betsson,Slask Wroclaw,85,78,Confirmed,6,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"UDYANSKYY, EDUARD","PEER, ADAR","BAKI, KEREM",OK
+Eloi,U2025_55,05/11/2025,20:00,Umana Reyer Venice,Veolia Towers Hamburg,90,55,Confirmed,6,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"PETEK, SASO","RADOJKOVIC, JOSIP ","VAN DEN BROECK, NICK",OK
+Oriol,E2025_83,05/11/2025,20:00,Crvena Zvezda Meridianbet Belgrade,Panathinaikos AKTOR Athens,86,68,Confirmed,9,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","ZAMOJSKI, JAKUB","RACYS, SAULIUS",OK
+Xavi,E2025_85,06/11/2025,18:45,Fenerbahce Beko Istanbul,LDLC ASVEL Villeurbanne,81,67,Confirmed,9,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"NEDOVIC, MILAN","CORTES, CARLOS","TRAWICKI, TOMASZ",OK
+,E2025_84,06/11/2025,19:00,Dubai Basketball,Hapoel IBI Tel Aviv,97,109,Confirmed,9,Euroleague,ZETRA ARENA,,"DIFALLAH, MEHDI","SILVA, SERGIO","POROBIC, DRAGAN",OK
+Héctor,E2025_82,06/11/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,Virtus Bologna,87,76,Confirmed,9,Euroleague,BUESA ARENA,01013 Vitoria,"MOGULKOC, EMIN","KOLJENSIC, MILOS ","BOUBERT, MAXIME",OK
+Eloi,E2025_81,06/11/2025,21:00,Paris Basketball,FC Bayern Munich,82,86,Confirmed,9,Euroleague,ADIDAS ARENA,France,"GARCIA, JUAN CARLOS","RYZHYK, BORYS","BAENA, ALBERTO",OK
+Mario,E2025_86,06/11/2025,21:00,Maccabi Rapyd Tel Aviv,AS Monaco,107,112,Confirmed,9,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"HORDOV, TOMISLAV ","FOUFIS, IOANNIS","TSAROUCHA, VASILIKI",OK
+Xavi,E2025_87,07/11/2025,18:30,Anadolu Efes Istanbul,EA7 Emporio Armani Milan,93,97,Confirmed,9,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"PEREZ, MIGUEL ANGEL","JOVCIC, MILIVOJE","KOWALSKI, MARCIN",OK
+Héctor,E2025_90,07/11/2025,19:00,Zalgiris Kaunas,Valencia Basket,86,77,Confirmed,9,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"JAVOR, DAMIR","LATISEVS, OLEGS","BISSUEL, THOMAS",OK
+Mario,E2025_89,07/11/2025,20:15,Olympiacos Piraeus,Partizan Mozzart Bet Belgrade,80,71,Confirmed,9,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"LOTTERMOSER, ROBERT","ALIAGA, JORDI","PASTUSIAK, PIOTR",OK
+Eloi,E2025_88,07/11/2025,20:30,FC Barcelona,Real Madrid,92,101,Confirmed,9,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"RADOVIC, SRETEN","SUKYS, ARTURAS","KONSTANTINOVS, KRISTAPS",OK
+Mario,E2025_96,11/11/2025,17:00,Dubai Basketball,Crvena Zvezda Meridianbet Belgrade,102,86,Confirmed,10,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"GARCIA, JUAN CARLOS","SHEMMESH, SEFFI","PITSILKAS, VASSILIS",OK
+Oriol,U2025_65,11/11/2025,19:00,Aris Thessaloniki Betsson,Bahcesehir College Istanbul,76,86,Confirmed,7,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"DIFALLAH, MEHDI","TRAWICKI, TOMASZ","BALAK, AMIT",OK
+Pablo,U2025_70,11/11/2025,19:00,ratiopharm ulm,Cosea JL Bourg-en-Bresse,64,96,Confirmed,7,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"PUKL,SASA","PETEK, SASO","VAN DEN BROECK, NICK",OK
+,U2025_61,11/11/2025,19:00,Slask Wroclaw,Veolia Towers Hamburg,92,81,Confirmed,7,Eurocup,HALA ORBITA,Poland,"PEERANDI, RAIN","BOUBERT, MAXIME","CELIK, HUSEYIN",OK
+Mario,E2025_91,11/11/2025,20:00,Fenerbahce Beko Istanbul,Maccabi Rapyd Tel Aviv,84,75,Confirmed,10,Euroleague,SAP GARDEN,80809 Munich - Germany,"JAVOR, DAMIR","RACYS, SAULIUS","LEZCANO, LEANDRO",OK
+Mario,E2025_91,11/11/2025,20:00,Fenerbahce Beko Istanbul,Maccabi Rapyd Tel Aviv,84,75,Confirmed,10,Euroleague,SAP GARDEN,80809 Munich - Germany,"JAVOR, DAMIR","RACYS, SAULIUS","LEZCANO, LEANDRO",OK
+Marc,E2025_92,11/11/2025,20:05,Hapoel IBI Tel Aviv,Kosner Baskonia Vitoria-Gasteiz,114,89,Confirmed,10,Euroleague,ARENA 8888 SOFIA,,"BELOSEVIC, ILIJA","BISSUEL, THOMAS","CICI, GENTIAN",OK
+Eloi,E2025_95,11/11/2025,20:30,Virtus Bologna,Anadolu Efes Istanbul,99,89,Confirmed,10,Euroleague,PALADOZZA,40122 Bologna - Italy,"NEDOVIC, MILAN","BAENA, ALBERTO","TIGANIS, IOANNIS",OK
+Héctor,U2025_64,11/11/2025,20:30,Hapoel Midtown Jerusalem,Neptunas Klaipeda,110,93,Confirmed,7,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"OBRKNEZEVIC, UROS ","RADOJKOVIC, JOSIP ","CALIC, STEFAN",OK
+Oriol,E2025_94,11/11/2025,20:30,Valencia Basket,Real Madrid,89,76,Confirmed,10,Euroleague,ROIG ARENA,46013 Valencia,"MOGULKOC, EMIN","JOVCIC, MILIVOJE","THEPENIER, HUGUES",OK
+Otro,E2025_97,11/11/2025,20:30,Partizan Mozzart Bet Belgrade,AS Monaco,78,76,Confirmed,10,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","CORTES, CARLOS","VYKLICKY, ROBERT",OK
+Xavi,E2025_93,11/11/2025,21:00,Paris Basketball,Panathinaikos AKTOR Athens,95,101,Confirmed,10,Euroleague,ACCOR ARENA,,"PEREZ, MIGUEL ANGEL","VILIUS, GYTIS","PADROS, ARNAU",OK
+Eloi,U2025_63,12/11/2025,18:00,U-BT Cluj-Napoca,BAXI Manresa,110,86,Confirmed,7,Eurocup,NOVA PG ARENA,,"RYZHYK, BORYS","TSAROUCHA, VASILIKI","GORDON, NOAM",OK
+Xavi,U2025_68,12/11/2025,18:00,Besiktas GAIN Istanbul,Dolomiti Energia Trento,97,83,Confirmed,7,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"DRAGOJEVIC, IGOR","ALIAGA, JORDI","MANUEL, SERGIO",OK
+Pablo,U2025_62,12/11/2025,18:30,Cedevita Olimpija Ljubljana,Umana Reyer Venice,93,65,Confirmed,7,Eurocup,ARENA STOZICE,1000 Ljubljana,"PANTHER, ANNE","PEER, ADAR","THEIS, CHRISTIAN",OK
+Mario,U2025_67,12/11/2025,18:45,Lietkabelis Panevezys,Turk Telekom Ankara,74,100,Confirmed,7,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"PEREZ, EMILIO","HADZIC, DENIS","POROBIC, DRAGAN",OK
+Marc,U2025_69,12/11/2025,19:00,NINERS Chemnitz,Buducnost VOLI Podgorica,71,84,Confirmed,7,Eurocup,MESSE CHEMNITZ,Germany,"KOWALSKI, MARCIN","GIOVANNETTI, GUIDO","GRACIN, FRANKO",OK
+Oriol,E2025_100,12/11/2025,20:15,Olympiacos Piraeus,Zalgiris Kaunas,95,78,Confirmed,10,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"HORDOV, TOMISLAV ","ZAMOJSKI, JAKUB","TRAWICKI, TOMASZ",OK
+Eloi,E2025_98,12/11/2025,20:30,EA7 Emporio Armani Milan,LDLC ASVEL Villeurbanne,80,72,Confirmed,10,Euroleague,UNIPOL FORUM,20090 Assago,"RADOVIC, SRETEN","SUKYS, ARTURAS","UDYANSKYY, EDUARD",OK
+Héctor,E2025_99,12/11/2025,20:30,FC Bayern Munich,FC Barcelona,74,75,Confirmed,10,Euroleague,SAP GARDEN,80809 Munich - Germany,"LATISEVS, OLEGS","KARDUM, LUKA","BAKI, KEREM",OK
+Héctor,E2025_99,12/11/2025,20:30,FC Bayern Munich,FC Barcelona,74,75,Confirmed,10,Euroleague,SAP GARDEN,80809 Munich - Germany,"LATISEVS, OLEGS","KARDUM, LUKA","BAKI, KEREM",OK
+Xavi,U2025_66,12/11/2025,20:30,London Lions,Panionios Cosmorama Travel Athens,97,72,Confirmed,7,Eurocup,COPPER BOX ARENA,London,"SILVA, SERGIO","BITTNER, STEVE","MAVISU, CAN",OK
+Eloi,E2025_105,13/11/2025,20:00,Crvena Zvezda Meridianbet Belgrade,AS Monaco,91,79,Confirmed,11,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"MOGULKOC, EMIN","PEERANDI, RAIN","KONSTANTINOVS, KRISTAPS",OK
+Mario,E2025_101,13/11/2025,20:00,Fenerbahce Beko Istanbul,Hapoel IBI Tel Aviv,74,68,Confirmed,11,Euroleague,SAP GARDEN,80809 Munich - Germany,"PERUGA, CARLOS","KOLJENSIC, MILOS ","MAJKIC, MARIO ",OK
+Héctor,E2025_103,13/11/2025,20:45,Paris Basketball,Valencia Basket,90,86,Confirmed,11,Euroleague,ADIDAS ARENA,France,"NEDOVIC, MILAN","FOUFIS, IOANNIS","VAN DEN BROECK, NICK",OK
+Xavi,E2025_104,13/11/2025,20:45,Real Madrid,Panathinaikos AKTOR Athens,77,87,Confirmed,11,Euroleague,MOVISTAR ARENA,Madrid,"BELOSEVIC, ILIJA","BISSANG, JOSEPH","PASTUSIAK, PIOTR",OK
+Oriol,E2025_102,13/11/2025,21:00,Maccabi Rapyd Tel Aviv,Kosner Baskonia Vitoria-Gasteiz,89,83,Confirmed,11,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"LOTTERMOSER, ROBERT","JOVCIC, MILIVOJE","CELIK, HUSEYIN",OK
+Héctor,E2025_107,14/11/2025,17:00,Dubai Basketball,Zalgiris Kaunas,95,89,Confirmed,11,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PUKL,SASA","ROSSI, MICHELE","JURAS, MARKO",OK
+Eloi,E2025_106,14/11/2025,18:00,Anadolu Efes Istanbul,FC Bayern Munich,74,72,Confirmed,11,Euroleague,ANTALYA SPORTS HALL,,"ALIAGA, JORDI","DRAGOJEVIC, IGOR","MANUEL, SERGIO",OK
+Mario,E2025_110,14/11/2025,20:00,LDLC ASVEL Villeurbanne,Partizan Mozzart Bet Belgrade,88,87,Confirmed,11,Euroleague,ASTROBALLE,France,"PEREZ, MIGUEL ANGEL","GIOVANNETTI, GUIDO","GORDON, NOAM",OK
+Héctor,E2025_109,14/11/2025,20:30,FC Barcelona,Virtus Bologna,88,81,Confirmed,11,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"RYZHYK, BORYS","SILVA, SERGIO","BALAK, AMIT",OK
+Xavi,E2025_108,14/11/2025,20:30,EA7 Emporio Armani Milan,Olympiacos Piraeus,88,87,Confirmed,11,Euroleague,UNIPOL FORUM,20090 Assago,"DIFALLAH, MEHDI","PEREZ, EMILIO","LATISEVS, OLEGS",OK
+Eloi,U2025_72,18/11/2025,18:00,Neptunas Klaipeda,Aris Thessaloniki Betsson,87,93,Confirmed,8,Eurocup,SVYTURIO ARENA,Lithuania,"GIOVANNETTI, GUIDO","DRAGOJEVIC, IGOR","JURAS, MARKO",OK
+Oriol,U2025_73,18/11/2025,18:00,U-BT Cluj-Napoca,Hapoel Midtown Jerusalem,89,101,Confirmed,8,Eurocup,BT ARENA,Romania,"JOVCIC, MILIVOJE","BISSUEL, THOMAS","MANUEL, SERGIO",OK
+Mario,U2025_71,18/11/2025,19:00,Slask Wroclaw,Bahcesehir College Istanbul,99,91,Confirmed,8,Eurocup,HALA ORBITA,Poland,"LEZCANO, LEANDRO","CALIC, STEFAN","PADROS, ARNAU",OK
+Xavi,U2025_77,18/11/2025,19:00,Buducnost VOLI Podgorica,ratiopharm ulm,101,71,Confirmed,8,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"VILIUS, GYTIS","VYKLICKY, ROBERT","MAJKIC, MARIO ",OK
+Héctor,U2025_78,18/11/2025,20:00,Dolomiti Energia Trento,NINERS Chemnitz,94,105,Confirmed,8,Eurocup,BTS ARENA,Italy,"BISSANG, JOSEPH","TSAROUCHA, VASILIKI","HADZIC, DENIS",OK
+Xavi,U2025_79,19/11/2025,17:00,Turk Telekom Ankara,Besiktas GAIN Istanbul,84,93,Confirmed,8,Eurocup,ANKARA SPOR SALONU,Turkey,"PEREZ, MIGUEL ANGEL","BITTNER, STEVE","VAN DEN BROECK, NICK",OK
+Héctor,U2025_75,19/11/2025,18:30,Cedevita Olimpija Ljubljana,Veolia Towers Hamburg,93,73,Confirmed,8,Eurocup,ARENA STOZICE,1000 Ljubljana,"SILVA, SERGIO","GORDON, NOAM","MAVISU, CAN",OK
+Mario,U2025_80,19/11/2025,18:30,Panionios Cosmorama Travel Athens,Lietkabelis Panevezys,72,79,Confirmed,8,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"RADOJKOVIC, JOSIP ","CELIK, HUSEYIN","PEER, ADAR",OK
+Eloi,E2025_111,19/11/2025,20:00,LDLC ASVEL Villeurbanne,AS Monaco,52,84,Confirmed,12,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"LATISEVS, OLEGS","PASTUSIAK, PIOTR","ROSSI, MICHELE",OK
+Oriol,U2025_74,19/11/2025,20:00,Umana Reyer Venice,BAXI Manresa,97,93,Confirmed,8,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"RADOVIC, SRETEN","CICI, GENTIAN","GRACIN, FRANKO",OK
+Xavi,U2025_76,19/11/2025,20:30,London Lions,Cosea JL Bourg-en-Bresse,68,72,Confirmed,8,Eurocup,COPPER BOX ARENA,London,"BAENA, ALBERTO","ATTARD, MANUEL","THEIS, CHRISTIAN",OK
+Mario,E2025_112,20/11/2025,18:30,Anadolu Efes Istanbul,FC Barcelona,74,73,Confirmed,12,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"BELOSEVIC, ILIJA","RACYS, SAULIUS","PITSILKAS, VASSILIS",OK
+Xavi,E2025_114,20/11/2025,20:15,Panathinaikos AKTOR Athens,Dubai Basketball,103,82,Confirmed,12,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","PEERANDI, RAIN","TRAWICKI, TOMASZ",OK
+Héctor,E2025_113,20/11/2025,20:30,EA7 Emporio Armani Milan,Hapoel IBI Tel Aviv,83,105,Confirmed,12,Euroleague,UNIPOL FORUM,20090 Assago,"GARCIA, JUAN CARLOS","CORTES, CARLOS","KONSTANTINOVS, KRISTAPS",OK
+Eloi,E2025_115,20/11/2025,20:45,Real Madrid,Zalgiris Kaunas,100,99,Confirmed,12,Euroleague,MOVISTAR ARENA,Madrid,"LOTTERMOSER, ROBERT","KOLJENSIC, MILOS ","KOWALSKI, MARCIN",OK
+Héctor,E2025_117,21/11/2025,20:15,Olympiacos Piraeus,Paris Basketball,98,86,Confirmed,12,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"JAVOR, DAMIR","KARDUM, LUKA","UDYANSKYY, EDUARD",OK
+Eloi,E2025_116,21/11/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,FC Bayern Munich,95,73,Confirmed,12,Euroleague,BUESA ARENA,01013 Vitoria,"HORDOV, TOMISLAV ","NEDOVIC, MILAN","THEPENIER, HUGUES",OK
+Mario,E2025_118,21/11/2025,20:30,Partizan Mozzart Bet Belgrade,Fenerbahce Beko Istanbul,87,99,Confirmed,12,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"DIFALLAH, MEHDI","PEREZ, EMILIO","BALAK, AMIT",OK
+Oriol,E2025_120,21/11/2025,20:30,Virtus Bologna,Maccabi Rapyd Tel Aviv,99,89,Confirmed,12,Euroleague,PALADOZZA,40122 Bologna - Italy,"MOGULKOC, EMIN","ZAMOJSKI, JAKUB","PANTHER, ANNE",OK
+Xavi,E2025_119,21/11/2025,21:00,Valencia Basket,Crvena Zvezda Meridianbet Belgrade,76,73,Confirmed,12,Euroleague,ROIG ARENA,46013 Valencia,"RYZHYK, BORYS","SUKYS, ARTURAS","BOUBERT, MAXIME",OK
+Eloi,E2025_121,25/11/2025,17:00,Dubai Basketball,Paris Basketball,90,89,Confirmed,13,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"RYZHYK, BORYS","ALIAGA, JORDI","MAJKIC, MARIO ",OK
+Xavi,E2025_126,25/11/2025,18:45,Fenerbahce Beko Istanbul,Virtus Bologna,66,64,Confirmed,13,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"BELOSEVIC, ILIJA","BISSUEL, THOMAS","PETEK, SASO",OK
+Héctor,E2025_122,25/11/2025,19:00,Hapoel IBI Tel Aviv,Real Madrid,74,75,Confirmed,13,Euroleague,ARENA BOTEVGRAD,,"RADOVIC, SRETEN","SUKYS, ARTURAS","BOUBERT, MAXIME",OK
+Oriol,E2025_125,25/11/2025,19:00,Zalgiris Kaunas,Kosner Baskonia Vitoria-Gasteiz,82,67,Confirmed,13,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"MOGULKOC, EMIN","KONSTANTINOVS, KRISTAPS","ATTARD, MANUEL",OK
+Mario,E2025_123,25/11/2025,20:15,Panathinaikos AKTOR Athens,Partizan Mozzart Bet Belgrade,91,69,Confirmed,13,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","BAENA, ALBERTO",OK
+Eloi,E2025_124,25/11/2025,20:30,Valencia Basket,FC Bayern Munich,90,64,Confirmed,13,Euroleague,ROIG ARENA,46013 Valencia,"DIFALLAH, MEHDI","PASTUSIAK, PIOTR","TSAROUCHA, VASILIKI",OK
+Eloi,E2025_130,26/11/2025,18:00,Maccabi Rapyd Tel Aviv,EA7 Emporio Armani Milan,88,102,Confirmed,13,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"PERUGA, CARLOS","VILIUS, GYTIS","KOWALSKI, MARCIN",OK
+Héctor,E2025_127,26/11/2025,19:30,AS Monaco,Anadolu Efes Istanbul,102,66,Confirmed,13,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","SHEMMESH, SEFFI","KOLJENSIC, MILOS ",OK
+Mario,E2025_128,26/11/2025,19:30,Crvena Zvezda Meridianbet Belgrade,Olympiacos Piraeus,91,80,Confirmed,13,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, MIGUEL ANGEL","CORTES, CARLOS","RACYS, SAULIUS",OK
+Xavi,E2025_129,26/11/2025,20:30,FC Barcelona,LDLC ASVEL Villeurbanne,88,78,Confirmed,13,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"HORDOV, TOMISLAV ","FOUFIS, IOANNIS","GRACIN, FRANKO",OK
+Mario,U2025_85,4/12/2025,17:00,Bahcesehir College Istanbul,Neptunas Klaipeda,85,100,Confirmed,9,Eurocup,SINAN ERDEM SPORTS HALL,,"ZAMOJSKI, JAKUB","VYKLICKY, ROBERT","CICI, GENTIAN",OK
+Xavi,E2025_136,4/12/2025,18:15,Anadolu Efes Istanbul,Real Madrid,75,81,Confirmed,14,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"HORDOV, TOMISLAV ","JOVCIC, MILIVOJE","KARDUM, LUKA",OK
+Héctor,U2025_81,4/12/2025,18:30,Cedevita Olimpija Ljubljana,Slask Wroclaw,108,74,Confirmed,9,Eurocup,ARENA STOZICE,1000 Ljubljana,"FOUFIS, IOANNIS","PANTHER, ANNE","THEIS, CHRISTIAN",OK
+Eloi,U2025_84,04/12/2025,19:00,Aris Thessaloniki Betsson,U-BT Cluj-Napoca,88,98,Confirmed,9,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"GARCIA, JUAN CARLOS","TRAWICKI, TOMASZ","MAJKIC, MARIO ",OK
+Lucas,U2025_89,04/12/2025,19:00,ratiopharm ulm,Dolomiti Energia Trento,87,100,Confirmed,9,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"JAVOR, DAMIR","BALAK, AMIT","PETEK, SASO",OK
+Marc,U2025_86,4/12/2025,19:00,Lietkabelis Panevezys,London Lions,61,74,Confirmed,9,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"ROSSI, MICHELE","BAKI, KEREM","JURAS, MARKO",OK
+Mario,E2025_135,4/12/2025,19:00,Zalgiris Kaunas,Maccabi Rapyd Tel Aviv,65,83,Confirmed,14,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PUKL,SASA","BISSANG, JOSEPH","CELIK, HUSEYIN",OK
+Oriol,U2025_88,04/12/2025,19:00,NINERS Chemnitz,Turk Telekom Ankara,63,87,Confirmed,9,Eurocup,MESSE CHEMNITZ,Germany,"DRAGOJEVIC, IGOR","LEZCANO, LEANDRO","TIGANIS, IOANNIS",OK
+,E2025_131,04/12/2025,19:30,AS Monaco,Paris Basketball,125,104,Confirmed,14,Euroleague,SALLE GASTON MEDECIN,Monaco,"LOTTERMOSER, ROBERT","CORTES, CARLOS","RADOJKOVIC, JOSIP ",OK
+Xavi,U2025_83,04/12/2025,20:00,Hapoel Midtown Jerusalem,Umana Reyer Venice,98,66,Confirmed,9,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"KOLJENSIC, MILOS ","BOUBERT, MAXIME","HADZIC, DENIS",OK
+Pablo,E2025_133,4/12/2025,20:05,Hapoel IBI Tel Aviv,LDLC ASVEL Villeurbanne,87,80,Confirmed,14,Euroleague,ARENA BOTEVGRAD,,"PEREZ, EMILIO","RACYS, SAULIUS","TSAROUCHA, VASILIKI",OK
+Eloi,E2025_132,4/12/2025,20:45,Partizan Mozzart Bet Belgrade,FC Bayern Munich,92,85,Confirmed,14,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","BISSUEL, THOMAS",OK
+Xavi,U2025_87,5/12/2025,18:00,Besiktas GAIN Istanbul,Panionios Cosmorama Travel Athens,101,83,Confirmed,9,Eurocup,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"BAENA, ALBERTO","KONSTANTINOVS, KRISTAPS","CALIC, STEFAN",OK
+Nerea,U2025_90,5/12/2025,19:30,Cosea JL Bourg-en-Bresse,Buducnost VOLI Podgorica,88,73,Confirmed,9,Eurocup,EKINOX,France,"SHEMMESH, SEFFI","PADROS, ARNAU","VAN DEN BROECK, NICK",OK
+Mario,E2025_137,05/12/2025,20:00,Crvena Zvezda Meridianbet Belgrade,FC Barcelona,79,89,Confirmed,14,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"MOGULKOC, EMIN","KOWALSKI, MARCIN","GIOVANNETTI, GUIDO",OK
+Héctor,E2025_139,5/12/2025,20:15,Panathinaikos AKTOR Athens,Valencia Basket,79,89,Confirmed,14,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"BELOSEVIC, ILIJA","NEDOVIC, MILAN","VILIUS, GYTIS",OK
+Eloi,E2025_140,5/12/2025,20:30,Virtus Bologna,Dubai Basketball,79,78,Confirmed,14,Euroleague,VIRTUS ARENA,Bologna,"RADOVIC, SRETEN","SILVA, SERGIO","MAVISU, CAN",OK
+Oriol,E2025_138,5/12/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,EA7 Emporio Armani Milan,88,78,Confirmed,14,Euroleague,BUESA ARENA,01013 Vitoria,"RYZHYK, BORYS","PASTUSIAK, PIOTR","POROBIC, DRAGAN",OK
+Xavi,U2025_82,5/12/2025,20:45,BAXI Manresa,Veolia Towers Hamburg,99,72,Confirmed,9,Eurocup,PAVELLO NOU CONGOST,Barcelona,"UDYANSKYY, EDUARD","OBRKNEZEVIC, UROS ","ATTARD, MANUEL",OK
+Héctor,U2025_100,9/12/2025,18:00,Besiktas GAIN Istanbul,Lietkabelis Panevezys,94,85,Confirmed,10,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"THEPENIER, HUGUES","TSAROUCHA, VASILIKI","THEIS, CHRISTIAN",OK
+Eloi,U2025_99,9/12/2025,19:00,NINERS Chemnitz,Panionios Cosmorama Travel Athens,73,68,Confirmed,10,Eurocup,MESSE CHEMNITZ,Germany,"OBRKNEZEVIC, UROS ","CELIK, HUSEYIN","ATTARD, MANUEL",OK
+Oriol,U2025_94,9/12/2025,19:00,Hapoel Midtown Jerusalem,Veolia Towers Hamburg,86,76,Confirmed,10,Eurocup,TOTO HOLON ARENA,,"KOWALSKI, MARCIN","MANUEL, SERGIO","BAKI, KEREM",OK
+Xavi,U2025_97,09/12/2025,19:30,Cosea JL Bourg-en-Bresse,Dolomiti Energia Trento,73,91,Confirmed,10,Eurocup,EKINOX,France,"KARDUM, LUKA","PEER, ADAR","HADZIC, DENIS",OK
+Eloi,U2025_92,10/12/2025,17:00,Bahcesehir College Istanbul,U-BT Cluj-Napoca,84,72,Confirmed,10,Eurocup,SINAN ERDEM SPORTS HALL,,"CORTES, CARLOS","SILVA, SERGIO","PADROS, ARNAU",OK
+Héctor,U2025_91,10/12/2025,18:00,Neptunas Klaipeda,Slask Wroclaw,103,87,Confirmed,10,Eurocup,SVYTURIO ARENA,Lithuania,"DRAGOJEVIC, IGOR","POROBIC, DRAGAN","LEZCANO, LEANDRO",OK
+Mario,U2025_96,10/12/2025,19:00,Buducnost VOLI Podgorica,London Lions,94,63,Confirmed,10,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"VYKLICKY, ROBERT","CICI, GENTIAN","PITSILKAS, VASSILIS",OK
+Oriol,U2025_98,10/12/2025,19:00,ratiopharm ulm,Turk Telekom Ankara,53,87,Confirmed,10,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"UDYANSKYY, EDUARD","MAJKIC, MARIO ","JURAS, MARKO",OK
+Xavi,U2025_93,10/12/2025,19:00,Aris Thessaloniki Betsson,Umana Reyer Venice,90,86,Confirmed,10,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"PASTUSIAK, PIOTR","RADOJKOVIC, JOSIP ","GRACIN, FRANKO",OK
+Eloi,U2025_95,10/12/2025,20:45,BAXI Manresa,Cedevita Olimpija Ljubljana,99,82,Confirmed,10,Eurocup,PAVELLO NOU CONGOST,Barcelona,"BISSANG, JOSEPH","BALAK, AMIT","TIGANIS, IOANNIS",OK
+Héctor,E2025_141,11/12/2025,20:05,Maccabi Rapyd Tel Aviv,LDLC ASVEL Villeurbanne,92,84,Confirmed,15,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"MOGULKOC, EMIN","ZAMOJSKI, JAKUB","KOLJENSIC, MILOS ",OK
+Mario,E2025_143,11/12/2025,20:30,EA7 Emporio Armani Milan,Panathinaikos AKTOR Athens,96,89,Confirmed,15,Euroleague,UNIPOL FORUM,20090 Assago,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","BITTNER, STEVE",OK
+Oriol,E2025_146,11/12/2025,20:30,Valencia Basket,Anadolu Efes Istanbul,94,82,Confirmed,15,Euroleague,ROIG ARENA,46013 Valencia,"DIFALLAH, MEHDI","FOUFIS, IOANNIS","CALIC, STEFAN",OK
+Eloi,E2025_144,11/12/2025,20:45,Paris Basketball,Zalgiris Kaunas,105,108,Confirmed,15,Euroleague,ADIDAS ARENA,France,"RYZHYK, BORYS","HORDOV, TOMISLAV ","ROSSI, MICHELE",OK
+Xavi,E2025_145,11/12/2025,21:00,Real Madrid,Kosner Baskonia Vitoria-Gasteiz,94,87,Confirmed,15,Euroleague,MOVISTAR ARENA,Madrid,"PUKL,SASA","LATISEVS, OLEGS","TRAWICKI, TOMASZ",OK
+Héctor,E2025_142,12/12/2025,17:00,Dubai Basketball,FC Bayern Munich,89,88,Confirmed,15,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"NEDOVIC, MILAN","PETEK, SASO","GIOVANNETTI, GUIDO",OK
+Mario,E2025_147,12/12/2025,19:30,AS Monaco,Fenerbahce Beko Istanbul,86,92,Confirmed,15,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","JOVCIC, MILIVOJE","PEERANDI, RAIN",OK
+Eloi,E2025_148,12/12/2025,20:30,FC Barcelona,Olympiacos Piraeus,98,85,Confirmed,15,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"RADOVIC, SRETEN","RACYS, SAULIUS","BOUBERT, MAXIME",OK
+Oriol,E2025_150,12/12/2025,20:30,Virtus Bologna,Hapoel IBI Tel Aviv,74,79,Confirmed,15,Euroleague,VIRTUS ARENA,Bologna,"JAVOR, DAMIR","VILIUS, GYTIS","ALIAGA, JORDI",OK
+Xavi,E2025_149,12/12/2025,20:30,Partizan Mozzart Bet Belgrade,Crvena Zvezda Meridianbet Belgrade,79,76,Confirmed,15,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","PEREZ, EMILIO","KONSTANTINOVS, KRISTAPS",OK
+Nerea,E2025_151,16/12/2025,17:00,Dubai Basketball,Maccabi Rapyd Tel Aviv,95,97,Confirmed,16,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"BELOSEVIC, ILIJA","ALIAGA, JORDI","THEPENIER, HUGUES",OK
+Xavi,U2025_107,16/12/2025,18:00,Lietkabelis Panevezys,NINERS Chemnitz,79,85,Confirmed,11,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"VYKLICKY, ROBERT","GRACIN, FRANKO","MAVISU, CAN",OK
+Eloi,U2025_102,16/12/2025,18:30,Cedevita Olimpija Ljubljana,Hapoel Midtown Jerusalem,81,84,Confirmed,11,Eurocup,ARENA STOZICE,1000 Ljubljana,"KONSTANTINOVS, KRISTAPS","GIOVANNETTI, GUIDO","PADROS, ARNAU",OK
+Oriol,E2025_153,16/12/2025,18:45,Fenerbahce Beko Istanbul,Panathinaikos AKTOR Athens,77,81,Confirmed,16,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"RADOVIC, SRETEN","PASTUSIAK, PIOTR","BOUBERT, MAXIME",OK
+Nerea,U2025_110,16/12/2025,20:00,Dolomiti Energia Trento,Buducnost VOLI Podgorica,91,90,Confirmed,11,Eurocup,BTS ARENA,Italy,"MANUEL, SERGIO","TSAROUCHA, VASILIKI","THEIS, CHRISTIAN",OK
+Mario,E2025_154,16/12/2025,20:05,Hapoel IBI Tel Aviv,Crvena Zvezda Meridianbet Belgrade,84,78,Confirmed,16,Euroleague,PAIS ARENA JERUSALEM,94101 Jerusalem,"DIFALLAH, MEHDI","FOUFIS, IOANNIS","BAENA, ALBERTO",OK
+Héctor,E2025_155,16/12/2025,20:15,Olympiacos Piraeus,Valencia Basket,92,99,Confirmed,16,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PUKL,SASA","KARDUM, LUKA","BALAK, AMIT",OK
+Xavi,E2025_152,16/12/2025,20:30,EA7 Emporio Armani Milan,Real Madrid,89,82,Confirmed,16,Euroleague,ALLIANZ CLOUD,20148 Milano,"MOGULKOC, EMIN","RACYS, SAULIUS","PETEK, SASO",OK
+Eloi,E2025_156,16/12/2025,21:00,Paris Basketball,FC Barcelona,69,85,Confirmed,16,Euroleague,ADIDAS ARENA,France,"JAVOR, DAMIR","VILIUS, GYTIS","CELIK, HUSEYIN",OK
+Héctor,U2025_105,17/12/2025,17:00,U-BT Cluj-Napoca,Neptunas Klaipeda,118,97,Confirmed,11,Eurocup,BT ARENA,Romania,"LATISEVS, OLEGS","PANTHER, ANNE","JURAS, MARKO",OK
+Mario,U2025_109,17/12/2025,17:00,Turk Telekom Ankara,Cosea JL Bourg-en-Bresse,76,80,Confirmed,11,Eurocup,ANKARA SPOR SALONU,Turkey,"OBRKNEZEVIC, UROS ","ROSSI, MICHELE","PITSILKAS, VASSILIS",OK
+Eloi,U2025_108,17/12/2025,18:30,Panionios Cosmorama Travel Athens,ratiopharm ulm,69,94,Confirmed,11,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"CORTES, CARLOS","BISSUEL, THOMAS","VAN DEN BROECK, NICK",OK
+Marc,E2025_160,17/12/2025,19:00,Zalgiris Kaunas,Anadolu Efes Istanbul,64,87,Confirmed,16,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"LOTTERMOSER, ROBERT","NEDOVIC, MILAN","RADOJKOVIC, JOSIP ",OK
+Pablo,U2025_101,17/12/2025,19:00,Slask Wroclaw,BAXI Manresa,90,96,Confirmed,11,Eurocup,HALA ORBITA,Poland,"PEERANDI, RAIN","CICI, GENTIAN","HADZIC, DENIS",OK
+Héctor,U2025_103,17/12/2025,19:30,Veolia Towers Hamburg,Aris Thessaloniki Betsson,89,92,Confirmed,11,Eurocup,INSELPARK ARENA,Germany,"BISSANG, JOSEPH","PEER, ADAR","POROBIC, DRAGAN",OK
+Mario,E2025_158,17/12/2025,20:00,LDLC ASVEL Villeurbanne,FC Bayern Munich,76,74,Confirmed,16,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"PERUGA, CARLOS","SHEMMESH, SEFFI","LEZCANO, LEANDRO",OK
+Xavi,U2025_104,17/12/2025,20:00,Umana Reyer Venice,Bahcesehir College Istanbul,94,85,Confirmed,11,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"PEREZ, MIGUEL ANGEL","TRAWICKI, TOMASZ","GORDON, NOAM",OK
+Eloi,U2025_106,17/12/2025,20:30,London Lions,Besiktas GAIN Istanbul,98,96,Confirmed,11,Eurocup,COPPER BOX ARENA,London,"PEREZ, EMILIO","MAJKIC, MARIO ","TIGANIS, IOANNIS",OK
+Nerea,E2025_159,17/12/2025,20:30,Partizan Mozzart Bet Belgrade,Virtus Bologna,68,86,Confirmed,16,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","RYZHYK, BORYS","UDYANSKYY, EDUARD",OK
+Nerea,E2025_159,17/12/2025,20:30,Partizan Mozzart Bet Belgrade,Virtus Bologna,68,86,Confirmed,16,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","RYZHYK, BORYS","UDYANSKYY, EDUARD",OK
+Oriol,E2025_157,17/12/2025,20:30,Kosner Baskonia Vitoria-Gasteiz,AS Monaco,85,73,Confirmed,16,Euroleague,BUESA ARENA,01013 Vitoria,"HORDOV, TOMISLAV ","SUKYS, ARTURAS","KOWALSKI, MARCIN",OK
+Mario,E2025_162,18/12/2025,20:05,Maccabi Rapyd Tel Aviv,Valencia Basket,85,82,Confirmed,17,Euroleague,PAIS ARENA JERUSALEM,94101 Jerusalem,"JOVCIC, MILIVOJE","KONSTANTINOVS, KRISTAPS","GIOVANNETTI, GUIDO",OK
+Xavi,E2025_163,18/12/2025,20:15,Panathinaikos AKTOR Athens,Hapoel IBI Tel Aviv,93,82,Confirmed,17,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"MOGULKOC, EMIN","CORTES, CARLOS","BISSUEL, THOMAS",OK
+Eloi,E2025_161,18/12/2025,20:30,EA7 Emporio Armani Milan,Fenerbahce Beko Istanbul,72,87,Confirmed,17,Euroleague,ALLIANZ CLOUD,20148 Milano,"BELOSEVIC, ILIJA","KOLJENSIC, MILOS ","BAENA, ALBERTO",OK
+Héctor,E2025_164,18/12/2025,20:45,Real Madrid,Paris Basketball,95,90,Confirmed,17,Euroleague,MOVISTAR ARENA,Madrid,"RADOVIC, SRETEN","SILVA, SERGIO","CALIC, STEFAN",OK
+Héctor,E2025_165,19/12/2025,18:30,Anadolu Efes Istanbul,Dubai Basketball,76,80,Confirmed,17,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"PERUGA, CARLOS","ROSSI, MICHELE","OBRKNEZEVIC, UROS ",OK
+Mario,E2025_170,19/12/2025,19:00,Zalgiris Kaunas,Partizan Mozzart Bet Belgrade,109,68,Confirmed,17,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"DIFALLAH, MEHDI","PEERANDI, RAIN","TSAROUCHA, VASILIKI",OK
+Xavi,E2025_166,19/12/2025,19:30,AS Monaco,FC Bayern Munich,103,77,Confirmed,17,Euroleague,SALLE GASTON MEDECIN,Monaco,"PEREZ, EMILIO","VILIUS, GYTIS","POROBIC, DRAGAN",OK
+Eloi,E2025_169,19/12/2025,20:15,Olympiacos Piraeus,LDLC ASVEL Villeurbanne,107,84,Confirmed,17,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PEREZ, MIGUEL ANGEL","DRAGOJEVIC, IGOR","BAKI, KEREM",OK
+Oriol,E2025_168,19/12/2025,20:30,FC Barcelona,Kosner Baskonia Vitoria-Gasteiz,134,124,Confirmed,17,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"LOTTERMOSER, ROBERT","NEDOVIC, MILAN","ATTARD, MANUEL",OK
+Héctor,E2025_167,19/12/2025,20:45,Crvena Zvezda Meridianbet Belgrade,Virtus Bologna,90,89,Confirmed,17,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LATISEVS, OLEGS","ZAMOJSKI, JAKUB","TRAWICKI, TOMASZ",OK
+Xavi,E2025_177,23/12/2025,17:00,Dubai Basketball,EA7 Emporio Armani Milan,99,92,Confirmed,18,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","CELIK, HUSEYIN",OK
+Héctor,E2025_172,23/12/2025,18:45,Fenerbahce Beko Istanbul,FC Barcelona,72,71,Confirmed,18,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"HORDOV, TOMISLAV ","FOUFIS, IOANNIS","KARDUM, LUKA",OK
+Eloi,U2025_120,23/12/2025,19:00,NINERS Chemnitz,Besiktas GAIN Istanbul,97,95,Confirmed,12,Eurocup,MESSE CHEMNITZ,Germany,"ATTARD, MANUEL","JURAS, MARKO","CALIC, STEFAN",OK
+Mario,E2025_176,23/12/2025,19:00,Zalgiris Kaunas,Panathinaikos AKTOR Athens,85,92,Confirmed,18,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PEREZ, EMILIO","ZAMOJSKI, JAKUB","KONSTANTINOVS, KRISTAPS",OK
+Xavi,E2025_171,23/12/2025,19:30,FC Bayern Munich,Hapoel IBI Tel Aviv,72,82,Confirmed,18,Euroleague,SAP GARDEN,80809 Munich - Germany,"PUKL,SASA","BISSANG, JOSEPH","TSAROUCHA, VASILIKI",OK
+Nerea,E2025_175,23/12/2025,20:00,Valencia Basket,Kosner Baskonia Vitoria-Gasteiz,91,81,Confirmed,18,Euroleague,ROIG ARENA,46013 Valencia,"RADOVIC, SRETEN","SHEMMESH, SEFFI","BOUBERT, MAXIME",OK
+Héctor,E2025_173,23/12/2025,20:45,LDLC ASVEL Villeurbanne,Anadolu Efes Istanbul,103,99,Confirmed,18,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"JAVOR, DAMIR","PASTUSIAK, PIOTR","GIOVANNETTI, GUIDO",OK
+Oriol,E2025_174,23/12/2025,20:45,Paris Basketball,Crvena Zvezda Meridianbet Belgrade,102,92,Confirmed,18,Euroleague,ACCOR ARENA,,"MOGULKOC, EMIN","RACYS, SAULIUS","PEER, ADAR",OK
+Eloi,E2025_179,26/12/2025,18:00,Partizan Mozzart Bet Belgrade,Maccabi Rapyd Tel Aviv,87,112,Confirmed,18,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","ROSSI, MICHELE",OK
+Héctor,E2025_178,26/12/2025,19:30,AS Monaco,Real Madrid,100,95,Confirmed,18,Euroleague,SALLE GASTON MEDECIN,Monaco,"NEDOVIC, MILAN","KOLJENSIC, MILOS ","UDYANSKYY, EDUARD",OK
+Xavi,E2025_180,26/12/2025,20:30,Virtus Bologna,Olympiacos Piraeus,94,97,Confirmed,18,Euroleague,VIRTUS ARENA,Bologna,"BELOSEVIC, ILIJA","JOVCIC, MILIVOJE","THEPENIER, HUGUES",OK
+Nerea,U2025_113,30/12/2025,17:00,Bahcesehir College Istanbul,Veolia Towers Hamburg,105,68,Confirmed,12,Eurocup,SINAN ERDEM SPORTS HALL,,"JOVCIC, MILIVOJE","OBRKNEZEVIC, UROS ","TIGANIS, IOANNIS",OK
+Mario,U2025_111,30/12/2025,18:00,U-BT Cluj-Napoca,Slask Wroclaw,94,92,Confirmed,12,Eurocup,BT ARENA,Romania,"ROSSI, MICHELE","BAKI, KEREM","VAN DEN BROECK, NICK",OK
+Héctor,U2025_118,30/12/2025,18:15,Cosea JL Bourg-en-Bresse,Panionios Cosmorama Travel Athens,81,79,Confirmed,12,Eurocup,EKINOX,France,"DRAGOJEVIC, IGOR","RADOJKOVIC, JOSIP ","POROBIC, DRAGAN",OK
+Oriol,U2025_115,30/12/2025,19:00,Hapoel Midtown Jerusalem,BAXI Manresa,105,69,Confirmed,12,Eurocup,PAIS ARENA JERUSALEM,94101 Jerusalem,"BELOSEVIC, ILIJA","KOWALSKI, MARCIN","GRACIN, FRANKO",OK
+Pablo,U2025_117,30/12/2025,19:00,Buducnost VOLI Podgorica,Turk Telekom Ankara,91,81,Confirmed,12,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"TRAWICKI, TOMASZ","CICI, GENTIAN","PADROS, ARNAU",OK
+Nerea,U2025_114,30/12/2025,19:30,Aris Thessaloniki Betsson,Cedevita Olimpija Ljubljana,60,89,Confirmed,12,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"SHEMMESH, SEFFI","THEPENIER, HUGUES","GORDON, NOAM",OK
+Marc,U2025_116,30/12/2025,20:00,Dolomiti Energia Trento,London Lions,85,73,Confirmed,12,Eurocup,BTS ARENA,Italy,"BISSUEL, THOMAS","PEER, ADAR","LEZCANO, LEANDRO",OK
+Eloi,E2025_182,30/12/2025,20:05,Hapoel IBI Tel Aviv,Zalgiris Kaunas,80,93,Confirmed,19,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"JAVOR, DAMIR","KOLJENSIC, MILOS ","UDYANSKYY, EDUARD",OK
+Xavi,E2025_183,30/12/2025,20:15,LDLC ASVEL Villeurbanne,Paris Basketball,94,89,Confirmed,19,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"HORDOV, TOMISLAV ","ALIAGA, JORDI","BAENA, ALBERTO",OK
+Héctor,E2025_181,30/12/2025,20:30,FC Barcelona,AS Monaco,74,90,Confirmed,19,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"PUKL,SASA","PASTUSIAK, PIOTR","TSAROUCHA, VASILIKI",OK
+Mario,E2025_184,30/12/2025,20:30,Valencia Basket,Partizan Mozzart Bet Belgrade,86,73,Confirmed,19,Euroleague,ROIG ARENA,46013 Valencia,"MOGULKOC, EMIN","ZAMOJSKI, JAKUB","VILIUS, GYTIS",OK
+Xavi,U2025_112,2/1/2026,17:00,Neptunas Klaipeda,Umana Reyer Venice,103,118,Confirmed,12,Eurocup,SVYTURIO ARENA,Lithuania,"BOUBERT, MAXIME","BITTNER, STEVE","HADZIC, DENIS",OK
+Héctor,E2025_185,2/1/2026,18:00,Anadolu Efes Istanbul,Crvena Zvezda Meridianbet Belgrade,65,87,Confirmed,19,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"LOTTERMOSER, ROBERT","PEREZ, EMILIO","BISSANG, JOSEPH",OK
+Marc,U2025_119,2/1/2026,19:00,ratiopharm ulm,Lietkabelis Panevezys,79,89,Confirmed,12,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"GIOVANNETTI, GUIDO","MANUEL, SERGIO","MAVISU, CAN",OK
+Xavi,E2025_186,2/1/2026,20:00,Kosner Baskonia Vitoria-Gasteiz,Fenerbahce Beko Istanbul,93,108,Confirmed,19,Euroleague,BUESA ARENA,01013 Vitoria,"DIFALLAH, MEHDI","RYZHYK, BORYS","PEERANDI, RAIN",OK
+Oriol,E2025_188,2/1/2026,20:15,Panathinaikos AKTOR Athens,Olympiacos Piraeus,82,87,Confirmed,19,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","LATISEVS, OLEGS","NEDOVIC, MILAN",OK
+Héctor,E2025_190,02/01/2026,20:30,Virtus Bologna,EA7 Emporio Armani Milan,97,85,Confirmed,19,Euroleague,VIRTUS ARENA,Bologna,"PEREZ, MIGUEL ANGEL","CORTES, CARLOS","SILVA, SERGIO",OK
+Eloi,E2025_189,02/01/2026,20:45,Real Madrid,Dubai Basketball,107,93,Confirmed,19,Euroleague,MOVISTAR ARENA,Madrid,"RADOVIC, SRETEN","SUKYS, ARTURAS","PETEK, SASO",OK
+Nerea,E2025_187,02/01/2026,21:00,FC Bayern Munich,Maccabi Rapyd Tel Aviv,95,71,Confirmed,19,Euroleague,SAP GARDEN,80809 Munich - Germany,"GARCIA, JUAN CARLOS","RACYS, SAULIUS","VYKLICKY, ROBERT",OK
+,U2025_127,06/01/2026,18:00,Besiktas GAIN Istanbul,ratiopharm ulm,97,76,Confirmed,13,Eurocup,BESIKTAS AKATLAR SPORTS & EVENTS HALL,Turkey,"BELOSEVIC, ILIJA","MAJKIC, MARIO ","HADZIC, DENIS",OK
+Héctor,E2025_194,06/01/2026,18:45,Fenerbahce Beko Istanbul,Olympiacos Piraeus,88,80,Confirmed,20,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"RADOVIC, SRETEN","CORTES, CARLOS","SILVA, SERGIO",OK
+Nerea,U2025_122,06/01/2026,19:00,BAXI Manresa,Aris Thessaloniki Betsson,113,99,Confirmed,13,Eurocup,PAVELLO NOU CONGOST,Barcelona,"PEERANDI, RAIN","OBRKNEZEVIC, UROS ","ATTARD, MANUEL",OK
+Xavi,U2025_123,06/01/2026,19:00,Cedevita Olimpija Ljubljana,Bahcesehir College Istanbul,59,67,Confirmed,13,Eurocup,ARENA STOZICE,1000 Ljubljana,"PERUGA, CARLOS","BALAK, AMIT","CICI, GENTIAN",OK
+Marc,E2025_191,06/01/2026,19:30,AS Monaco,Partizan Mozzart Bet Belgrade,101,84,Confirmed,20,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","LATISEVS, OLEGS","BITTNER, STEVE",OK
+Mario,E2025_196,06/01/2026,20:00,LDLC ASVEL Villeurbanne,Real Madrid,69,80,Confirmed,20,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"LOTTERMOSER, ROBERT","RACYS, SAULIUS","THEIS, CHRISTIAN",OK
+Oscar,E2025_192,06/01/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Valencia Basket,89,106,Confirmed,20,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"DIFALLAH, MEHDI","PASTUSIAK, PIOTR","UDYANSKYY, EDUARD",OK
+Oriol,E2025_195,06/01/2026,20:05,Hapoel IBI Tel Aviv,Dubai Basketball,85,60,Confirmed,20,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"MOGULKOC, EMIN","JOVCIC, MILIVOJE","DRAGOJEVIC, IGOR",OK
+Eloi,E2025_197,06/01/2026,20:15,Panathinaikos AKTOR Athens,EA7 Emporio Armani Milan,74,87,Confirmed,20,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"JAVOR, DAMIR","VILIUS, GYTIS","KOWALSKI, MARCIN",OK
+Eloi,E2025_197,06/01/2026,20:15,Panathinaikos AKTOR Athens,EA7 Emporio Armani Milan,74,87,Confirmed,20,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"JAVOR, DAMIR","VILIUS, GYTIS","KOWALSKI, MARCIN",OK
+Héctor,E2025_193,06/01/2026,20:30,FC Barcelona,Maccabi Rapyd Tel Aviv,93,83,Confirmed,20,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"NEDOVIC, MILAN","ZAMOJSKI, JAKUB","CALIC, STEFAN",OK
+Xavi,E2025_198,06/01/2026,20:30,Virtus Bologna,Zalgiris Kaunas,83,79,Confirmed,20,Euroleague,VIRTUS ARENA,Bologna,"PUKL,SASA","RYZHYK, BORYS","GRACIN, FRANKO",OK
+,U2025_130,07/01/2026,17:00,Turk Telekom Ankara,Dolomiti Energia Trento,92,86,Confirmed,13,Eurocup,ANKARA SPOR SALONU,Turkey,"SUKYS, ARTURAS","PANTHER, ANNE","VAN DEN BROECK, NICK",OK
+,U2025_128,07/01/2026,18:00,Lietkabelis Panevezys,Cosea JL Bourg-en-Bresse,73,86,Confirmed,13,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"VYKLICKY, ROBERT","BAKI, KEREM","JURAS, MARKO",OK
+Héctor,E2025_199,07/01/2026,18:30,Anadolu Efes Istanbul,Paris Basketball,79,84,Confirmed,20,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"PEREZ, MIGUEL ANGEL","KARDUM, LUKA","PADROS, ARNAU",OK
+Marc,U2025_129,07/01/2026,18:30,Panionios Cosmorama Travel Athens,Buducnost VOLI Podgorica,97,85,Confirmed,13,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"BISSUEL, THOMAS","BOUBERT, MAXIME","PEER, ADAR",OK
+Oriol,U2025_121,07/01/2026,19:00,Slask Wroclaw,Hapoel Midtown Jerusalem,72,115,Confirmed,13,Eurocup,HALA ORBITA,Poland,"PETEK, SASO","RADOJKOVIC, JOSIP ","CELIK, HUSEYIN",OK
+Xavi,U2025_124,07/01/2026,19:45,Veolia Towers Hamburg,Neptunas Klaipeda,94,98,Confirmed,13,Eurocup,INSELPARK ARENA,Germany,"ROSSI, MICHELE","THEPENIER, HUGUES","MAVISU, CAN",OK
+Eloi,U2025_125,07/01/2026,20:00,Umana Reyer Venice,U-BT Cluj-Napoca,90,83,Confirmed,13,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"BAENA, ALBERTO","LEZCANO, LEANDRO","TIGANIS, IOANNIS",OK
+Nerea,U2025_126,07/01/2026,20:30,London Lions,NINERS Chemnitz,70,78,Confirmed,13,Eurocup,COPPER BOX ARENA,London,"MANUEL, SERGIO","PITSILKAS, VASSILIS","GORDON, NOAM",OK
+Oscar,E2025_200,7/1/2026,20:30,FC Bayern Munich,Kosner Baskonia Vitoria-Gasteiz,96,89,Confirmed,20,Euroleague,SAP GARDEN,80809 Munich - Germany,"HORDOV, TOMISLAV ","BISSANG, JOSEPH","TRAWICKI, TOMASZ",OK
+Eloi,E2025_201,8/1/2026,17:00,Dubai Basketball,Fenerbahce Beko Istanbul,92,81,Confirmed,21,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PERUGA, CARLOS","KOLJENSIC, MILOS ","KONSTANTINOVS, KRISTAPS",OK
+Eloi,E2025_201,8/1/2026,17:00,Dubai Basketball,Fenerbahce Beko Istanbul,92,81,Confirmed,21,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PERUGA, CARLOS","KOLJENSIC, MILOS ","KONSTANTINOVS, KRISTAPS",OK
+Héctor,E2025_204,08/01/2026,20:15,Panathinaikos AKTOR Athens,Virtus Bologna,84,71,Confirmed,21,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"RADOVIC, SRETEN","SHEMMESH, SEFFI","BALAK, AMIT",OK
+Xavi,E2025_203,08/01/2026,20:30,Valencia Basket,AS Monaco,92,101,Confirmed,21,Euroleague,ROIG ARENA,46013 Valencia,"LOTTERMOSER, ROBERT","PEERANDI, RAIN","ATTARD, MANUEL",OK
+Oscar,E2025_202,08/01/2026,20:45,Real Madrid,Maccabi Rapyd Tel Aviv,98,86,Confirmed,21,Euroleague,MOVISTAR ARENA,Madrid,"MOGULKOC, EMIN","FOUFIS, IOANNIS","GIOVANNETTI, GUIDO",OK
+Eloi,E2025_210,09/01/2026,19:00,Zalgiris Kaunas,Crvena Zvezda Meridianbet Belgrade,99,67,Confirmed,21,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"GARCIA, JUAN CARLOS","ALIAGA, JORDI","BAKI, KEREM",OK
+Xavi,E2025_209,09/01/2026,20:15,Olympiacos Piraeus,FC Bayern Munich,95,80,Confirmed,21,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"JAVOR, DAMIR","KARDUM, LUKA","BOUBERT, MAXIME",OK
+Héctor,E2025_207,09/01/2026,20:30,EA7 Emporio Armani Milan,Anadolu Efes Istanbul,87,74,Confirmed,21,Euroleague,ALLIANZ CLOUD,20148 Milano,"PUKL,SASA","PETEK, SASO","BAENA, ALBERTO",OK
+Oscar,E2025_206,09/01/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,LDLC ASVEL Villeurbanne,78,73,Confirmed,21,Euroleague,BUESA ARENA,01013 Vitoria,"LATISEVS, OLEGS","NEDOVIC, MILAN","POROBIC, DRAGAN",OK
+,E2025_208,09/01/2026,20:30,FC Barcelona,Partizan Mozzart Bet Belgrade,88,70,Confirmed,21,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"DIFALLAH, MEHDI","RYZHYK, BORYS","THEPENIER, HUGUES",OK
+Héctor,U2025_134,13/01/2026,17:00,Bahcesehir College Istanbul,BAXI Manresa,92,96,Confirmed,14,Eurocup,SINAN ERDEM SPORTS HALL,,"DIFALLAH, MEHDI","BITTNER, STEVE","PITSILKAS, VASSILIS",OK
+Eloi,U2025_133,13/01/2026,18:00,Neptunas Klaipeda,Cedevita Olimpija Ljubljana,85,104,Confirmed,14,Eurocup,SVYTURIO ARENA,Lithuania,"FOUFIS, IOANNIS","MANUEL, SERGIO","ATTARD, MANUEL",OK
+Oscar,U2025_132,13/01/2026,18:00,U-BT Cluj-Napoca,Veolia Towers Hamburg,103,92,Confirmed,14,Eurocup,BT ARENA,Romania,"SHEMMESH, SEFFI","RADOJKOVIC, JOSIP ","GORDON, NOAM",OK
+Xavi,U2025_137,13/01/2026,20:00,Dolomiti Energia Trento,Panionios Cosmorama Travel Athens,88,87,Confirmed,14,Eurocup,BTS ARENA,Italy,"BISSANG, JOSEPH","CICI, GENTIAN","GRACIN, FRANKO",OK
+Xavi,U2025_136,14/01/2026,17:00,Turk Telekom Ankara,London Lions,88,63,Confirmed,14,Eurocup,ANKARA SPOR SALONU,Turkey,"KONSTANTINOVS, KRISTAPS","HADZIC, DENIS","TIGANIS, IOANNIS",OK
+Oriol,U2025_138,14/01/2026,19:00,Buducnost VOLI Podgorica,Lietkabelis Panevezys,95,81,Confirmed,14,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"ALIAGA, JORDI","THEIS, CHRISTIAN","PADROS, ARNAU",OK
+Oscar,U2025_140,14/01/2026,19:00,ratiopharm ulm,NINERS Chemnitz,88,76,Confirmed,14,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"DRAGOJEVIC, IGOR","LEZCANO, LEANDRO","VAN DEN BROECK, NICK",OK
+,U2025_135,14/01/2026,19:00,Aris Thessaloniki Betsson,Hapoel Midtown Jerusalem,77,96,Confirmed,14,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"BAENA, ALBERTO","GIOVANNETTI, GUIDO","MAVISU, CAN",OK
+Marc,U2025_139,14/01/2026,19:30,Cosea JL Bourg-en-Bresse,Besiktas GAIN Istanbul,99,103,Confirmed,14,Eurocup,EKINOX,France,"NEDOVIC, MILAN","OBRKNEZEVIC, UROS ","CALIC, STEFAN",OK
+Nerea,E2025_219,14/01/2026,19:30,Partizan Mozzart Bet Belgrade,Olympiacos Piraeus,66,104,Confirmed,22,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"MOGULKOC, EMIN","SUKYS, ARTURAS","RACYS, SAULIUS",OK
+Héctor,U2025_131,14/01/2026,20:00,Umana Reyer Venice,Slask Wroclaw,103,76,Confirmed,14,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"KOLJENSIC, MILOS ","MAJKIC, MARIO ","JURAS, MARKO",OK
+Oscar,E2025_215,15/1/2026,17:00,Dubai Basketball,Virtus Bologna,72,80,Confirmed,22,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PEREZ, EMILIO","ZAMOJSKI, JAKUB","BAKI, KEREM",OK
+Eloi,E2025_211,15/01/2026,18:30,Anadolu Efes Istanbul,Kosner Baskonia Vitoria-Gasteiz,75,89,Confirmed,22,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"RADOVIC, SRETEN","JOVCIC, MILIVOJE","SILVA, SERGIO",OK
+Héctor,E2025_212,15/01/2026,19:30,FC Bayern Munich,Panathinaikos AKTOR Athens,85,78,Confirmed,22,Euroleague,SAP GARDEN,80809 Munich - Germany,"PEREZ, MIGUEL ANGEL","PASTUSIAK, PIOTR","BISSUEL, THOMAS",OK
+Oriol,E2025_213,15/01/2026,20:05,Maccabi Rapyd Tel Aviv,Zalgiris Kaunas,100,97,Confirmed,22,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"LOTTERMOSER, ROBERT","PEERANDI, RAIN","PANTHER, ANNE",OK
+Xavi,E2025_216,15/01/2026,20:30,EA7 Emporio Armani Milan,Crvena Zvezda Meridianbet Belgrade,96,104,Confirmed,22,Euroleague,ALLIANZ CLOUD,20148 Milano,"PERUGA, CARLOS","RYZHYK, BORYS","KARDUM, LUKA",OK
+Oscar,E2025_214,15/01/2026,20:45,Paris Basketball,AS Monaco,87,95,Confirmed,22,Euroleague,ADIDAS ARENA,France,"PUKL,SASA","CORTES, CARLOS","VYKLICKY, ROBERT",OK
+Xavi,E2025_217,16/01/2026,18:45,Fenerbahce Beko Istanbul,Valencia Basket,82,79,Confirmed,22,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"BELOSEVIC, ILIJA","LATISEVS, OLEGS","KOWALSKI, MARCIN",OK
+Oscar,E2025_218,16/01/2026,20:00,LDLC ASVEL Villeurbanne,Hapoel IBI Tel Aviv,73,81,Confirmed,22,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"GARCIA, JUAN CARLOS","TRAWICKI, TOMASZ","UDYANSKYY, EDUARD",OK
+Héctor,E2025_220,16/1/2026,20:45,Real Madrid,FC Barcelona,80,61,Confirmed,22,Euroleague,MOVISTAR ARENA,Madrid,"JAVOR, DAMIR","HORDOV, TOMISLAV ","VILIUS, GYTIS",OK
+Nerea,E2025_224,20/01/2026,18:15,Olympiacos Piraeus,Maccabi Rapyd Tel Aviv,100,93,Confirmed,23,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"HORDOV, TOMISLAV ","KOLJENSIC, MILOS ","RADOJKOVIC, JOSIP ",OK
+Héctor,E2025_223,20/01/2026,18:30,Hapoel IBI Tel Aviv,Anadolu Efes Istanbul,71,66,Confirmed,23,Euroleague,ARENA 8888 SOFIA,,"LOTTERMOSER, ROBERT","PASTUSIAK, PIOTR","ROSSI, MICHELE",OK
+Oscar,U2025_144,20/01/2026,18:30,Cedevita Olimpija Ljubljana,U-BT Cluj-Napoca,86,80,Confirmed,15,Eurocup,HALA TIVOLI,Slovenia,"MOGULKOC, EMIN","TRAWICKI, TOMASZ","BISSUEL, THOMAS",OK
+Xavi,E2025_221,20/01/2026,18:45,AS Monaco,Crvena Zvezda Meridianbet Belgrade,96,100,Confirmed,23,Euroleague,SALLE GASTON MEDECIN,Monaco,"PEREZ, MIGUEL ANGEL","PEREZ, EMILIO","SILVA, SERGIO",OK
+Eloi,U2025_147,20/01/2026,19:00,NINERS Chemnitz,Cosea JL Bourg-en-Bresse,88,82,Confirmed,15,Eurocup,MESSE CHEMNITZ,Germany,"RYZHYK, BORYS","FOUFIS, IOANNIS","HADZIC, DENIS",OK
+Marc,U2025_141,20/01/2026,19:00,Slask Wroclaw,Aris Thessaloniki Betsson,107,113,Confirmed,15,Eurocup,CENTENNIAL HALL,Poland,"NEDOVIC, MILAN","CICI, GENTIAN","DRAGOJEVIC, IGOR",OK
+Mario,U2025_142,20/01/2026,19:00,Hapoel Midtown Jerusalem,Bahcesehir College Istanbul,82,94,Confirmed,15,Eurocup,HALA SPORTOVA RANKO ZERAVICA,,"BELOSEVIC, ILIJA","JURAS, MARKO","TIGANIS, IOANNIS",OK
+Oriol,E2025_229,20/01/2026,20:00,LDLC ASVEL Villeurbanne,Zalgiris Kaunas,77,96,Confirmed,23,Euroleague,ASTROBALLE,France,"PERUGA, CARLOS","JOVCIC, MILIVOJE","CALIC, STEFAN",OK
+Pablo,E2025_225,20/1/2026,20:15,Panathinaikos AKTOR Athens,Kosner Baskonia Vitoria-Gasteiz,93,74,Confirmed,23,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"DIFALLAH, MEHDI","PEERANDI, RAIN","KONSTANTINOVS, KRISTAPS",OK
+Héctor,E2025_222,20/01/2026,20:30,FC Barcelona,Dubai Basketball,91,89,Confirmed,23,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"PUKL,SASA","SHEMMESH, SEFFI","BOUBERT, MAXIME",OK
+Oscar,E2025_228,20/01/2026,20:30,Valencia Basket,Paris Basketball,98,84,Confirmed,23,Euroleague,ROIG ARENA,46013 Valencia,"JAVOR, DAMIR","ZAMOJSKI, JAKUB","PEER, ADAR",OK
+Xavi,E2025_226,20/01/2026,20:30,FC Bayern Munich,Partizan Mozzart Bet Belgrade,63,67,Confirmed,23,Euroleague,SAP GARDEN,80809 Munich - Germany,"CORTES, CARLOS","VILIUS, GYTIS","BAENA, ALBERTO",OK
+Xavi,E2025_226,20/01/2026,20:30,FC Bayern Munich,Partizan Mozzart Bet Belgrade,63,67,Confirmed,23,Euroleague,SAP GARDEN,80809 Munich - Germany,"CORTES, CARLOS","VILIUS, GYTIS","BAENA, ALBERTO",OK
+Nerea,E2025_227,20/01/2026,20:45,Real Madrid,EA7 Emporio Armani Milan,106,77,Confirmed,23,Euroleague,MOVISTAR ARENA,Madrid,"RADOVIC, SRETEN","SUKYS, ARTURAS","TSAROUCHA, VASILIKI",OK
+Eloi,U2025_148,21/01/2026,18:00,Besiktas GAIN Istanbul,Buducnost VOLI Podgorica,96,74,Confirmed,15,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"VYKLICKY, ROBERT","LEZCANO, LEANDRO","PITSILKAS, VASSILIS",OK
+Eloi,U2025_148,21/1/2026,18:00,Besiktas GAIN Istanbul,Buducnost VOLI Podgorica,96,74,Confirmed,15,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"VYKLICKY, ROBERT","LEZCANO, LEANDRO","PITSILKAS, VASSILIS",OK
+Xavi,U2025_149,21/1/2026,18:00,Lietkabelis Panevezys,Dolomiti Energia Trento,93,94,Confirmed,15,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"UDYANSKYY, EDUARD","CELIK, HUSEYIN","MAVISU, CAN",OK
+Héctor,U2025_150,21/01/2026,18:30,Panionios Cosmorama Travel Athens,Turk Telekom Ankara,61,106,Confirmed,15,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"GIOVANNETTI, GUIDO","MAJKIC, MARIO ","GORDON, NOAM",OK
+Oriol,U2025_145,21/1/2026,19:30,Veolia Towers Hamburg,Umana Reyer Venice,95,87,Confirmed,15,Eurocup,INSELPARK ARENA,Germany,"OBRKNEZEVIC, UROS ","MANUEL, SERGIO","BAKI, KEREM",OK
+Nerea,E2025_230,21/01/2026,20:30,Virtus Bologna,Fenerbahce Beko Istanbul,80,85,Confirmed,23,Euroleague,VIRTUS ARENA,Bologna,"GARCIA, JUAN CARLOS","RACYS, SAULIUS","PETEK, SASO",OK
+Nerea,E2025_230,21/01/2026,20:30,Virtus Bologna,Fenerbahce Beko Istanbul,80,85,Confirmed,23,Euroleague,VIRTUS ARENA,Bologna,"GARCIA, JUAN CARLOS","RACYS, SAULIUS","PETEK, SASO",OK
+Oscar,U2025_146,21/01/2026,20:30,London Lions,ratiopharm ulm,72,73,Confirmed,15,Eurocup,COPPER BOX ARENA,London,"ATTARD, MANUEL","PADROS, ARNAU","GRACIN, FRANKO",OK
+Eloi,U2025_143,21/01/2026,20:45,BAXI Manresa,Neptunas Klaipeda,97,96,Confirmed,15,Eurocup,PAVELLO NOU CONGOST,Barcelona,"PANTHER, ANNE","THEIS, CHRISTIAN","VAN DEN BROECK, NICK",OK
+Eloi,E2025_231,22/01/2026,18:30,Anadolu Efes Istanbul,Olympiacos Piraeus,68,74,Confirmed,24,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"BELOSEVIC, ILIJA","ALIAGA, JORDI","THEPENIER, HUGUES",OK
+Héctor,E2025_233,22/01/2026,20:05,Maccabi Rapyd Tel Aviv,Panathinaikos AKTOR Athens,75,71,Confirmed,24,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"LATISEVS, OLEGS","BISSANG, JOSEPH","BITTNER, STEVE",OK
+Oriol,E2025_232,22/01/2026,20:30,FC Bayern Munich,Valencia Basket,93,89,Confirmed,24,Euroleague,SAP GARDEN,80809 Munich - Germany,"PUKL,SASA","DRAGOJEVIC, IGOR","BALAK, AMIT",OK
+Oscar,E2025_236,22/01/2026,20:30,EA7 Emporio Armani Milan,Zalgiris Kaunas,82,86,Confirmed,24,Euroleague,ALLIANZ CLOUD,20148 Milano,"DIFALLAH, MEHDI","TRAWICKI, TOMASZ","BISSUEL, THOMAS",OK
+Eloi,E2025_235,22/01/2026,20:45,Real Madrid,AS Monaco,90,78,Confirmed,24,Euroleague,MOVISTAR ARENA,Madrid,"NEDOVIC, MILAN","KOWALSKI, MARCIN","KARDUM, LUKA",OK
+Xavi,E2025_234,22/01/2026,21:00,Paris Basketball,Dubai Basketball,79,99,Confirmed,24,Euroleague,ADIDAS ARENA,France,"RYZHYK, BORYS","FOUFIS, IOANNIS","CICI, GENTIAN",OK
+Eloi,E2025_237,23/01/2026,18:45,Fenerbahce Beko Istanbul,Kosner Baskonia Vitoria-Gasteiz,84,71,Confirmed,24,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"HORDOV, TOMISLAV ","VILIUS, GYTIS","VYKLICKY, ROBERT",OK
+Héctor,E2025_239,23/01/2026,20:30,Partizan Mozzart Bet Belgrade,Hapoel IBI Tel Aviv,104,101,Confirmed,24,Euroleague,BMW PARK,81373 Munich,"PERUGA, CARLOS","PEERANDI, RAIN","KONSTANTINOVS, KRISTAPS",OK
+Oscar,E2025_240,23/01/2026,20:30,Virtus Bologna,Crvena Zvezda Meridianbet Belgrade,93,102,Confirmed,24,Euroleague,VIRTUS ARENA,Bologna,"MOGULKOC, EMIN","BAENA, ALBERTO","BOUBERT, MAXIME",OK
+,E2025_238,23/1/2026,20:45,LDLC ASVEL Villeurbanne,FC Barcelona,91,98,Confirmed,24,Euroleague,ASTROBALLE,France,"SUKYS, ARTURAS","RACYS, SAULIUS","ATTARD, MANUEL",OK
+Héctor,U2025_157,27/1/2026,17:00,Turk Telekom Ankara,Lietkabelis Panevezys,85,75,Confirmed,16,Eurocup,ANKARA SPOR SALONU,Turkey,"BELOSEVIC, ILIJA","BOUBERT, MAXIME","CALIC, STEFAN",OK
+Xavi,U2025_159,27/1/2026,19:00,Buducnost VOLI Podgorica,NINERS Chemnitz,97,81,Confirmed,16,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"ROSSI, MICHELE","GIOVANNETTI, GUIDO","CELIK, HUSEYIN",OK
+Xavi,U2025_159,27/1/2026,19:00,Buducnost VOLI Podgorica,NINERS Chemnitz,97,81,Confirmed,16,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"ROSSI, MICHELE","GIOVANNETTI, GUIDO","CELIK, HUSEYIN",OK
+Eloi,U2025_158,27/1/2026,20:00,Dolomiti Energia Trento,Besiktas GAIN Istanbul,87,74,Confirmed,16,Eurocup,BTS ARENA,Italy,"FOUFIS, IOANNIS","THEPENIER, HUGUES","PADROS, ARNAU",OK
+Oscar,E2025_241,27/01/2026,21:00,Paris Basketball,Real Madrid,98,92,Confirmed,25,Euroleague,ADIDAS ARENA,France,"LATISEVS, OLEGS","KOLJENSIC, MILOS ","PANTHER, ANNE",OK
+,U2025_155,28/01/2026,17:00,Bahcesehir College Istanbul,Aris Thessaloniki Betsson,81,79,Confirmed,16,Eurocup,SINAN ERDEM SPORTS HALL,,"JOVCIC, MILIVOJE","ATTARD, MANUEL","POROBIC, DRAGAN",OK
+Nerea,U2025_154,28/01/2026,18:00,Neptunas Klaipeda,Hapoel Midtown Jerusalem,98,92,Confirmed,16,Eurocup,SVYTURIO ARENA,Lithuania,"ALIAGA, JORDI","MAJKIC, MARIO ","PITSILKAS, VASSILIS",OK
+Nerea,U2025_154,28/01/2026,18:00,Neptunas Klaipeda,Hapoel Midtown Jerusalem,98,92,Confirmed,16,Eurocup,SVYTURIO ARENA,Lithuania,"ALIAGA, JORDI","MAJKIC, MARIO ","PITSILKAS, VASSILIS",OK
+Héctor,U2025_156,28/01/2026,18:30,Panionios Cosmorama Travel Athens,London Lions,79,78,Confirmed,16,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"JAVOR, DAMIR","VYKLICKY, ROBERT","PEER, ADAR",OK
+Xavi,U2025_151,28/01/2026,19:30,Veolia Towers Hamburg,Slask Wroclaw,99,96,Confirmed,16,Eurocup,INSELPARK ARENA,Germany,"BISSANG, JOSEPH","LEZCANO, LEANDRO","HADZIC, DENIS",OK
+,U2025_160,28/01/2026,19:30,Cosea JL Bourg-en-Bresse,ratiopharm ulm,97,66,Confirmed,16,Eurocup,EKINOX,France,"BAENA, ALBERTO","TSAROUCHA, VASILIKI","BAKI, KEREM",OK
+Oriol,U2025_152,28/01/2026,20:00,Umana Reyer Venice,Cedevita Olimpija Ljubljana,86,84,Confirmed,16,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"PEERANDI, RAIN","BALAK, AMIT","THEIS, CHRISTIAN",OK
+Oriol,U2025_152,28/01/2026,20:00,Umana Reyer Venice,Cedevita Olimpija Ljubljana,86,84,Confirmed,16,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"PEERANDI, RAIN","BALAK, AMIT","THEIS, CHRISTIAN",OK
+Oscar,U2025_153,28/01/2026,20:45,BAXI Manresa,U-BT Cluj-Napoca,101,99,Confirmed,16,Eurocup,PAVELLO NOU CONGOST,Barcelona,"DIFALLAH, MEHDI","OBRKNEZEVIC, UROS ","JURAS, MARKO",OK
+Oscar,E2025_242,29/1/2026,18:45,Fenerbahce Beko Istanbul,Anadolu Efes Istanbul,79,62,Confirmed,25,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PERUGA, CARLOS","RYZHYK, BORYS","TRAWICKI, TOMASZ",OK
+Xavi,E2025_243,29/1/2026,20:05,Hapoel IBI Tel Aviv,FC Bayern Munich,64,79,Confirmed,25,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"PEREZ, EMILIO","KARDUM, LUKA","SILVA, SERGIO",OK
+Oriol,E2025_244,29/1/2026,20:15,Olympiacos Piraeus,FC Barcelona,87,75,Confirmed,25,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"RADOVIC, SRETEN","PASTUSIAK, PIOTR","KONSTANTINOVS, KRISTAPS",OK
+Eloi,E2025_246,29/1/2026,20:30,EA7 Emporio Armani Milan,Partizan Mozzart Bet Belgrade,85,79,Confirmed,25,Euroleague,ALLIANZ CLOUD,20148 Milano,"LOTTERMOSER, ROBERT","RACYS, SAULIUS","KOWALSKI, MARCIN",OK
+Héctor,E2025_245,29/01/2026,20:45,Valencia Basket,Maccabi Rapyd Tel Aviv,94,83,Confirmed,25,Euroleague,ROIG ARENA,46013 Valencia,"NEDOVIC, MILAN","SUKYS, ARTURAS","CICI, GENTIAN",OK
+Eloi,E2025_247,30/1/2026,19:30,AS Monaco,Virtus Bologna,82,84,Confirmed,25,Euroleague,SALLE GASTON MEDECIN,Monaco,"HORDOV, TOMISLAV ","ZAMOJSKI, JAKUB","BITTNER, STEVE",OK
+Xavi,E2025_249,30/1/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Dubai Basketball,95,92,Confirmed,25,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","CORTES, CARLOS","BISSUEL, THOMAS",OK
+Oscar,E2025_248,30/1/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Zalgiris Kaunas,102,91,Confirmed,25,Euroleague,BUESA ARENA,01013 Vitoria,"PUKL,SASA","SHEMMESH, SEFFI","RADOJKOVIC, JOSIP ",OK
+Héctor,E2025_250,30/01/2026,20:45,LDLC ASVEL Villeurbanne,Panathinaikos AKTOR Athens,78,79,Confirmed,25,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"MOGULKOC, EMIN","VILIUS, GYTIS","PETEK, SASO",OK
+Héctor,U2025_161,03/02/2026,17:00,Bahcesehir College Istanbul,Slask Wroclaw,80,82,Confirmed,17,Eurocup,SINAN ERDEM SPORTS HALL,,"SUKYS, ARTURAS","TSAROUCHA, VASILIKI","THEIS, CHRISTIAN",OK
+,E2025_253,3/2/2026,17:00,Dubai Basketball,Olympiacos Piraeus,108,98,Confirmed,26,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"PEREZ, EMILIO","VILIUS, GYTIS","ATTARD, MANUEL",OK
+Eloi,E2025_251,3/2/2026,18:30,Anadolu Efes Istanbul,Valencia Basket,107,90,Confirmed,26,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"HORDOV, TOMISLAV ","KOWALSKI, MARCIN","BISSUEL, THOMAS",OK
+Marc,E2025_259,03/02/2026,19:00,Zalgiris Kaunas,AS Monaco,104,87,Confirmed,26,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"GARCIA, JUAN CARLOS","CORTES, CARLOS","UDYANSKYY, EDUARD",OK
+Marc,E2025_259,3/2/2026,19:00,Zalgiris Kaunas,AS Monaco,104,87,Confirmed,26,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"GARCIA, JUAN CARLOS","CORTES, CARLOS","UDYANSKYY, EDUARD",OK
+Oscar,U2025_167,03/02/2026,19:00,ratiopharm ulm,Buducnost VOLI Podgorica,90,103,Confirmed,17,Eurocup,RATIOPHARM ARENA	,Europastrasse 25 - 89231 Neu-Ulm,"SHEMMESH, SEFFI","MANUEL, SERGIO","VAN DEN BROECK, NICK",OK
+Héctor,E2025_252,3/2/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Hapoel IBI Tel Aviv,87,75,Confirmed,26,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LATISEVS, OLEGS","RACYS, SAULIUS","TRAWICKI, TOMASZ",OK
+Xavi,E2025_257,3/2/2026,20:05,Maccabi Rapyd Tel Aviv,Partizan Mozzart Bet Belgrade,95,93,Confirmed,26,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"PEREZ, MIGUEL ANGEL","FOUFIS, IOANNIS","VYKLICKY, ROBERT",OK
+Pablo,E2025_258,3/2/2026,20:15,Panathinaikos AKTOR Athens,Real Madrid,82,81,Confirmed,26,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"BELOSEVIC, ILIJA","JOVCIC, MILIVOJE","ZAMOJSKI, JAKUB",OK
+Eloi,E2025_256,03/02/2026,20:30,FC Bayern Munich,Paris Basketball,81,75,Confirmed,26,Euroleague,SAP GARDEN,80809 Munich - Germany,"RADOVIC, SRETEN","NEDOVIC, MILAN","CELIK, HUSEYIN",OK
+Nerea,E2025_254,03/02/2026,20:30,EA7 Emporio Armani Milan,Kosner Baskonia Vitoria-Gasteiz,109,89,Confirmed,26,Euroleague,ALLIANZ CLOUD,20148 Milano,"MOGULKOC, EMIN","RYZHYK, BORYS","BITTNER, STEVE",OK
+Oriol,E2025_255,03/02/2026,20:30,FC Barcelona,Fenerbahce Beko Istanbul,78,82,Confirmed,26,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"LOTTERMOSER, ROBERT","KARDUM, LUKA","OBRKNEZEVIC, UROS ",OK
+Héctor,U2025_170,04/02/2026,18:00,Lietkabelis Panevezys,Panionios Cosmorama Travel Athens,89,62,Confirmed,17,Eurocup,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,"ALIAGA, JORDI","BAKI, KEREM","GRACIN, FRANKO",OK
+Oscar,U2025_169,4/2/2026,18:00,Besiktas GAIN Istanbul,Turk Telekom Ankara,91,81,Confirmed,17,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"JAVOR, DAMIR","CICI, GENTIAN","POROBIC, DRAGAN",OK
+Marc,U2025_163,4/2/2026,19:00,Hapoel Midtown Jerusalem,U-BT Cluj-Napoca,114,104,Confirmed,17,Eurocup,PAIS ARENA JERUSALEM,94101 Jerusalem,"PEREZ, MIGUEL ANGEL","FOUFIS, IOANNIS","VYKLICKY, ROBERT",OK
+Oriol,U2025_168,04/02/2026,19:00,NINERS Chemnitz,Dolomiti Energia Trento,81,67,Confirmed,17,Eurocup,MESSE CHEMNITZ,Germany,"SILVA, SERGIO","PITSILKAS, VASSILIS","GORDON, NOAM",OK
+Xavi,U2025_166,04/02/2026,19:30,Cosea JL Bourg-en-Bresse,London Lions,86,85,Confirmed,17,Eurocup,EKINOX,France,"PANTHER, ANNE","MAJKIC, MARIO ","MAVISU, CAN",OK
+Nerea,U2025_162,04/02/2026,20:00,Aris Thessaloniki Betsson,Neptunas Klaipeda,83,64,Confirmed,17,Eurocup,PALAIS DE SPORTS,54638 Thessaloniki - Greece,"BISSANG, JOSEPH","PEER, ADAR","JURAS, MARKO",OK
+Eloi,E2025_260,04/02/2026,20:30,Virtus Bologna,LDLC ASVEL Villeurbanne,70,80,Confirmed,26,Euroleague,VIRTUS ARENA,Bologna,"PUKL,SASA","PEERANDI, RAIN","BALAK, AMIT",OK
+Oscar,U2025_164,4/2/2026,20:45,BAXI Manresa,Umana Reyer Venice,75,91,Confirmed,17,Eurocup,PAVELLO NOU CONGOST,Barcelona,"THEPENIER, HUGUES","HADZIC, DENIS","TIGANIS, IOANNIS",OK
+Xavi,E2025_261,5/2/2026,17:00,Dubai Basketball,Real Madrid,93,85,Confirmed,27,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"HORDOV, TOMISLAV ","PASTUSIAK, PIOTR","RACYS, SAULIUS",OK
+Eloi,U2025_165,5/2/2026,19:30,Veolia Towers Hamburg,Cedevita Olimpija Ljubljana,74,88,Confirmed,17,Eurocup,INSELPARK ARENA,Germany,"RADOVIC, SRETEN","CELIK, HUSEYIN","PADROS, ARNAU",OK
+Oscar,E2025_263,05/02/2026,20:00,Hapoel IBI Tel Aviv,Valencia Basket,99,104,Confirmed,27,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"BELOSEVIC, ILIJA","ZAMOJSKI, JAKUB","CALIC, STEFAN",OK
+Héctor,E2025_262,5/2/2026,20:30,FC Bayern Munich,AS Monaco,91,82,Confirmed,27,Euroleague,SAP GARDEN,80809 Munich - Germany,"PERUGA, CARLOS","KOLJENSIC, MILOS ","RADOJKOVIC, JOSIP ",OK
+Xavi,E2025_265,5/2/2026,20:30,Partizan Mozzart Bet Belgrade,Panathinaikos AKTOR Athens,78,62,Confirmed,27,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PEREZ, EMILIO","SUKYS, ARTURAS","BOUBERT, MAXIME",OK
+Oriol,E2025_264,5/2/2026,20:45,Paris Basketball,Fenerbahce Beko Istanbul,90,92,Confirmed,27,Euroleague,ADIDAS ARENA,France,"PEREZ, MIGUEL ANGEL","CORTES, CARLOS","LEZCANO, LEANDRO",OK
+Héctor,E2025_266,6/2/2026,18:30,Anadolu Efes Istanbul,Zalgiris Kaunas,92,82,Confirmed,27,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"JAVOR, DAMIR","BISSANG, JOSEPH","TSAROUCHA, VASILIKI",OK
+Eloi,E2025_268,6/2/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Maccabi Rapyd Tel Aviv,82,83,Confirmed,27,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LOTTERMOSER, ROBERT","KONSTANTINOVS, KRISTAPS","ROSSI, MICHELE",OK
+Oriol,E2025_269,06/02/2026,20:00,LDLC ASVEL Villeurbanne,EA7 Emporio Armani Milan,76,77,Confirmed,27,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"GARCIA, JUAN CARLOS","SILVA, SERGIO","BAENA, ALBERTO",OK
+Oscar,E2025_270,06/02/2026,20:15,Olympiacos Piraeus,Virtus Bologna,109,77,Confirmed,27,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"NEDOVIC, MILAN","ALIAGA, JORDI","PETEK, SASO",OK
+Xavi,E2025_267,06/02/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,FC Barcelona,91,97,Confirmed,27,Euroleague,BUESA ARENA,01013 Vitoria,"DIFALLAH, MEHDI","LATISEVS, OLEGS","GIOVANNETTI, GUIDO",OK
+Xavi,U2025_177,10/02/2026,18:30,Panionios Cosmorama Travel Athens,Besiktas GAIN Istanbul,74,114,Confirmed,18,Eurocup,NATIONAL ATHLETIC CENTER  MAKIS  LIOUGAS,Greece,"ROSSI, MICHELE","MANUEL, SERGIO","JURAS, MARKO",OK
+Eloi,U2025_171,10/02/2026,19:00,Slask Wroclaw,Cedevita Olimpija Ljubljana,81,114,Confirmed,18,Eurocup,HALA ORBITA,Poland,"RADOJKOVIC, JOSIP ","THEPENIER, HUGUES","MAVISU, CAN",OK
+Oscar,U2025_179,10/02/2026,20:00,Dolomiti Energia Trento,ratiopharm ulm,76,68,Confirmed,18,Eurocup,BTS ARENA,Italy,"BISSANG, JOSEPH","CELIK, HUSEYIN","PEER, ADAR",OK
+Eloi,U2025_174,11/02/2026,17:00,U-BT Cluj-Napoca,Aris Thessaloniki Betsson,111,92,Confirmed,18,Eurocup,BT ARENA,Romania,"ZAMOJSKI, JAKUB","PANTHER, ANNE","BAKI, KEREM",OK
+Héctor,U2025_178,11/02/2026,17:00,Turk Telekom Ankara,NINERS Chemnitz,79,62,Confirmed,18,Eurocup,ANKARA SPOR SALONU,Turkey,"FOUFIS, IOANNIS","ATTARD, MANUEL","GRACIN, FRANKO",OK
+Nerea,U2025_180,11/02/2026,19:00,Buducnost VOLI Podgorica,Cosea JL Bourg-en-Bresse,96,84,Confirmed,18,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"GARCIA, JUAN CARLOS","UDYANSKYY, EDUARD","CICI, GENTIAN",OK
+Oscar,U2025_175,11/02/2026,19:00,Neptunas Klaipeda,Bahcesehir College Istanbul,86,91,Confirmed,18,Eurocup,SVYTURIO ARENA,Lithuania,"SILVA, SERGIO","BITTNER, STEVE","CALIC, STEFAN",OK
+Xavi,U2025_172,11/02/2026,19:30,Veolia Towers Hamburg,BAXI Manresa,94,116,Confirmed,18,Eurocup,INSELPARK ARENA,Germany,"JOVCIC, MILIVOJE","BALAK, AMIT","POROBIC, DRAGAN",OK
+Héctor,U2025_173,11/02/2026,20:00,Umana Reyer Venice,Hapoel Midtown Jerusalem,83,80,Confirmed,18,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"BAENA, ALBERTO","TRAWICKI, TOMASZ","PADROS, ARNAU",OK
+Eloi,U2025_176,11/02/2026,20:30,London Lions,Lietkabelis Panevezys,58,66,Confirmed,18,Eurocup,COPPER BOX ARENA,London,"KARDUM, LUKA","TSAROUCHA, VASILIKI","LEZCANO, LEANDRO",OK
+Xavi,E2025_271,12/02/2026,18:30,Anadolu Efes Istanbul,Virtus Bologna,91,60,Confirmed,28,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"PEREZ, EMILIO","PASTUSIAK, PIOTR","THEIS, CHRISTIAN",OK
+Héctor,E2025_273,12/02/2026,20:05,Maccabi Rapyd Tel Aviv,FC Bayern Munich,111,106,Confirmed,28,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"PUKL,SASA","CORTES, CARLOS","MAJKIC, MARIO ",OK
+Oriol,E2025_272,12/02/2026,20:15,Olympiacos Piraeus,Crvena Zvezda Meridianbet Belgrade,92,86,Confirmed,28,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PEREZ, MIGUEL ANGEL","SHEMMESH, SEFFI","BOUBERT, MAXIME",OK
+Eloi,E2025_275,12/02/2026,20:30,FC Barcelona,Paris Basketball,74,85,Confirmed,28,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"HORDOV, TOMISLAV ","RACYS, SAULIUS","TIGANIS, IOANNIS",OK
+Oscar,E2025_274,12/02/2026,20:30,Valencia Basket,LDLC ASVEL Villeurbanne,82,67,Confirmed,28,Euroleague,ROIG ARENA,46013 Valencia,"JAVOR, DAMIR","KOLJENSIC, MILOS ","PITSILKAS, VASSILIS",OK
+Oriol,E2025_280,13/02/2026,19:00,Zalgiris Kaunas,Hapoel IBI Tel Aviv,93,82,Confirmed,28,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"LOTTERMOSER, ROBERT","RYZHYK, BORYS","OBRKNEZEVIC, UROS ",OK
+Oscar,E2025_277,13/2/2026,19:30,AS Monaco,Kosner Baskonia Vitoria-Gasteiz,102,92,Confirmed,28,Euroleague,SALLE GASTON MEDECIN,Monaco,"RADOVIC, SRETEN","VILIUS, GYTIS","PETEK, SASO",OK
+Xavi,E2025_279,13/02/2026,20:15,Panathinaikos AKTOR Athens,Fenerbahce Beko Istanbul,83,85,Confirmed,28,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","NEDOVIC, MILAN","KOWALSKI, MARCIN",OK
+Eloi,E2025_276,13/2/2026,20:30,Partizan Mozzart Bet Belgrade,Real Madrid,73,77,Confirmed,28,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"MOGULKOC, EMIN","PEERANDI, RAIN","BISSUEL, THOMAS",OK
+Héctor,E2025_278,13/02/2026,20:30,EA7 Emporio Armani Milan,Dubai Basketball,78,96,Confirmed,28,Euroleague,ALLIANZ CLOUD,20148 Milano,"BELOSEVIC, ILIJA","ALIAGA, JORDI","KONSTANTINOVS, KRISTAPS",OK
+Eloi,E2025_281,25/02/2026,18:45,Fenerbahce Beko Istanbul,Partizan Mozzart Bet Belgrade,81,78,Confirmed,29,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PEREZ, EMILIO","FOUFIS, IOANNIS","ATTARD, MANUEL",OK
+,E2025_283,25/2/2026,19:00,Zalgiris Kaunas,Olympiacos Piraeus,99,94,Confirmed,29,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"BELOSEVIC, ILIJA","KOWALSKI, MARCIN","BAENA, ALBERTO",OK
+Oscar,E2025_282,25/02/2026,20:30,Virtus Bologna,FC Barcelona,85,80,Confirmed,29,Euroleague,VIRTUS ARENA,Bologna,"MOGULKOC, EMIN","BISSANG, JOSEPH","SUKYS, ARTURAS",OK
+Oscar,E2025_282,25/02/2026,20:30,Virtus Bologna,FC Barcelona,85,80,Confirmed,29,Euroleague,VIRTUS ARENA,Bologna,"MOGULKOC, EMIN","BISSANG, JOSEPH","SUKYS, ARTURAS",OK
+Xavi,E2025_286,25/02/2026,20:30,Crvena Zvezda Meridianbet Belgrade,Anadolu Efes Istanbul,91,81,Confirmed,29,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"CORTES, CARLOS","ALIAGA, JORDI","THEPENIER, HUGUES",OK
+Oscar,E2025_287,26/02/2026,18:00,Dubai Basketball,LDLC ASVEL Villeurbanne,96,85,Confirmed,29,Euroleague,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,"RADOVIC, SRETEN","PEERANDI, RAIN","KARDUM, LUKA",OK
+Eloi,E2025_284,26/02/2026,19:30,AS Monaco,Maccabi Rapyd Tel Aviv,86,91,Confirmed,29,Euroleague,SALLE GASTON MEDECIN,Monaco,"PEREZ, MIGUEL ANGEL","ZAMOJSKI, JAKUB","UDYANSKYY, EDUARD",OK
+Héctor,E2025_288,26/02/2026,20:05,Hapoel IBI Tel Aviv,EA7 Emporio Armani Milan,92,86,Confirmed,29,Euroleague,MENORA MIVTACHIM ARENA,67062 Tel Aviv,"PERUGA, CARLOS","NEDOVIC, MILAN","BOUBERT, MAXIME",OK
+Xavi,E2025_285,26/02/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Valencia Basket,79,108,Confirmed,29,Euroleague,BUESA ARENA,01013 Vitoria,"RYZHYK, BORYS","HORDOV, TOMISLAV ","SILVA, SERGIO",OK
+Nerea,E2025_289,26/02/2026,20:45,Panathinaikos AKTOR Athens,Paris Basketball,99,104,Confirmed,29,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"GARCIA, JUAN CARLOS","JOVCIC, MILIVOJE","MANUEL, SERGIO",OK
+Oscar,E2025_290,26/02/2026,20:45,Real Madrid,FC Bayern Munich,93,70,Confirmed,29,Euroleague,MOVISTAR ARENA,Madrid,"JAVOR, DAMIR","VILIUS, GYTIS","RADOJKOVIC, JOSIP ",OK
+Eloi,E2025_292,05/03/2026,18:45,Fenerbahce Beko Istanbul,AS Monaco,88,70,Confirmed,30,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"RADOVIC, SRETEN","CORTES, CARLOS","RACYS, SAULIUS",OK
+Héctor,E2025_291,5/3/2026,20:30,EA7 Emporio Armani Milan,FC Barcelona,87,84,Confirmed,30,Euroleague,ALLIANZ CLOUD,20148 Milano,"LOTTERMOSER, ROBERT","RYZHYK, BORYS","KOWALSKI, MARCIN",OK
+Xavi,E2025_296,5/3/2026,20:30,Valencia Basket,Zalgiris Kaunas,91,87,Confirmed,30,Euroleague,ROIG ARENA,46013 Valencia,"JAVOR, DAMIR","BISSANG, JOSEPH","PASTUSIAK, PIOTR",OK
+Oscar,E2025_295,05/03/2026,20:45,Real Madrid,Virtus Bologna,92,84,Confirmed,30,Euroleague,MOVISTAR ARENA,Madrid,"BELOSEVIC, ILIJA","NEDOVIC, MILAN","BITTNER, STEVE",OK
+Oscar,E2025_297,6/3/2026,18:30,Anadolu Efes Istanbul,LDLC ASVEL Villeurbanne,88,91,Confirmed,30,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"HORDOV, TOMISLAV ","ZAMOJSKI, JAKUB","BAENA, ALBERTO",OK
+Eloi,E2025_299,6/3/2026,20:00,Crvena Zvezda Meridianbet Belgrade,FC Bayern Munich,80,85,Confirmed,30,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","FOUFIS, IOANNIS","UDYANSKYY, EDUARD",OK
+Xavi,E2025_300,6/3/2026,20:15,Olympiacos Piraeus,Panathinaikos AKTOR Athens,86,80,Confirmed,30,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PEREZ, MIGUEL ANGEL","PEREZ, EMILIO","PETEK, SASO",OK
+Héctor,E2025_298,6/3/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Paris Basketball,81,97,Confirmed,30,Euroleague,BUESA ARENA,01013 Vitoria,"PUKL,SASA","VILIUS, GYTIS","KOLJENSIC, MILOS ",OK
+Xavi,E2025_334,10/3/2026,20:45,Paris Basketball,Olympiacos Piraeus,87,104,Confirmed,34,Euroleague,ADIDAS ARENA,France,"RADOVIC, SRETEN","ZAMOJSKI, JAKUB","OBRKNEZEVIC, UROS ",OK
+Héctor,U2025_182,11/3/2026,18:00,Turk Telekom Ankara,BAXI Manresa,98,81,Confirmed,19,Eurocup,ANKARA SPOR SALONU,Turkey,"JOVCIC, MILIVOJE","PETEK, SASO","PITSILKAS, VASSILIS",OK
+Eloi,U2025_183,11/3/2026,19:00,Buducnost VOLI Podgorica,U-BT Cluj-Napoca,82,100,Confirmed,19,Eurocup,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,"CORTES, CARLOS","TSAROUCHA, VASILIKI","TRAWICKI, TOMASZ",OK
+Xavi,U2025_181,11/3/2026,19:00,Cedevita Olimpija Ljubljana,NINERS Chemnitz,73,65,Confirmed,19,Eurocup,ARENA STOZICE,1000 Ljubljana,"FOUFIS, IOANNIS","UDYANSKYY, EDUARD","TIGANIS, IOANNIS",OK
+Oscar,U2025_184,11/3/2026,20:00,Umana Reyer Venice,Dolomiti Energia Trento,90,94,Confirmed,19,Eurocup,PALASPORT TALIERCIO,30174 Venezia - Italy,"KOLJENSIC, MILOS ","BOUBERT, MAXIME","CELIK, HUSEYIN",OK
+Héctor,E2025_304,11/3/2026,20:45,Virtus Bologna,Partizan Mozzart Bet Belgrade,82,88,Confirmed,31,Euroleague,VIRTUS ARENA,Bologna,"RYZHYK, BORYS","VILIUS, GYTIS","BISSUEL, THOMAS",OK
+Nerea,E2025_306,12/03/2026,19:00,AS Monaco,Olympiacos Piraeus,81,80,Confirmed,31,Euroleague,SALLE GASTON MEDECIN,Monaco,"JAVOR, DAMIR","KARDUM, LUKA","MANUEL, SERGIO",OK
+Oscar,E2025_308,12/03/2026,20:00,Dubai Basketball,Kosner Baskonia Vitoria-Gasteiz,100,94,Confirmed,31,Euroleague,ZETRA ARENA,,"LOTTERMOSER, ROBERT","NEDOVIC, MILAN","BISSANG, JOSEPH",OK
+Oriol,E2025_301,12/3/2026,20:30,FC Bayern Munich,Anadolu Efes Istanbul,80,81,Confirmed,31,Euroleague,SAP GARDEN,80809 Munich - Germany,"PEREZ, EMILIO","RACYS, SAULIUS","ROSSI, MICHELE",OK
+Xavi,E2025_303,12/3/2026,20:45,Real Madrid,Valencia Basket,96,79,Confirmed,31,Euroleague,MOVISTAR ARENA,Madrid,"PUKL,SASA","LATISEVS, OLEGS","KOWALSKI, MARCIN",OK
+Eloi,E2025_305,12/3/2026,21:00,Panathinaikos AKTOR Athens,Zalgiris Kaunas,92,88,Confirmed,31,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","PEERANDI, RAIN","ATTARD, MANUEL",OK
+Héctor,E2025_302,12/3/2026,21:00,Paris Basketball,LDLC ASVEL Villeurbanne,90,81,Confirmed,31,Euroleague,ADIDAS ARENA,France,"BELOSEVIC, ILIJA","KONSTANTINOVS, KRISTAPS","RADOJKOVIC, JOSIP ",OK
+Héctor,E2025_307,13/03/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Fenerbahce Beko Istanbul,79,73,Confirmed,31,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","DIFALLAH, MEHDI","SILVA, SERGIO",OK
+Eloi,E2025_309,13/3/2026,20:30,EA7 Emporio Armani Milan,Maccabi Rapyd Tel Aviv,96,87,Confirmed,31,Euroleague,ALLIANZ CLOUD,20148 Milano,"HORDOV, TOMISLAV ","ALIAGA, JORDI","THEPENIER, HUGUES",OK
+Xavi,E2025_310,13/3/2026,20:30,FC Barcelona,Hapoel IBI Tel Aviv,75,80,Confirmed,31,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"MOGULKOC, EMIN","SUKYS, ARTURAS","VYKLICKY, ROBERT",OK
+Xavi,E2025_205,17/03/2026,16:00,Hapoel IBI Tel Aviv,Paris Basketball,93,82,Confirmed,21,Euroleague,ARENA 8888 SOFIA,,"PEREZ, EMILIO","BAENA, ALBERTO","TSAROUCHA, VASILIKI",OK
+Oriol,U2025_188,17/3/2026,17:00,Bahcesehir College Istanbul,U-BT Cluj-Napoca,75,72,Confirmed,20,Eurocup,SINAN ERDEM SPORTS HALL,,"BISSANG, JOSEPH","PANTHER, ANNE","MAJKIC, MARIO ",OK
+Héctor,U2025_186,17/3/2026,19:30,Cosea JL Bourg-en-Bresse,Cedevita Olimpija Ljubljana,83,79,Confirmed,20,Eurocup,EKINOX,France,"KOWALSKI, MARCIN","ATTARD, MANUEL","PADROS, ARNAU",OK
+Oscar,E2025_294,17/3/2026,20:00,Partizan Mozzart Bet Belgrade,Dubai Basketball,88,74,Confirmed,30,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"DIFALLAH, MEHDI","SUKYS, ARTURAS","BOUBERT, MAXIME",OK
+Eloi,E2025_134,17/3/2026,20:15,Olympiacos Piraeus,Fenerbahce Beko Istanbul,104,87,Confirmed,14,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PERUGA, CARLOS","LATISEVS, OLEGS","THEPENIER, HUGUES",OK
+Héctor,U2025_187,18/03/2026,18:00,Besiktas GAIN Istanbul,Dolomiti Energia Trento,77,76,Confirmed,20,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"ALIAGA, JORDI","BISSUEL, THOMAS","MANUEL, SERGIO",OK
+Eloi,U2025_185,18/03/2026,20:00,Hapoel Midtown Jerusalem,Turk Telekom Ankara,90,91,Confirmed,20,Eurocup,RANKO ZERAVICA SPORTS HALL,,"PEERANDI, RAIN","ROSSI, MICHELE","GRACIN, FRANKO",OK
+Xavi,E2025_315,19/3/2026,18:00,Valencia Basket,FC Barcelona,62,66,Confirmed,32,Euroleague,ROIG ARENA,46013 Valencia,"BELOSEVIC, ILIJA","DIFALLAH, MEHDI","PETEK, SASO",OK
+Oriol,E2025_316,19/03/2026,18:30,Anadolu Efes Istanbul,AS Monaco,93,98,Confirmed,32,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"JOVCIC, MILIVOJE","NEDOVIC, MILAN","UDYANSKYY, EDUARD",OK
+Eloi,E2025_312,19/03/2026,20:05,Hapoel IBI Tel Aviv,Virtus Bologna,109,91,Confirmed,32,Euroleague,ARENA 8888 SOFIA,,"PERUGA, CARLOS","ZAMOJSKI, JAKUB","KARDUM, LUKA",OK
+Oscar,E2025_313,19/03/2026,20:15,Olympiacos Piraeus,Kosner Baskonia Vitoria-Gasteiz,90,80,Confirmed,32,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"MOGULKOC, EMIN","HORDOV, TOMISLAV ","SILVA, SERGIO",OK
+Héctor,E2025_311,19/03/2026,20:30,FC Bayern Munich,Dubai Basketball,74,87,Confirmed,32,Euroleague,SAP GARDEN,80809 Munich - Germany,"PUKL,SASA","VILIUS, GYTIS","BALAK, AMIT",OK
+Xavi,E2025_314,19/03/2026,20:45,Paris Basketball,Partizan Mozzart Bet Belgrade,81,90,Confirmed,32,Euroleague,ADIDAS ARENA,France,"GARCIA, JUAN CARLOS","RACYS, SAULIUS","PASTUSIAK, PIOTR",OK
+Eloi,E2025_317,20/03/2026,18:45,Fenerbahce Beko Istanbul,EA7 Emporio Armani Milan,79,75,Confirmed,32,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PEREZ, EMILIO","JAVOR, DAMIR","CORTES, CARLOS",OK
+Xavi,E2025_320,20/03/2026,19:00,Zalgiris Kaunas,Real Madrid,87,85,Confirmed,32,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"RADOVIC, SRETEN","RYZHYK, BORYS","KOLJENSIC, MILOS ",OK
+Héctor,E2025_319,20/03/2026,20:15,Panathinaikos AKTOR Athens,Crvena Zvezda Meridianbet Belgrade,82,74,Confirmed,32,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","BAENA, ALBERTO",OK
+Oscar,E2025_318,20/3/2026,20:45,LDLC ASVEL Villeurbanne,Maccabi Rapyd Tel Aviv,85,89,Confirmed,32,Euroleague,ASTROBALLE,France,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","OBRKNEZEVIC, UROS ",OK
+Oscar,E2025_324,24/3/2026,18:30,Maccabi Rapyd Tel Aviv,Fenerbahce Beko Istanbul,94,89,Confirmed,33,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"BELOSEVIC, ILIJA","KARDUM, LUKA","BAENA, ALBERTO",OK
+Eloi,E2025_329,24/3/2026,19:00,Zalgiris Kaunas,FC Bayern Munich,78,71,Confirmed,33,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"GARCIA, JUAN CARLOS","PETEK, SASO","TRAWICKI, TOMASZ",OK
+Héctor,E2025_321,24/03/2026,19:00,AS Monaco,EA7 Emporio Armani Milan,90,85,Confirmed,33,Euroleague,SALLE GASTON MEDECIN,Monaco,"PERUGA, CARLOS","LATISEVS, OLEGS","BITTNER, STEVE",OK
+Xavi,E2025_322,24/3/2026,19:30,Dubai Basketball,Panathinaikos AKTOR Athens,104,107,Confirmed,33,Euroleague,ZETRA ARENA,,"DIFALLAH, MEHDI","SUKYS, ARTURAS","VYKLICKY, ROBERT",OK
+Nerea,E2025_327,24/3/2026,20:30,Valencia Basket,Olympiacos Piraeus,85,84,Confirmed,33,Euroleague,ROIG ARENA,46013 Valencia,"NEDOVIC, MILAN","KOLJENSIC, MILOS ","KONSTANTINOVS, KRISTAPS",OK
+Oriol,E2025_323,24/3/2026,20:30,FC Barcelona,Anadolu Efes Istanbul,78,71,Confirmed,33,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"PUKL,SASA","HORDOV, TOMISLAV ","SILVA, SERGIO",OK
+Oscar,E2025_325,24/03/2026,20:45,Partizan Mozzart Bet Belgrade,LDLC ASVEL Villeurbanne,79,78,Confirmed,33,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LOTTERMOSER, ROBERT","CORTES, CARLOS","UDYANSKYY, EDUARD",OK
+Eloi,E2025_326,24/03/2026,21:00,Real Madrid,Hapoel IBI Tel Aviv,92,83,Confirmed,33,Euroleague,MOVISTAR ARENA,Madrid,"JAVOR, DAMIR","VILIUS, GYTIS","RACYS, SAULIUS",OK
+Eloi,E2025_330,25/03/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Crvena Zvezda Meridianbet Belgrade,100,108,Confirmed,33,Euroleague,BUESA ARENA,01013 Vitoria,"RYZHYK, BORYS","ZAMOJSKI, JAKUB","PEERANDI, RAIN",OK
+Oscar,E2025_332,26/03/2026,20:30,FC Bayern Munich,LDLC ASVEL Villeurbanne,93,83,Confirmed,34,Euroleague,SAP GARDEN,80809 Munich - Germany,"MOGULKOC, EMIN","ALIAGA, JORDI","GIOVANNETTI, GUIDO",OK
+Xavi,E2025_331,26/03/2026,20:30,EA7 Emporio Armani Milan,Virtus Bologna,103,87,Confirmed,34,Euroleague,UNIPOL FORUM,20090 Assago,"PEREZ, MIGUEL ANGEL","NEDOVIC, MILAN","BALAK, AMIT",OK
+Eloi,E2025_333,26/03/2026,20:30,Maccabi Rapyd Tel Aviv,Dubai Basketball,104,100,Confirmed,34,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"RADOVIC, SRETEN","KOLJENSIC, MILOS ","PANTHER, ANNE",OK
+Héctor,E2025_335,26/3/2026,20:45,Real Madrid,Anadolu Efes Istanbul,82,71,Confirmed,34,Euroleague,MOVISTAR ARENA,Madrid,"DIFALLAH, MEHDI","RADOJKOVIC, JOSIP ","ATTARD, MANUEL",OK
+Héctor,E2025_338,27/3/2026,18:45,Fenerbahce Beko Istanbul,Zalgiris Kaunas,82,92,Confirmed,34,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"HORDOV, TOMISLAV ","BISSANG, JOSEPH","DRAGOJEVIC, IGOR",OK
+Xavi,E2025_339,27/3/2026,20:15,Panathinaikos AKTOR Athens,AS Monaco,107,97,Confirmed,34,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"BELOSEVIC, ILIJA","PEREZ, EMILIO","KONSTANTINOVS, KRISTAPS",OK
+Eloi,E2025_340,27/03/2026,20:30,Partizan Mozzart Bet Belgrade,Valencia Basket,110,104,Confirmed,34,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"RYZHYK, BORYS","SUKYS, ARTURAS","BISSUEL, THOMAS",OK
+Oriol,E2025_336,27/3/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Hapoel IBI Tel Aviv,118,109,Confirmed,34,Euroleague,BUESA ARENA,01013 Vitoria,"LOTTERMOSER, ROBERT","JOVCIC, MILIVOJE","BOUBERT, MAXIME",OK
+Oscar,E2025_337,27/3/2026,21:00,FC Barcelona,Crvena Zvezda Meridianbet Belgrade,92,88,Confirmed,34,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"FOUFIS, IOANNIS","PASTUSIAK, PIOTR","RACYS, SAULIUS",OK
+Héctor,U2025_190,31/03/2026,19:00,Besiktas GAIN Istanbul,Bahcesehir College Istanbul,91,72,Confirmed,21,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"BAENA, ALBERTO","THEPENIER, HUGUES","THEIS, CHRISTIAN",OK
+Xavi,U2025_189,31/03/2026,20:00,Cosea JL Bourg-en-Bresse,Turk Telekom Ankara,71,99,Confirmed,21,Eurocup,EKINOX,France,"KONSTANTINOVS, KRISTAPS","OBRKNEZEVIC, UROS ","POROBIC, DRAGAN",OK
+Oscar,E2025_328,31/03/2026,20:45,Virtus Bologna,Paris Basketball,82,103,Confirmed,33,Euroleague,PALADOZZA,40122 Bologna - Italy,"PEREZ, EMILIO","ALIAGA, JORDI","TSAROUCHA, VASILIKI",OK
+Eloi,E2025_348,01/04/2026,19:00,FC Bayern Munich,Fenerbahce Beko Istanbul,85,76,Confirmed,35,Euroleague,SAP GARDEN,80809 Munich - Germany,"PEREZ, MIGUEL ANGEL","SUKYS, ARTURAS","KOLJENSIC, MILOS ",OK
+Oscar,E2025_345,02/04/2026,19:00,Zalgiris Kaunas,FC Barcelona,83,71,Confirmed,35,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"JAVOR, DAMIR","KARDUM, LUKA","UDYANSKYY, EDUARD",OK
+Nerea,E2025_343,02/04/2026,19:00,Hapoel IBI Tel Aviv,Panathinaikos AKTOR Athens,92,88,Confirmed,35,Euroleague,ARENA 8888 SOFIA,,"MOGULKOC, EMIN","CORTES, CARLOS","PASTUSIAK, PIOTR",OK
+Xavi,E2025_342,02/04/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Partizan Mozzart Bet Belgrade,82,89,Confirmed,35,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"PERUGA, CARLOS","DIFALLAH, MEHDI","VILIUS, GYTIS",OK
+Oriol,E2025_347,02/04/2026,20:00,Dubai Basketball,AS Monaco,101,91,Confirmed,35,Euroleague,ZETRA ARENA,,"LOTTERMOSER, ROBERT","HORDOV, TOMISLAV ","RADOJKOVIC, JOSIP ",OK
+Héctor,E2025_344,02/04/2026,20:45,Paris Basketball,EA7 Emporio Armani Milan,103,93,Confirmed,35,Euroleague,ADIDAS ARENA,France,"JOVCIC, MILIVOJE","KOWALSKI, MARCIN","MANUEL, SERGIO",OK
+Eloi,E2025_341,02/04/2026,21:00,Maccabi Rapyd Tel Aviv,Anadolu Efes Istanbul,103,89,Confirmed,35,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"GARCIA, JUAN CARLOS","FOUFIS, IOANNIS","PETEK, SASO",OK
+Eloi,U2025_192,03/04/2026,18:00,Bahcesehir College Istanbul,Besiktas GAIN Istanbul,72,82,Confirmed,22,Eurocup,SINAN ERDEM SPORTS HALL,,"PEREZ, MIGUEL ANGEL","BISSUEL, THOMAS","GIOVANNETTI, GUIDO",OK
+Oriol,U2025_191,03/04/2026,19:00,Turk Telekom Ankara,Cosea JL Bourg-en-Bresse,73,76,Confirmed,22,Eurocup,ANKARA SPOR SALONU,Turkey,"PEREZ, EMILIO","BITTNER, STEVE","CALIC, STEFAN",OK
+Oscar,E2025_349,03/04/2026,20:00,LDLC ASVEL Villeurbanne,Olympiacos Piraeus,74,82,Confirmed,35,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"RADOVIC, SRETEN","DRAGOJEVIC, IGOR","ATTARD, MANUEL",OK
+Héctor,E2025_346,03/04/2026,20:30,Kosner Baskonia Vitoria-Gasteiz,Real Madrid,98,96,Confirmed,35,Euroleague,BUESA ARENA,01013 Vitoria,"PUKL,SASA","NEDOVIC, MILAN","BISSANG, JOSEPH",OK
+Xavi,E2025_350,03/04/2026,20:30,Virtus Bologna,Valencia Basket,81,94,Confirmed,35,Euroleague,VIRTUS ARENA,Bologna,"BELOSEVIC, ILIJA","LATISEVS, OLEGS","SILVA, SERGIO",OK
+Nerea,E2025_354,07/04/2026,18:00,Hapoel IBI Tel Aviv,Fenerbahce Beko Istanbul,95,80,Confirmed,36,Euroleague,ARENA 8888 SOFIA,,"PEREZ, EMILIO","NEDOVIC, MILAN","PETEK, SASO",OK
+Xavi,E2025_358,07/04/2026,19:00,Zalgiris Kaunas,Dubai Basketball,65,77,Confirmed,36,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PERUGA, CARLOS","JOVCIC, MILIVOJE","CELIK, HUSEYIN",OK
+Marc,E2025_352,07/04/2026,20:00,Crvena Zvezda Meridianbet Belgrade,Paris Basketball,94,81,Confirmed,36,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","ROSSI, MICHELE","BALAK, AMIT",OK
+Oriol,E2025_355,7/4/2026,20:15,Olympiacos Piraeus,Real Madrid,102,88,Confirmed,36,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"HORDOV, TOMISLAV ","KARDUM, LUKA","BISSUEL, THOMAS",OK
+Oscar,E2025_353,07/04/2026,20:30,FC Barcelona,Panathinaikos AKTOR Athens,79,93,Confirmed,36,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","ATTARD, MANUEL",OK
+Héctor,E2025_356,07/04/2026,20:30,Valencia Basket,EA7 Emporio Armani Milan,102,96,Confirmed,36,Euroleague,ROIG ARENA,46013 Valencia,"RADOVIC, SRETEN","RACYS, SAULIUS","GRACIN, FRANKO",OK
+Eloi,E2025_357,07/04/2026,20:30,Virtus Bologna,FC Bayern Munich,80,85,Confirmed,36,Euroleague,VIRTUS ARENA,Bologna,"JAVOR, DAMIR","RYZHYK, BORYS","UDYANSKYY, EDUARD",OK
+Nerea,E2025_351,07/04/2026,21:00,Kosner Baskonia Vitoria-Gasteiz,Maccabi Rapyd Tel Aviv,101,98,Confirmed,36,Euroleague,BUESA ARENA,01013 Vitoria,"DIFALLAH, MEHDI","VILIUS, GYTIS","TRAWICKI, TOMASZ",OK
+Eloi,U2025_193,08/04/2026,19:30,Cosea JL Bourg-en-Bresse,Turk Telekom Ankara,94,78,Confirmed,23,Eurocup,EKINOX,France,"FOUFIS, IOANNIS","CORTES, CARLOS","RADOJKOVIC, JOSIP ",OK
+Héctor,E2025_359,08/04/2026,19:30,Anadolu Efes Istanbul,Partizan Mozzart Bet Belgrade,79,72,Confirmed,36,Euroleague,TURKCELL BASKETBALL DEVELOPMENT CENTER,Istanbul,"PEREZ, MIGUEL ANGEL","ALIAGA, JORDI","THEIS, CHRISTIAN",OK
+Xavi,E2025_360,08/04/2026,19:30,AS Monaco,LDLC ASVEL Villeurbanne,81,76,Confirmed,36,Euroleague,SALLE GASTON MEDECIN,Monaco,"PUKL,SASA","KOLJENSIC, MILOS ","BAENA, ALBERTO",OK
+Oscar,E2025_363,09/04/2026,18:30,Hapoel IBI Tel Aviv,Olympiacos Piraeus,85,89,Confirmed,37,Euroleague,ARENA 8888 SOFIA,,"BELOSEVIC, ILIJA","BISSANG, JOSEPH","KONSTANTINOVS, KRISTAPS",OK
+Oriol,E2025_362,09/04/2026,19:45,Fenerbahce Beko Istanbul,Real Madrid,69,74,Confirmed,37,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"LOTTERMOSER, ROBERT","LATISEVS, OLEGS","KOWALSKI, MARCIN",OK
+Héctor,E2025_361,09/04/2026,20:30,EA7 Emporio Armani Milan,FC Bayern Munich,84,94,Confirmed,37,Euroleague,UNIPOL FORUM,20090 Assago,"PERUGA, CARLOS","VILIUS, GYTIS","PEERANDI, RAIN",OK
+Xavi,E2025_365,09/04/2026,20:45,Valencia Basket,Panathinaikos AKTOR Athens,102,84,Confirmed,37,Euroleague,ROIG ARENA,46013 Valencia,"DIFALLAH, MEHDI","HORDOV, TOMISLAV ","THEPENIER, HUGUES",OK
+Eloi,E2025_364,09/04/2026,21:00,Paris Basketball,Maccabi Rapyd Tel Aviv,113,80,Confirmed,37,Euroleague,ADIDAS ARENA,France,"JAVOR, DAMIR","SILVA, SERGIO","LEZCANO, LEANDRO",OK
+Oscar,E2025_366,10/04/2026,19:30,AS Monaco,FC Barcelona,93,86,Confirmed,37,Euroleague,SALLE GASTON MEDECIN,Monaco,"RADOVIC, SRETEN","ZAMOJSKI, JAKUB","PANTHER, ANNE",OK
+Eloi,E2025_367,10/04/2026,20:00,Dubai Basketball,Anadolu Efes Istanbul,69,85,Confirmed,37,Euroleague,ZETRA ARENA,,"PUKL,SASA","RYZHYK, BORYS","TSAROUCHA, VASILIKI",OK
+Héctor,E2025_369,10/04/2026,20:30,Partizan Mozzart Bet Belgrade,Zalgiris Kaunas,74,83,Confirmed,37,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"GARCIA, JUAN CARLOS","SHEMMESH, SEFFI","MANUEL, SERGIO",OK
+Oriol,E2025_370,10/04/2026,20:30,Virtus Bologna,Kosner Baskonia Vitoria-Gasteiz,72,82,Confirmed,37,Euroleague,VIRTUS ARENA,Bologna,"MOGULKOC, EMIN","PASTUSIAK, PIOTR","CICI, GENTIAN",OK
+Xavi,E2025_368,10/04/2026,20:45,LDLC ASVEL Villeurbanne,Crvena Zvezda Meridianbet Belgrade,93,106,Confirmed,37,Euroleague,ASTROBALLE,France,"PEREZ, EMILIO","CORTES, CARLOS","PEER, ADAR",OK
+Marc,E2025_293,12/04/2026,21:15,Maccabi Rapyd Tel Aviv,Hapoel IBI Tel Aviv,88,99,Confirmed,30,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"LATISEVS, OLEGS","JOVCIC, MILIVOJE","DRAGOJEVIC, IGOR",OK
+Héctor,E2025_371,16/04/2026,20:00,LDLC ASVEL Villeurbanne,Fenerbahce Beko Istanbul,76,81,Confirmed,38,Euroleague,LDLC ARENA,69150 Décines-Charpieu - France,"PEREZ, MIGUEL ANGEL","JOVCIC, MILIVOJE","KARDUM, LUKA",OK
+Xavi,E2025_372,16/04/2026,20:05,Maccabi Rapyd Tel Aviv,Virtus Bologna,85,89,Confirmed,38,Euroleague,ALEKSANDAR NIKOLIC HALL,Serbia,"HORDOV, TOMISLAV ","NEDOVIC, MILAN","ALIAGA, JORDI",OK
+Oriol,E2025_375,16/04/2026,20:15,Olympiacos Piraeus,EA7 Emporio Armani Milan,85,76,Confirmed,38,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PEREZ, EMILIO","DIFALLAH, MEHDI","BAENA, ALBERTO",OK
+Eloi,E2025_373,16/04/2026,20:30,Partizan Mozzart Bet Belgrade,Kosner Baskonia Vitoria-Gasteiz,91,79,Confirmed,38,Euroleague,BELGRADE ARENA,11070 Belgrade - Serbia,"LOTTERMOSER, ROBERT","SUKYS, ARTURAS","BALAK, AMIT",OK
+Oscar,E2025_374,16/04/2026,20:45,Real Madrid,Crvena Zvezda Meridianbet Belgrade,103,82,Confirmed,38,Euroleague,MOVISTAR ARENA,Madrid,"RYZHYK, BORYS","ZAMOJSKI, JAKUB","PEERANDI, RAIN",OK
+Oriol,E2025_380,17/04/2026,19:00,Zalgiris Kaunas,Paris Basketball,85,79,Confirmed,38,Euroleague,ZALGIRIO ARENA,44287 Kaunas,"PUKL,SASA","LATISEVS, OLEGS","PANTHER, ANNE",OK
+Oscar,E2025_377,17/04/2026,19:30,AS Monaco,Hapoel IBI Tel Aviv,105,85,Confirmed,38,Euroleague,SALLE GASTON MEDECIN,Monaco,"GARCIA, JUAN CARLOS","JAVOR, DAMIR","ATTARD, MANUEL",OK
+Xavi,E2025_378,17/04/2026,20:00,Dubai Basketball,Valencia Basket,85,95,Confirmed,38,Euroleague,ARENA HUSEJIN SMAJLOVIC ZENICA,,"MOGULKOC, EMIN","VILIUS, GYTIS","PETEK, SASO",OK
+Eloi,E2025_376,17/04/2026,20:15,Panathinaikos AKTOR Athens,Anadolu Efes Istanbul,97,62,Confirmed,38,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"RADOVIC, SRETEN","CORTES, CARLOS","BISSANG, JOSEPH",OK
+Héctor,E2025_379,17/04/2026,20:30,FC Barcelona,FC Bayern Munich,95,69,Confirmed,38,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"BELOSEVIC, ILIJA","KOLJENSIC, MILOS ","KOWALSKI, MARCIN",OK
+Oscar,E2025_381,21/04/2026,20:00,Panathinaikos AKTOR Athens,AS Monaco,87,79,Confirmed,39,Euroleague,TELEKOM CENTER ATHENS,15123 Marousi,"PERUGA, CARLOS","LATISEVS, OLEGS","NEDOVIC, MILAN",OK
+Xavi,E2025_382,21/04/2026,20:45,FC Barcelona,Crvena Zvezda Meridianbet Belgrade,80,72,Confirmed,39,Euroleague,PALAU BLAUGRANA,08028 Barcelona,"LOTTERMOSER, ROBERT","DIFALLAH, MEHDI","VILIUS, GYTIS",OK
+Eloi,U2025_194,22/04/2026,19:00,Besiktas GAIN Istanbul,Cosea JL Bourg-en-Bresse,60,72,Confirmed,24,Eurocup,BJK GAIN SPORTS COMPLEX,Turkey,"PEREZ, MIGUEL ANGEL","KOLJENSIC, MILOS ","BAENA, ALBERTO",OK
+,E2025_383,24/04/2026,19:30,AS Monaco,FC Barcelona,79,70,Confirmed,40,Euroleague,SALLE GASTON MEDECIN,Monaco,"PUKL,SASA","MOGULKOC, EMIN","KARDUM, LUKA",OK
+Héctor,U2025_195,28/04/2026,19:30,Cosea JL Bourg-en-Bresse,Besiktas GAIN Istanbul,73,71,Confirmed,25,Eurocup,EKINOX,France,"HORDOV, TOMISLAV ","KOWALSKI, MARCIN","ATTARD, MANUEL",OK
+Xavi,E2025_385,28/04/2026,19:45,Fenerbahce Beko Istanbul,Zalgiris Kaunas,89,78,Confirmed,41,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PERUGA, CARLOS","RYZHYK, BORYS","BISSUEL, THOMAS",OK
+Eloi,E2025_384,28/04/2026,20:00,Olympiacos Piraeus,AS Monaco,91,70,Confirmed,41,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PEREZ, EMILIO","ZAMOJSKI, JAKUB","PETEK, SASO",OK
+Oscar,E2025_387,28/04/2026,20:45,Valencia Basket,Panathinaikos AKTOR Athens,67,68,Confirmed,41,Euroleague,ROIG ARENA,46013 Valencia,"JAVOR, DAMIR","LATISEVS, OLEGS","NEDOVIC, MILAN",OK
+Xavi,E2025_386,29/04/2026,20:45,Real Madrid,Hapoel IBI Tel Aviv,86,82,Confirmed,41,Euroleague,MOVISTAR ARENA,Madrid,"BELOSEVIC, ILIJA","VILIUS, GYTIS","KONSTANTINOVS, KRISTAPS",OK
+Héctor,E2025_389,30/04/2026,19:45,Fenerbahce Beko Istanbul,Zalgiris Kaunas,86,74,Confirmed,42,Euroleague,ULKER SPORTS AND EVENT HALL,34764 Istanbul,"PEREZ, MIGUEL ANGEL","GARCIA, JUAN CARLOS","KOLJENSIC, MILOS ",OK
+Oscar,E2025_388,30/04/2026,20:00,Olympiacos Piraeus,AS Monaco,94,64,Confirmed,42,Euroleague,PEACE AND FRIENDSHIP STADIUM,Piraeus,"PUKL,SASA","CORTES, CARLOS","KARDUM, LUKA",OK
+Eloi,E2025_391,30/04/2026,20:45,Valencia Basket,Panathinaikos AKTOR Athens,105,107,Confirmed,42,Euroleague,ROIG ARENA,46013 Valencia,"RADOVIC, SRETEN","LOTTERMOSER, ROBERT","HORDOV, TOMISLAV ",OK
+Héctor,E2025_390,01/05/2026,20:45,Real Madrid,Hapoel IBI Tel Aviv,102,75,Confirmed,42,Euroleague,MOVISTAR ARENA,Madrid,"MOGULKOC, EMIN","DIFALLAH, MEHDI","KOWALSKI, MARCIN",OK
