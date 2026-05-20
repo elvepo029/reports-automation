@@ -106,9 +106,19 @@
     }
     .multi-role-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: 1fr;
       gap: 8px 12px;
       align-items: start;
+    }
+    .multi-role-top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      align-items: end;
+      max-width: 720px;
+    }
+    .multi-role-roles-row {
+      width: 100%;
     }
     .multi-role-checks {
       display: flex;
@@ -382,6 +392,10 @@
     <datalist id="datalist_shot_clock_operator"></datalist>
     <datalist id="datalist_irs_operator"></datalist>
     <datalist id="datalist_any_usc"></datalist>
+    <datalist id="datalist_multi_competition">
+      <option value="E"></option>
+      <option value="U"></option>
+    </datalist>
 
     <div id="standard-mode-panel" class="mode-panel">
       <div class="filters">
@@ -460,14 +474,23 @@
       <div class="multi-role-block">
         <p class="multi-role-title">USC across selected roles (select 2+ roles)</p>
         <div class="multi-role-grid">
-          <div>
-            <label for="filter-selected-usc">usc</label>
-            <div class="filter-field">
-              <input type="text" id="filter-selected-usc" list="datalist_any_usc" placeholder="Select USC name">
-              <button type="button" class="filter-clear" data-target="filter-selected-usc">Clear</button>
+          <div class="multi-role-top-row">
+            <div>
+              <label for="filter-selected-usc">usc</label>
+              <div class="filter-field">
+                <input type="text" id="filter-selected-usc" list="datalist_any_usc" placeholder="Select USC name">
+                <button type="button" class="filter-clear" data-target="filter-selected-usc">Clear</button>
+              </div>
+            </div>
+            <div>
+              <label for="filter-multi-competition">competition (optional)</label>
+              <div class="filter-field">
+                <input type="text" id="filter-multi-competition" list="datalist_multi_competition" placeholder="E or U">
+                <button type="button" class="filter-clear" data-target="filter-multi-competition">Clear</button>
+              </div>
             </div>
           </div>
-          <div>
+          <div class="multi-role-roles-row">
             <label>roles</label>
             <div class="multi-role-checks" id="selected-roles-container">
               <label class="multi-role-check"><input type="checkbox" value="data_entry">data_entry</label>
@@ -667,6 +690,21 @@
     function getSelectedRoles() {
       const nodes = document.querySelectorAll("#selected-roles-container input[type='checkbox']:checked");
       return Array.from(nodes).map((n) => n.value);
+    }
+
+    function getMultiRoleCompetition() {
+      return (document.getElementById("filter-multi-competition")?.value || "").trim().toUpperCase();
+    }
+
+    function appendMultiRoleCompetition(params) {
+      const competition = getMultiRoleCompetition();
+      if (competition) params.set("competition", competition);
+    }
+
+    function competitionLabel(code) {
+      if (code === "E") return "Euroleague";
+      if (code === "U") return "Eurocup";
+      return code;
     }
 
     function setGameValues(snapshot) {
@@ -1001,17 +1039,25 @@
           showErrorMessage("Select at least 2 roles.");
           return;
         }
+        const competition = getMultiRoleCompetition();
+        if (competition && competition !== "E" && competition !== "U") {
+          showErrorMessage("Competition must be E (Euroleague) or U (Eurocup).");
+          return;
+        }
         try {
           const params = new URLSearchParams();
           params.set("usc_name", usc);
           params.set("roles", roles.join(","));
+          appendMultiRoleCompetition(params);
           const res = await fetch(`/api/usc_selected_roles_average?${params.toString()}`);
           const data = await res.json();
           if (!res.ok) {
             showErrorMessage(data.error || "Could not compute selected roles average.");
             return;
           }
-          resultTitleEl.textContent = `usc=${data.usc_name} · roles=${(data.roles || []).join(", ")}`;
+          const titleParts = [`usc=${data.usc_name}`, `roles=${(data.roles || []).join(", ")}`];
+          if (data.competition) titleParts.push(`competition=${competitionLabel(data.competition)}`);
+          resultTitleEl.textContent = titleParts.join(" · ");
           gamesCountEl.textContent = `${data.games_count}`;
           labelResultEl.textContent = "Average result";
           labelCorrectionsEl.textContent = "Average corrections";
@@ -1023,6 +1069,7 @@
           const breakdownParams = new URLSearchParams();
           breakdownParams.set("usc_name", usc);
           breakdownParams.set("roles", roles.join(","));
+          appendMultiRoleCompetition(breakdownParams);
           const byTeamRes = await fetch(`/api/uscs_result_by_home_team?${breakdownParams.toString()}`);
           const byTeamData = await byTeamRes.json();
           if (!byTeamRes.ok) {
@@ -1088,6 +1135,8 @@
       if (teamEl) teamEl.value = "";
       const selectedUscEl = document.getElementById("filter-selected-usc");
       if (selectedUscEl) selectedUscEl.value = "";
+      const multiCompetitionEl = document.getElementById("filter-multi-competition");
+      if (multiCompetitionEl) multiCompetitionEl.value = "";
       document.querySelectorAll("#selected-roles-container input[type='checkbox']").forEach((cb) => {
         cb.checked = false;
       });

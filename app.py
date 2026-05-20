@@ -626,6 +626,63 @@ USC_ROLE_COLUMNS = (
 )
 
 
+def _parse_usc_selected_roles_from_request():
+    """Parse usc_name and roles (comma-separated) from query args. Returns (usc_name, roles) or (None, error_response)."""
+    usc_name = request.args.get("usc_name", "").strip()
+    roles_raw = request.args.get("roles", "").strip()
+    if not usc_name:
+        return None, (jsonify({"error": "usc_name is required"}), 400)
+    if not roles_raw:
+        return None, (jsonify({"error": "roles is required"}), 400)
+    roles = [r.strip() for r in roles_raw.split(",") if r.strip()]
+    if len(roles) < 2:
+        return None, (jsonify({"error": "at least 2 roles are required"}), 400)
+    invalid = [r for r in roles if r not in USC_ROLE_COLUMNS]
+    if invalid:
+        return None, (jsonify({"error": f"invalid role(s): {', '.join(invalid)}"}), 400)
+    return (usc_name, roles), None
+
+
+def _parse_competition_from_request():
+    """Optional E (Euroleague) or U (Eurocup) filter via game_code prefix."""
+    competition = request.args.get("competition", "").strip().upper()
+    if not competition:
+        return None, None
+    if competition not in ("E", "U"):
+        return None, (jsonify({"error": "invalid competition"}), 400)
+    return competition, None
+
+
+def _competition_game_code_where(table_prefix=""):
+    """Optional game_code LIKE filter; returns (where_part, param, err)."""
+    competition, err = _parse_competition_from_request()
+    if err:
+        return None, None, err
+    if not competition:
+        return None, None, None
+    gc_col = f"{table_prefix}.game_code" if table_prefix else "game_code"
+    return f"{gc_col} LIKE ?", f"{competition}%", None
+
+
+def _usc_selected_roles_where_parts(table_prefix=""):
+    """WHERE fragments for games where usc_name appears in any selected role column."""
+    parsed, err = _parse_usc_selected_roles_from_request()
+    if err:
+        return None, None, None, None, err
+    usc_name, roles = parsed
+    col_prefix = f"{table_prefix}." if table_prefix else ""
+    any_role_where = " OR ".join([f"{col_prefix}{role} = ?" for role in roles])
+    where_parts = [f"({any_role_where})"]
+    params = [usc_name] * len(roles)
+    comp_where, comp_param, comp_err = _competition_game_code_where(table_prefix)
+    if comp_err:
+        return None, None, None, None, comp_err
+    if comp_where:
+        where_parts.append(comp_where)
+        params.append(comp_param)
+    return where_parts, params, usc_name, roles, None
+
+
 @app.route("/api/usc_role_options")
 def api_usc_role_options():
     """Return distinct USC names for the selected role column in Game."""
@@ -698,6 +755,46 @@ def api_usc_role_result_average():
         "usc_name": usc_name,
         "games_count": games_count,
         "avg_result": avg_result,
+    })
+
+
+@app.route("/api/usc_selected_roles_average")
+def api_usc_selected_roles_average():
+    """Return averages for games where one USC appears in any selected role (read-only)."""
+    where_parts, params, usc_name, roles, err = _usc_selected_roles_where_parts()
+    if err:
+        return err
+    where_parts.append("is_processed = 1")
+    where_clause = " AND ".join(where_parts)
+
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        f"""
+        SELECT
+            COUNT(*) AS games_count,
+            AVG(result) AS avg_result,
+            AVG(total_corrections) AS avg_total_corrections,
+            AVG(total_actions) AS avg_total_actions
+        FROM Game
+        WHERE {where_clause}
+        """,
+        params,
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    games_count = int(row["games_count"] or 0)
+    competition, _ = _parse_competition_from_request()
+    return jsonify({
+        "usc_name": usc_name,
+        "roles": roles,
+        "competition": competition,
+        "games_count": games_count,
+        "avg_result": float(row["avg_result"]) if row["avg_result"] is not None else None,
+        "avg_total_corrections": float(row["avg_total_corrections"]) if row["avg_total_corrections"] is not None else None,
+        "avg_total_actions": float(row["avg_total_actions"]) if row["avg_total_actions"] is not None else None,
     })
 
 
@@ -790,19 +887,27 @@ def api_uscs_result_by_home_team():
             role_filters[col] = val
     any_usc = request.args.get("any_usc", "").strip()
     team = request.args.get("team", "").strip()
-
-    if not role_filters and not any_usc and not team:
-        return jsonify({"error": "at least one USC filter or team is required"}), 400
+    selected_usc = request.args.get("usc_name", "").strip()
+    selected_roles_raw = request.args.get("roles", "").strip()
 
     where_parts = []
     params = []
-    for col, val in role_filters.items():
-        where_parts.append(f"g.{col} = ?")
-        params.append(val)
-    if any_usc:
-        any_role_where = " OR ".join([f"g.{col} = ?" for col in USC_ROLE_COLUMNS])
-        where_parts.append(f"({any_role_where})")
-        params.extend([any_usc] * len(USC_ROLE_COLUMNS))
+    if selected_usc or selected_roles_raw:
+        sr_where, sr_params, _, _, err = _usc_selected_roles_where_parts("g")
+        if err:
+            return err
+        where_parts.extend(sr_where)
+        params.extend(sr_params)
+    else:
+        if not role_filters and not any_usc and not team:
+            return jsonify({"error": "at least one USC filter or team is required"}), 400
+        for col, val in role_filters.items():
+            where_parts.append(f"g.{col} = ?")
+            params.append(val)
+        if any_usc:
+            any_role_where = " OR ".join([f"g.{col} = ?" for col in USC_ROLE_COLUMNS])
+            where_parts.append(f"({any_role_where})")
+            params.extend([any_usc] * len(USC_ROLE_COLUMNS))
     if team:
         # Team filter is home team only (Game.code_h)
         where_parts.append("g.code_h = ?")
@@ -851,15 +956,34 @@ def api_uscs_result_by_home_team():
 def api_usc_any_role_breakdown():
     """Return per-role breakdown for one USC selected in any role (read-only)."""
     usc_name = request.args.get("usc_name", "").strip()
+    roles_raw = request.args.get("roles", "").strip()
     if not usc_name:
         return jsonify({"error": "usc_name is required"}), 400
+
+    roles_to_report = list(USC_ROLE_COLUMNS)
+    if roles_raw:
+        roles_to_report = [r.strip() for r in roles_raw.split(",") if r.strip()]
+        if len(roles_to_report) < 2:
+            return jsonify({"error": "at least 2 roles are required"}), 400
+        invalid = [r for r in roles_to_report if r not in USC_ROLE_COLUMNS]
+        if invalid:
+            return jsonify({"error": f"invalid role(s): {', '.join(invalid)}"}), 400
 
     conn = get_db()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
+    comp_where, comp_param, comp_err = _competition_game_code_where()
+    if comp_err:
+        return comp_err
+    comp_clause = ""
+    comp_params = []
+    if comp_where:
+        comp_clause = f" AND {comp_where}"
+        comp_params = [comp_param]
+
     items = []
-    for role in USC_ROLE_COLUMNS:
+    for role in roles_to_report:
         query = f"""
             SELECT
                 COUNT(*) AS games_count,
@@ -869,8 +993,9 @@ def api_usc_any_role_breakdown():
             FROM Game
             WHERE is_processed = 1
               AND {role} = ?
+              {comp_clause}
         """
-        cur.execute(query, (usc_name,))
+        cur.execute(query, (usc_name, *comp_params))
         row = cur.fetchone()
         games_count = int(row["games_count"] or 0)
         if games_count == 0:
